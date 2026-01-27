@@ -33,7 +33,10 @@ export default defineConfig({
             {
               text: 'API参考',
               items: [
-                { text: 'API 概述', link: '/api/' }
+                { text: 'API 概述', link: '/api/' },
+                { text: 'Registry 客户端', link: '/api/registry' },
+                { text: '数据模型', link: '/api/models' },
+                { text: '配置选项', link: '/api/configuration' }
               ]
             },
             {
@@ -115,7 +118,10 @@ export default defineConfig({
             {
               text: 'API Reference',
               items: [
-                { text: 'API Overview', link: '/en/api/' }
+                { text: 'API Overview', link: '/en/api/' },
+                { text: 'Registry Client', link: '/en/api/registry' },
+                { text: 'Data Models', link: '/en/api/models' },
+                { text: 'Configuration', link: '/en/api/configuration' }
               ]
             },
             {
