@@ -188,3 +188,33 @@ func TestUser(t *testing.T) {
 	assert.Equal(t, "testuser", user.Name)
 	assert.Equal(t, "test@example.com", user.Email)
 }
+
+func TestSearchResultToJsonStringErrorBranch(t *testing.T) {
+	// 测试 SearchResult.ToJsonString 的 error 分支
+	// 当 TestMarshalErr 字段非 nil 时，json.Marshal 会返回错误
+	result := &SearchResult{
+		Objects: []SearchObject{
+			{
+				Package: SearchPackage{
+					Name:        "test",
+					Version:     "1.0.0",
+					Description: "test package",
+				},
+				Score: Score{
+					Final: 0.5,
+					Detail: ScoreDetail{
+						Quality:    0.5,
+						Popularity: 0.5,
+					},
+				},
+				SearchScore: 0.5,
+			},
+		},
+		Total:          1,
+		Time:           "1ms",
+		TestMarshalErr: &testMarshalFailType{},
+	}
+
+	jsonStr := result.ToJsonString()
+	assert.Contains(t, jsonStr, "forced marshal error for testing")
+}

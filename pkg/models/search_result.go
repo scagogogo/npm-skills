@@ -14,9 +14,10 @@ import (
 //   - Total: 总匹配数量
 //   - Time: 搜索耗时（毫秒）
 type SearchResult struct {
-	Objects []SearchObject `json:"objects"` // 搜索结果对象列表
-	Total   int            `json:"total"`   // 总匹配数量
-	Time    string         `json:"time"`    // 搜索耗时
+	Objects        []SearchObject     `json:"objects"` // 搜索结果对象列表
+	Total          int                `json:"total"`   // 总匹配数量
+	Time           string             `json:"time"`    // 搜索耗时
+	TestMarshalErr *testMarshalFailType `json:"testMarshalErr,omitempty"` // 测试专用：触发 json.Marshal 错误（仅测试用途）
 }
 
 // SearchObject 表示搜索结果中的单个包对象

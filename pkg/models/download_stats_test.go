@@ -168,3 +168,34 @@ func TestDownloadStatsEdgeCases(t *testing.T) {
 	jsonStr = emptyRange.ToJsonString()
 	assert.Contains(t, jsonStr, "test")
 }
+
+func TestDownloadStatsToJsonStringErrorBranch(t *testing.T) {
+	// 测试 ToJsonString 的 error 分支
+	// 当 TestMarshalErr 字段非 nil 时，json.Marshal 会返回错误
+	stats := &DownloadStats{
+		Downloads:    123,
+		Start:        "2023-01-01",
+		End:          "2023-01-07",
+		Package:      "test-pkg",
+		TestMarshalErr: &testMarshalFailType{},
+	}
+
+	jsonStr := stats.ToJsonString()
+	assert.Contains(t, jsonStr, "forced marshal error for testing")
+}
+
+func TestDownloadRangeStatsToJsonStringErrorBranch(t *testing.T) {
+	// 测试 DownloadRangeStats.ToJsonString 的 error 分支
+	rangeStats := &DownloadRangeStats{
+		Start:   "2023-01-01",
+		End:     "2023-01-03",
+		Package: "express",
+		Downloads: []DailyDownloads{
+			{Day: "2023-01-01", Downloads: 10000},
+		},
+		TestMarshalErr: &testMarshalFailType{},
+	}
+
+	jsonStr := rangeStats.ToJsonString()
+	assert.Contains(t, jsonStr, "forced marshal error for testing")
+}

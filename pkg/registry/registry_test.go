@@ -76,6 +76,32 @@ func setupTestRegistryServer() *httptest.Server {
 			return
 		}
 
+		// axios 版本路径 - GET /axios/1.0.0
+		if r.URL.Path == "/axios/1.0.0" {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{
+				"name": "axios",
+				"version": "1.0.0",
+				"description": "Promise based HTTP client",
+				"main": "index.js",
+				"dependencies": {"follow-redirects": "^1.15.0"},
+				"dist": {
+					"shasum": "abc123",
+					"tarball": "https://registry.npmjs.org/axios/-/axios-1.0.0.tgz"
+				}
+			}`))
+			return
+		}
+
+		// axios 无效版本路径 - GET /axios/invalid-version
+		if r.URL.Path == "/axios/invalid-version" {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{"error": "not_found", "reason": "version not found"}`))
+			return
+		}
+
 		// 默认返回空对象
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
