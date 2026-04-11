@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/crawler-go-go-go/go-requests"
 	"github.com/scagogogo/npm-crawler/pkg/models"
@@ -232,6 +233,48 @@ func (x *Registry) GetDownloadStats(ctx context.Context, packageName, period str
 		return nil, err
 	}
 	return unmarshalJson[*models.DownloadStats](bytes)
+}
+
+// DownloadTarball 下载指定 NPM 包的 tarball 文件到本地路径
+//
+// 参数:
+//   - ctx: 上下文，可用于取消请求或设置超时
+//   - packageName: 要下载的包名称，例如 "react"、"lodash" 等
+//   - version: 要下载的版本号，例如 "18.0.0"、"latest" 等
+//   - destPath: 目标文件保存路径，例如 "./downloads/react-18.0.0.tgz"
+//
+// 返回值:
+//   - error: 如果下载失败则返回错误
+//
+// 使用示例:
+//
+//	registry := NewRegistry()
+//	ctx := context.Background()
+//	err := registry.DownloadTarball(ctx, "react", "18.0.0", "./react.tgz")
+//	if err != nil {
+//	  // 处理错误
+//	}
+func (x *Registry) DownloadTarball(ctx context.Context, packageName, version, destPath string) error {
+	// 先获取包的版本信息，以获取 tarball URL
+	versionInfo, err := x.GetPackageVersion(ctx, packageName, version)
+	if err != nil {
+		return err
+	}
+
+	// 从版本信息中获取 tarball URL
+	tarballURL := versionInfo.Dist.Tarball
+	if tarballURL == "" {
+		return fmt.Errorf("tarball URL not found for package %s@%s", packageName, version)
+	}
+
+	// 使用 getBytes 获取 tarball 内容
+	bytes, err := x.getBytes(ctx, tarballURL)
+	if err != nil {
+		return err
+	}
+
+	// 写入本地文件
+	return os.WriteFile(destPath, bytes, 0644)
 }
 
 // GetOptions 获取当前 Registry 客户端的配置选项
