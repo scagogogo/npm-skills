@@ -134,6 +134,23 @@ if err != nil {
 fmt.Printf("Downloads: %d\n", stats.Downloads)
 ```
 
+#### DownloadTarball
+Download an NPM package tarball to a local file.
+
+```go
+func (r *Registry) DownloadTarball(ctx context.Context, packageName, version, destPath string) error
+```
+
+**Parameters:**
+- `packageName` - Package name
+- `version` - Version number or tag (e.g., "latest")
+- `destPath` - Local file path to save the tarball
+
+**Example:**
+```go
+err := client.DownloadTarball(ctx, "react", "18.2.0", "./react.tgz")
+```
+
 ## Configuration Options
 
 ### Options

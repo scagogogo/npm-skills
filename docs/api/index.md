@@ -134,6 +134,23 @@ if err != nil {
 fmt.Printf("下载次数: %d\n", stats.Downloads)
 ```
 
+#### DownloadTarball
+下载 NPM 包的 tarball 文件到本地。
+
+```go
+func (r *Registry) DownloadTarball(ctx context.Context, packageName, version, destPath string) error
+```
+
+**参数：**
+- `packageName` - 包名称
+- `version` - 版本号或标签（如 "latest"）
+- `destPath` - 本地保存路径
+
+**示例：**
+```go
+err := client.DownloadTarball(ctx, "react", "18.2.0", "./react.tgz")
+```
+
 ## 配置选项
 
 ### Options

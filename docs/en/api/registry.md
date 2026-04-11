@@ -165,6 +165,59 @@ if err != nil {
 fmt.Printf("Downloads in last month: %d\n", stats.Downloads)
 ```
 
+### DownloadTarball
+```go
+func (r *Registry) DownloadTarball(ctx context.Context, packageName, version, destPath string) error
+```
+
+Downloads an NPM package tarball to a local file path.
+
+**Parameters:**
+- `ctx` - Context for cancellation and timeout control
+- `packageName` - Name of the package to download
+- `version` - Version to download (e.g., "18.0.0" or "latest")
+- `destPath` - Local file path where the tarball will be saved
+
+**Returns:**
+- `error` - Error if the download fails
+
+**Example:**
+```go
+ctx := context.Background()
+
+// Download specific version
+err := client.DownloadTarball(ctx, "react", "18.0.0", "./react.tgz")
+if err != nil {
+    return fmt.Errorf("download failed: %w", err)
+}
+
+// Download latest version
+err = client.DownloadTarball(ctx, "vue", "latest", "./vue.tgz")
+if err != nil {
+    return fmt.Errorf("download failed: %w", err)
+}
+
+// Verify the downloaded file
+info, err := os.Stat("./react.tgz")
+if err != nil {
+    return err
+}
+fmt.Printf("File size: %d bytes\n", info.Size())
+```
+
+**Using CNPM mirror for faster downloads in China:**
+```go
+options := registry.NewOptions().SetRegistryURL(registry.RegistryUrlCnpm)
+client := registry.NewRegistry(options)
+
+err := client.DownloadTarball(ctx, "axios", "1.0.0", "/tmp/axios.tgz")
+if err != nil {
+    log.Fatalf("Download failed: %v", err)
+}
+
+fmt.Println("Download successful!")
+```
+
 ## Registry Information Methods
 
 ### GetRegistryInformation

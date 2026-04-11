@@ -44,7 +44,8 @@ export default defineConfig({
               items: [
                 { text: '基本用法', link: '/examples/basic' },
                 { text: '高级用法', link: '/examples/advanced' },
-                { text: '镜像源配置', link: '/examples/mirrors' }
+                { text: '镜像源配置', link: '/examples/mirrors' },
+                { text: '下载 Tarball', link: '/examples/download' }
               ]
             }
           ]
@@ -129,7 +130,8 @@ export default defineConfig({
               items: [
                 { text: 'Basic Usage', link: '/en/examples/basic' },
                 { text: 'Advanced Usage', link: '/en/examples/advanced' },
-                { text: 'Mirror Configuration', link: '/en/examples/mirrors' }
+                { text: 'Mirror Configuration', link: '/en/examples/mirrors' },
+                { text: 'Download Tarball', link: '/en/examples/download' }
               ]
             }
           ]

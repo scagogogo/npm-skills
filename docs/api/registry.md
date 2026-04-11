@@ -164,6 +164,57 @@ fmt.Printf("下载次数: %d\n", stats.Downloads)
 fmt.Printf("统计周期: %s 到 %s\n", stats.Start, stats.End)
 ```
 
+### `DownloadTarball(ctx context.Context, packageName, version, destPath string) error`
+
+下载指定 NPM 包的 tarball 文件到本地路径。
+
+**参数:**
+- `ctx` - 上下文，用于取消和超时控制
+- `packageName` - 要下载的包名称，例如 "react"、"lodash" 等
+- `version` - 要下载的版本号，例如 "18.0.0"、"latest" 等
+- `destPath` - 目标文件保存路径，例如 "./downloads/react-18.0.0.tgz"
+
+**返回值:**
+- `error` - 如果下载失败则返回错误
+
+**示例:**
+```go
+ctx := context.Background()
+
+// 下载 react 18.0.0 版本到本地文件
+err := client.DownloadTarball(ctx, "react", "18.0.0", "./react.tgz")
+if err != nil {
+    return fmt.Errorf("下载 tarball 失败: %w", err)
+}
+
+// 使用 latest 下载最新版本
+err = client.DownloadTarball(ctx, "vue", "latest", "./vue.tgz")
+if err != nil {
+    return fmt.Errorf("下载 tarball 失败: %w", err)
+}
+
+// 验证下载的文件
+info, err := os.Stat("./react.tgz")
+if err != nil {
+    return err
+}
+fmt.Printf("文件大小: %d bytes\n", info.Size())
+```
+
+**使用 CNPM 镜像下载示例:**
+```go
+// 使用国内镜像下载，速度更快
+options := registry.NewOptions().SetRegistryURL(registry.RegistryUrlCnpm)
+client := registry.NewRegistry(options)
+
+err := client.DownloadTarball(ctx, "axios", "1.0.0", "/tmp/axios.tgz")
+if err != nil {
+    log.Fatalf("下载失败: %v", err)
+}
+
+fmt.Println("下载成功！")
+```
+
 ### `GetOptions() *Options`
 
 返回当前注册表客户端的配置选项。
