@@ -14,12 +14,59 @@ _高性能的 NPM Registry 客户端，支持多镜像源和代理配置_
 
 </div>
 
+## 三种使用方式
+
+NPM Crawler 以 **AI 原生 (AI-native) 为首要设计目标**，提供三种互补的交互方式：
+
+### 1. 🤖 AI / Agent 模式（主要方式）
+
+专为 AI 智能体和自动化工作流设计。AI 可直接理解和调用此工具的能力，无需人工干预。
+
+```markdown
+# 本仓库本身就是一个 Claude Code Skill
+# 当你询问时，AI 会自动发现并使用它：
+# - "查找 axios NPM 包的信息"
+# - "下载 react 的 tarball"
+# - "搜索 HTTP 客户端库"
+# - "获取 vue 的下载统计"
+```
+
+**AI 触发词**: `npm package`, `NPM registry`, `search npm`, `download npm tarball`, `get npm stats`, `npm mirror`
+
+Skill 清单 (`SKILL.md`) 提供渐进式披露：
+- **即时上下文**: frontmatter 中的 name + description (~100 词)
+- **核心指引**: 快速开始 + 能力说明 (~500 行)
+- **深入参考**: 完整 API 文档在 `references/api.md` (按需加载)
+
+### 2. 📦 Go SDK
+
+用于程序化访问 NPM Registry 的嵌入式 Go 库：
+
+```go
+import "github.com/scagogogo/npm-crawler/pkg/registry"
+
+client := registry.NewRegistry()
+pkg, err := client.GetPackageInformation(ctx, "react")
+```
+
+### 3. 🖥️ CLI 工具
+
+用于快速查询和脚本化的命令行界面：
+
+```bash
+cd examples/create_registry && go run main.go
+cd examples/download_tarball && go run main.go
+```
+
+---
+
 ## 简介
 
 NPM Crawler 是一个用 Go 语言编写的高性能 NPM Registry 客户端库，提供了简单易用的 API 来访问 NPM Registry 中的包信息。该库支持多种 NPM 镜像源，包括官方 Registry、淘宝镜像、华为云镜像等，同时支持代理配置，可以轻松应对各种网络环境。
 
 ## 功能特点
 
+- 🤖 **AI 原生**: 作为 Skill 设计，支持 AI 智能体渐进式披露
 - 🚀 **高性能**: 基于 Go 的高并发特性，提供快速的 NPM Registry 访问
 - 🌐 **多镜像源支持**: 内置支持多种 NPM 镜像源
 - 🔄 **代理支持**: 可配置 HTTP 代理，适应各种网络环境

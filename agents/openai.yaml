@@ -1,0 +1,3 @@
+display_name: NPM Registry Crawler
+short_description: Query NPM registry for package information, search packages, get download stats, and download tarballs. Supports multiple mirror sources including npmjs.org, Taobao, NPMMirror, Huawei Cloud, and more.
+default_prompt: I need to find information about an NPM package called "${package_name}". Can you help me get its description, latest version, dependencies, and download statistics?

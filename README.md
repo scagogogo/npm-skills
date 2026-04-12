@@ -14,12 +14,59 @@ _High-performance NPM Registry client with multi-mirror source and proxy support
 
 </div>
 
+## Three Ways to Use
+
+NPM Crawler is designed to be **AI-native first**, offering three complementary ways to interact:
+
+### 1. 🤖 AI / Agent Mode (Primary)
+
+Designed for AI agents and autonomous workflows. AI can directly understand and invoke this tool's capabilities without manual intervention.
+
+```markdown
+# This repository IS a Claude Code Skill
+# AI agents automatically discover and use it when you ask:
+# - "Find info about the axios NPM package"
+# - "Download the react tarball"
+# - "Search for HTTP client libraries"
+# - "Get download stats for vue"
+```
+
+**AI Trigger Phrases**: `npm package`, `NPM registry`, `search npm`, `download npm tarball`, `get npm stats`, `npm mirror`
+
+The Skill manifest (`SKILL.md`) provides AI-readable instructions with progressive disclosure:
+- **Immediate context**: name + description in frontmatter (~100 words)
+- **Core guidance**: Quick start + capabilities in body (~500 lines)
+- **Deep reference**: Full API docs in `references/api.md` (loaded on demand)
+
+### 2. 📦 Go SDK
+
+Drop-in Go library for programmatic access to NPM Registry:
+
+```go
+import "github.com/scagogogo/npm-crawler/pkg/registry"
+
+client := registry.NewRegistry()
+pkg, err := client.GetPackageInformation(ctx, "react")
+```
+
+### 3. 🖥️ CLI Tool
+
+Command-line interface for quick lookups and scripting:
+
+```bash
+cd examples/create_registry && go run main.go
+cd examples/download_tarball && go run main.go
+```
+
+---
+
 ## Introduction
 
 NPM Crawler is a high-performance NPM Registry client library written in Go, providing a simple and easy-to-use API to access package information in the NPM Registry. This library supports multiple NPM mirror sources, including the official Registry, Taobao mirror, Huawei Cloud mirror, etc., and also supports proxy configuration to easily handle various network environments.
 
 ## Features
 
+- 🤖 **AI-Native**: Designed as a Skill for AI agents with progressive disclosure
 - 🚀 **High Performance**: Based on Go's high concurrency features, providing fast NPM Registry access
 - 🌐 **Multi-Mirror Source Support**: Built-in support for multiple NPM mirror sources
 - 🔄 **Proxy Support**: Configurable HTTP proxy to adapt to various network environments
