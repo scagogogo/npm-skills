@@ -281,6 +281,6 @@ if err != nil {
 
 ## Next Steps
 
-- Check [Chinese detailed API documentation](/api/zh) or [English API documentation](/api/en)
+- Check [Chinese detailed API documentation](/api/registry) or [English API documentation](/en/api/registry)
 - Browse [example code](/en/examples/basic) to learn specific usage
 - Visit [GitHub](https://github.com/scagogogo/npm-crawler) to view complete source code 

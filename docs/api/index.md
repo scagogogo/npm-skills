@@ -281,6 +281,6 @@ if err != nil {
 
 ## 下一步
 
-- 查看 [中文详细API文档](/api/zh) 或 [英文API文档](/api/en)
+- 查看 [中文详细API文档](/api/registry) 或 [英文API文档](/en/api/registry)
 - 浏览 [示例代码](/examples/basic) 学习具体用法
 - 访问 [GitHub](https://github.com/scagogogo/npm-crawler) 查看完整源代码
