@@ -40,7 +40,7 @@ type Version struct {
 	Directories struct {
 	} `json:"directories"`
 
-	Deprecated string `json:"deprecated"` // 弃用说明，如果为空则表示未弃用
+	Deprecated interface{} `json:"deprecated"` // 弃用说明，string 或 bool 类型
 }
 
 // Script 类型定义在其他文件中
