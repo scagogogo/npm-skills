@@ -1,0 +1,13 @@
+mode: set
+github.com/scagogogo/npm-crawler/pkg/models/download_stats.go:39.48,41.16 2 1
+github.com/scagogogo/npm-crawler/pkg/models/download_stats.go:41.16,43.3 1 1
+github.com/scagogogo/npm-crawler/pkg/models/download_stats.go:44.2,44.22 1 1
+github.com/scagogogo/npm-crawler/pkg/models/download_stats.go:82.54,84.16 2 1
+github.com/scagogogo/npm-crawler/pkg/models/download_stats.go:84.16,86.3 1 1
+github.com/scagogogo/npm-crawler/pkg/models/download_stats.go:87.2,87.22 1 1
+github.com/scagogogo/npm-crawler/pkg/models/download_stats.go:93.61,95.2 1 1
+github.com/scagogogo/npm-crawler/pkg/models/package_information.go:55.41,58.2 2 1
+github.com/scagogogo/npm-crawler/pkg/models/registry_information.go:62.53,65.2 2 1
+github.com/scagogogo/npm-crawler/pkg/models/search_result.go:113.47,115.16 2 1
+github.com/scagogogo/npm-crawler/pkg/models/search_result.go:115.16,117.3 1 1
+github.com/scagogogo/npm-crawler/pkg/models/search_result.go:118.2,118.22 1 1
