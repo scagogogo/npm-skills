@@ -17,7 +17,7 @@ type Version struct {
 	Version     string      `json:"version"`     // 版本号，如 "1.0.0"
 	Description string      `json:"description"` // 版本描述
 	Main        string      `json:"main"`        // 主入口文件
-	Scripts     *Script     `json:"scripts"`     // 脚本命令定义
+	Scripts     Script      `json:"scripts"`      // 脚本命令定义（支持任意 npm script key）
 	Repository  *Repository `json:"repository"`  // 代码仓库信息
 	Keywords    []string    `json:"keywords"`    // 关键词列表
 	Author      *User       `json:"author"`      // 作者信息
