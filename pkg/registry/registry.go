@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"os"
 
 	"github.com/crawler-go-go-go/go-requests"
@@ -141,40 +140,6 @@ func (x *Registry) GetPackageInformation(ctx context.Context, packageName string
 		return nil, err
 	}
 	return unmarshalJson[*models.Package](bytes)
-}
-
-// SearchPackages 搜索 NPM 包
-//
-// 参数:
-//   - ctx: 上下文，可用于取消请求或设置超时
-//   - query: 搜索关键字
-//   - limit: 返回结果数量限制，默认为 20
-//
-// 返回值:
-//   - *models.SearchResult: 搜索结果，包含匹配的包列表
-//   - error: 如果请求失败则返回错误
-//
-// 使用示例:
-//
-//	registry := NewRegistry()
-//	ctx := context.Background()
-//	result, err := registry.SearchPackages(ctx, "react", 10)
-//	if err != nil {
-//		// 处理错误
-//	}
-//	for _, pkg := range result.Objects {
-//		fmt.Println("包名:", pkg.Package.Name)
-//	}
-func (x *Registry) SearchPackages(ctx context.Context, query string, limit int) (*models.SearchResult, error) {
-	if limit <= 0 {
-		limit = 20
-	}
-	targetUrl := fmt.Sprintf("%s/-/v1/search?text=%s&size=%d", x.options.RegistryURL, url.QueryEscape(query), limit)
-	bytes, err := x.getBytes(ctx, targetUrl)
-	if err != nil {
-		return nil, err
-	}
-	return unmarshalJson[*models.SearchResult](bytes)
 }
 
 // GetPackageVersion 获取指定 NPM 包的特定版本信息
