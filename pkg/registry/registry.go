@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/crawler-go-go-go/go-requests"
@@ -265,15 +264,7 @@ func (x *Registry) getBytes(ctx context.Context, targetUrl string) ([]byte, erro
 		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
 	}
 	if x.options.Token != "" {
-		options.AppendRequestSetting(requestSettingBearerToken(x.options.Token))
+		options.AppendRequestSetting(requestSettingHeader("Authorization", "Bearer "+x.options.Token))
 	}
 	return requests.SendRequest[any, []byte](ctx, options)
-}
-
-// requestSettingBearerToken 创建一个设置 Bearer Token 认证头的 RequestSetting
-func requestSettingBearerToken(token string) requests.RequestSetting {
-	return func(client *http.Client, httpRequest *http.Request) error {
-		httpRequest.Header.Set("Authorization", "Bearer "+token)
-		return nil
-	}
 }
