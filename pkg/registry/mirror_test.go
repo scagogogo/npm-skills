@@ -174,3 +174,40 @@ func TestMirrorRegistryCreation(t *testing.T) {
 		})
 	}
 }
+
+func TestListMirrors(t *testing.T) {
+	mirrors := ListMirrors()
+
+	// 测试返回的镜像数量
+	assert.Equal(t, 8, len(mirrors), "应该返回 8 个镜像源")
+
+	// 测试第一个镜像源是 official
+	assert.Equal(t, "official", mirrors[0].Name)
+	assert.Equal(t, DefaultRegistryURL, mirrors[0].URL)
+	assert.Equal(t, "Global", mirrors[0].Region)
+
+	// 测试每个镜像源都有必要字段
+	for _, m := range mirrors {
+		assert.NotEmpty(t, m.Name, "镜像源名称不能为空")
+		assert.NotEmpty(t, m.URL, "镜像源 URL 不能为空")
+		assert.NotEmpty(t, m.Region, "镜像源区域不能为空")
+		assert.NotEmpty(t, m.Description, "镜像源描述不能为空")
+	}
+
+	// 测试镜像源 URL 与常量一致
+	urlMap := map[string]string{
+		"official":   DefaultRegistryURL,
+		"taobao":     RegistryUrlTaoBao,
+		"npm-mirror": RegistryUrlNpmMirror,
+		"huawei":     RegistryUrlHuaWeiCloud,
+		"tencent":    RegistryUrlTencent,
+		"cnpm":       RegistryUrlCnpm,
+		"yarn":       RegistryUrlYarn,
+		"npmjscom":   RegistryUrlNpmjsCom,
+	}
+	for _, m := range mirrors {
+		expectedURL, ok := urlMap[m.Name]
+		assert.True(t, ok, "镜像源 %s 不在 URL 映射中", m.Name)
+		assert.Equal(t, expectedURL, m.URL, "镜像源 %s 的 URL 与常量不一致", m.Name)
+	}
+}

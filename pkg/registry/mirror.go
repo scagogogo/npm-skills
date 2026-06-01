@@ -165,4 +165,45 @@ func NewHuaWeiCloudRegistry() *Registry {
 	return NewRegistry(NewOptions().SetRegistryURL(RegistryUrlHuaWeiCloud))
 }
 
+// MirrorEntry 表示一个镜像源的元数据信息
+//
+// 包含镜像源的名称、URL、地理区域和描述信息。
+// 此结构体是 CLI 和 SDK 共享镜像元数据的标准数据结构。
+//
+// 主要字段说明:
+//   - Name: 镜像源标识名，用于 --mirror flag
+//   - URL: 镜像源的 Registry URL
+//   - Region: 地理区域（"Global" 或 "China"）
+//   - Description: 镜像源的可读描述
+type MirrorEntry struct {
+	Name        string `json:"name"`
+	URL         string `json:"url"`
+	Region      string `json:"region"`
+	Description string `json:"description"`
+}
+
+// ListMirrors 返回所有支持的镜像源列表
+//
+// 返回值:
+//   - []MirrorEntry: 包含所有镜像源元数据的切片
+//
+// 使用示例:
+//
+//	mirrors := registry.ListMirrors()
+//	for _, m := range mirrors {
+//	    fmt.Printf("%s: %s (%s)\n", m.Name, m.URL, m.Region)
+//	}
+func ListMirrors() []MirrorEntry {
+	return []MirrorEntry{
+		{"official", DefaultRegistryURL, "Global", "NPM Official Registry"},
+		{"taobao", RegistryUrlTaoBao, "China", "Taobao NPM Mirror (Alibaba)"},
+		{"npm-mirror", RegistryUrlNpmMirror, "China", "NPM Mirror (new Taobao domain)"},
+		{"huawei", RegistryUrlHuaWeiCloud, "China", "Huawei Cloud Mirror"},
+		{"tencent", RegistryUrlTencent, "China", "Tencent Cloud Mirror"},
+		{"cnpm", RegistryUrlCnpm, "China", "CNPM Mirror"},
+		{"yarn", RegistryUrlYarn, "Global", "Yarn Official Mirror"},
+		{"npmjscom", RegistryUrlNpmjsCom, "Global", "NPM CouchDB Mirror"},
+	}
+}
+
 // ------------------------------------------------- --------------------------------------------------------------------
