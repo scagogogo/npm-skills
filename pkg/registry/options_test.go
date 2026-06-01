@@ -125,3 +125,34 @@ func TestGetHttpClient(t *testing.T) {
 	assert.NotNil(t, client)
 	assert.Equal(t, http.DefaultClient, client, "空字符串代理应该返回默认客户端")
 }
+
+func TestSetToken(t *testing.T) {
+	options := NewOptions()
+
+	// 测试默认 token 为空
+	assert.Empty(t, options.Token)
+
+	// 测试设置 token
+	result := options.SetToken("npm_test_token")
+	assert.Equal(t, options, result, "应该返回自身以支持链式调用")
+	assert.Equal(t, "npm_test_token", options.Token)
+
+	// 测试清除 token
+	options.SetToken("")
+	assert.Empty(t, options.Token)
+
+	// 测试链式调用
+	options = NewOptions().
+		SetRegistryURL("https://registry.npmjs.org").
+		SetProxy("http://proxy:8080").
+		SetToken("npm_chained_token")
+	assert.Equal(t, "npm_chained_token", options.Token)
+	assert.Equal(t, "http://proxy:8080", options.Proxy)
+}
+
+func TestRegistryWithToken(t *testing.T) {
+	options := NewOptions().SetToken("npm_test_token")
+	registry := NewRegistry(options)
+	retrievedOpts := registry.GetOptions()
+	assert.Equal(t, "npm_test_token", retrievedOpts.Token)
+}

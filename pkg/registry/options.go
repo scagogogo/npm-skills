@@ -26,6 +26,7 @@ const DefaultRegistryURL = "https://registry.npmjs.org"
 type Options struct {
 	RegistryURL string
 	Proxy       string
+	Token       string // Bearer token for authenticated API requests
 }
 
 // NewOptions 创建并返回一个新的默认配置选项实例
@@ -88,6 +89,23 @@ func (o *Options) SetRegistryURL(url string) *Options {
 //	options.SetProxy("")
 func (o *Options) SetProxy(proxyUrl string) *Options {
 	o.Proxy = proxyUrl
+	return o
+}
+
+// SetToken 设置用于认证 API 请求的 Bearer token
+//
+// 参数:
+//   - token: Bearer token 字符串，通常从 npm token create 或 npm login 获取
+//
+// 返回值:
+//   - *Options: 更新后的选项对象 (支持链式调用)
+//
+// 使用示例:
+//
+//	options := NewOptions().SetToken("npm_xxxxx")
+//	registry := NewRegistry(options)
+func (o *Options) SetToken(token string) *Options {
+	o.Token = token
 	return o
 }
 

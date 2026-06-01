@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/crawler-go-go-go/go-requests"
@@ -167,7 +169,7 @@ func (x *Registry) SearchPackages(ctx context.Context, query string, limit int) 
 	if limit <= 0 {
 		limit = 20
 	}
-	targetUrl := fmt.Sprintf("%s/-/v1/search?text=%s&size=%d", x.options.RegistryURL, query, limit)
+	targetUrl := fmt.Sprintf("%s/-/v1/search?text=%s&size=%d", x.options.RegistryURL, url.QueryEscape(query), limit)
 	bytes, err := x.getBytes(ctx, targetUrl)
 	if err != nil {
 		return nil, err
@@ -321,11 +323,22 @@ func unmarshalJson[T any](bytes []byte) (T, error) {
 //   - []byte: 响应数据的字节数组
 //   - error: 如果请求失败则返回错误
 //
-// 注意: 这是一个内部方法，支持代理设置
+// 注意: 这是一个内部方法，支持代理设置和 Token 认证
 func (x *Registry) getBytes(ctx context.Context, targetUrl string) ([]byte, error) {
 	options := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler())
 	if x.options.Proxy != "" {
 		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
 	}
+	if x.options.Token != "" {
+		options.AppendRequestSetting(requestSettingBearerToken(x.options.Token))
+	}
 	return requests.SendRequest[any, []byte](ctx, options)
+}
+
+// requestSettingBearerToken 创建一个设置 Bearer Token 认证头的 RequestSetting
+func requestSettingBearerToken(token string) requests.RequestSetting {
+	return func(client *http.Client, httpRequest *http.Request) error {
+		httpRequest.Header.Set("Authorization", "Bearer "+token)
+		return nil
+	}
 }
