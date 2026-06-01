@@ -207,36 +207,6 @@ func (x *Registry) GetPackageVersion(ctx context.Context, packageName, version s
 	return unmarshalJson[*models.Version](bytes)
 }
 
-// GetDownloadStats 获取指定 NPM 包的下载统计信息
-//
-// 参数:
-//   - ctx: 上下文，可用于取消请求或设置超时
-//   - packageName: 要查询的包名称
-//   - period: 统计周期，例如 "last-day", "last-week", "last-month"
-//
-// 返回值:
-//   - *models.DownloadStats: 下载统计信息
-//   - error: 如果请求失败则返回错误
-//
-// 使用示例:
-//
-//	registry := NewRegistry()
-//	ctx := context.Background()
-//	stats, err := registry.GetDownloadStats(ctx, "react", "last-week")
-//	if err != nil {
-//		// 处理错误
-//	}
-//	fmt.Println("下载次数:", stats.Downloads)
-func (x *Registry) GetDownloadStats(ctx context.Context, packageName, period string) (*models.DownloadStats, error) {
-	baseURL := "https://api.npmjs.org/downloads"
-	targetUrl := fmt.Sprintf("%s/point/%s/%s", baseURL, period, packageName)
-	bytes, err := x.getBytes(ctx, targetUrl)
-	if err != nil {
-		return nil, err
-	}
-	return unmarshalJson[*models.DownloadStats](bytes)
-}
-
 // DownloadTarball 下载指定 NPM 包的 tarball 文件到本地路径
 //
 // 参数:
