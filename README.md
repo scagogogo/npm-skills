@@ -1,117 +1,163 @@
-# NPM Crawler
-
 <div align="center">
 
-[Switch to Chinese Version](README_zh.md)
+# NPM Skills
+
+[Switch to 中文版](README_zh.md)
 
 <img src="https://cdn.worldvectorlogo.com/logos/npm-2.svg" width="180" alt="NPM Logo" style="filter: brightness(0.9);">
 
 [![Go Tests](https://github.com/scagogogo/npm-skills/actions/workflows/go-test.yml/badge.svg)](https://github.com/scagogogo/npm-skills/actions/workflows/go-test.yml)
+[![Release](https://github.com/scagogogo/npm-skills/actions/workflows/release.yml/badge.svg)](https://github.com/scagogogo/npm-skills/releases)
 [![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-skills.svg)](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-_High-performance NPM Registry client with multi-mirror source, proxy support, and full write operations_
+**NPM Registry client for AI agents and developers** — query packages, manage dist-tags, publish, audit, and more.
+
+[4 Ways to Integrate](#-four-ways-to-integrate) · [Download](https://github.com/scagogogo/npm-skills/releases/latest) · [Documentation](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 
 </div>
 
-## Four Ways to Use
+---
 
-NPM Crawler is designed to be **AI-native first**, offering four complementary ways to interact:
+## ⚡ One-Click Skill Install
 
-### 1. 🤖 Claude Code Skill (Primary)
+Copy and paste this into your terminal with Claude Code running:
 
-This repository is a **Claude Code Skill** — install it directly into Claude Code and AI agents will automatically discover and use it.
-
-**Install as a Skill:**
-```bash
-# In Claude Code, install from GitHub:
+```
 claude skill add github.com/scagogogo/npm-skills
-
-# Or clone and install locally:
-git clone https://github.com/scagogogo/npm-skills.git
-cd npm-skills && bash scripts/install.sh
 ```
 
-Once installed, Claude Code will automatically use this skill when you ask:
-- "Find info about the axios NPM package"
-- "Download the react tarball"
-- "Search for HTTP client libraries"
-- "Get download stats for vue"
-- "Check the NPM registry using Taobao mirror"
+That's it! Claude Code will now automatically use NPM Skills when you ask about packages, versions, downloads, publishing, or anything NPM-related.
 
-**AI Trigger Phrases**: `npm package`, `NPM registry`, `search npm`, `download npm tarball`, `get npm stats`, `npm mirror`
+---
 
-The Skill manifest (`SKILL.md`) provides AI-readable instructions with progressive disclosure:
+## 🔌 Four Ways to Integrate
+
+NPM Skills is designed **AI-native first**, offering four complementary ways to interact with the NPM Registry:
+
+### 1. 🤖 Skill (for AI Agents) — Primary
+
+This repository is a **Claude Code Skill** — install it and AI agents will automatically discover and use it. No shell invocation needed.
+
+**Install:**
+```bash
+claude skill add github.com/scagogogo/npm-skills
+```
+
+After installation, just ask Claude Code naturally:
+- *"Find info about the axios NPM package"*
+- *"Download the react tarball"*
+- *"Search for HTTP client libraries on NPM"*
+- *"Get download stats for vue last month"*
+- *"Check NPM registry using the China mirror"*
+- *"Publish my package to a private registry"*
+- *"Audit my dependencies for vulnerabilities"*
+
+**Trigger phrases**: `npm package`, `npm publish`, `npm registry`, `search npm`, `npm stats`, `npm mirror`, `npm 版本`, `npm 包`, `npm 镜像`, `npm 发布`
+
+The Skill manifest (`SKILL.md`) uses progressive disclosure:
 - **Immediate context**: name + description in frontmatter (~100 words)
-- **Core guidance**: CLI commands + usage patterns in body
+- **Core guidance**: CLI commands + usage patterns
 - **Deep reference**: Full API docs in `references/api.md` (loaded on demand)
 
-### 2. 📦 Go SDK
+### 2. 📦 Go SDK (for Developers)
 
-Drop-in Go library for programmatic access to NPM Registry:
+Drop-in Go library for programmatic access with full type safety:
 
 ```go
 import "github.com/scagogogo/npm-skills/pkg/registry"
 
+// Default client (official registry)
 client := registry.NewRegistry()
-pkg, err := client.GetPackageInformation(ctx, "react")
+
+// Custom client with options
+options := registry.NewOptions().
+    SetRegistryURL("https://registry.npmjs.org").
+    SetToken("npm_xxxxx").
+    SetProxy("http://proxy:8080").
+    SetTimeout(30 * time.Second)
+client = registry.NewRegistry(options)
+
+// Read operations
+pkg, _ := client.GetPackageInformation(ctx, "react")
+versions, _ := client.GetPackageVersions(ctx, "react")
+stats, _ := client.GetDownloadStats(ctx, "react", "last-week")
+rangeStats, _ := client.GetDownloadRangeStatsByDateRange(ctx, "react", "2024-01-01", "2024-06-30")
+
+// Write operations (require token)
+client.SetDistTag(ctx, "my-pkg", "next", "2.0.0-rc.1")
+client.PublishPackage(ctx, pkg)
+client.DeprecateVersion(ctx, "my-pkg", "1.0.0", "Use v2.0.0")
+
+// Typed errors for programmatic handling
+import "errors"
+_, err := client.GetPackageInformation(ctx, "nonexistent")
+if errors.Is(err, registry.ErrNotFound) {
+    // handle 404
+}
 ```
 
 ### 3. 🖥️ CLI Tool
 
-Command-line interface built with [Cobra](https://github.com/spf13/cobra), with colorful output, auto-completion, proxy & mirror support:
+Command-line interface with colorful output, proxy & mirror support. Pre-built binaries available for [all major platforms](https://github.com/scagogogo/npm-skills/releases/latest).
 
+**Install:**
 ```bash
-# Install the CLI
+# Download from GitHub Release (recommended)
+# See: https://github.com/scagogogo/npm-skills/releases/latest
+
+# Or build from source
 bash scripts/install.sh
 
-# Basic usage
-npm-skills package react                    # Get package info (full)
-npm-skills package-summary react            # Get package info (lightweight, recommended)
-npm-skills search "http client" -l 10       # Search with limit
-npm-skills download-stats axios -p last-month # Download stats
-npm-skills download-stats-bulk react,vue -p last-week # Bulk download stats
-npm-skills download lodash 4.17.21 ./lodash.tgz  # Download tarball
-npm-skills pkg-version axios 1.0.0          # Specific version info
+# Or go install
+go install github.com/scagogogo/npm-skills/cmd/npm-skills@latest
+```
+
+**Usage:**
+```bash
+# Read operations
+npm-skills package-summary react            # Lightweight package info (recommended)
+npm-skills package react                    # Full package metadata
+npm-skills search "http client" -l 10       # Search packages
 npm-skills versions react --latest          # Get latest version
-npm-skills dist-tags react                  # Get dist-tags
+npm-skills dist-tags get react              # Get dist-tags
+npm-skills download-stats axios -p last-month  # Download stats
+npm-skills download lodash 4.17.21 ./lodash.tgz  # Download tarball
 npm-skills mirrors                          # List mirror sources
+npm-skills whoami --token npm_xxxxx         # Check auth status
 
 # Write operations (require --token)
-npm-skills publish ./pkg.tgz --name my-pkg --version 1.0.0 -t npm_xxxxx  # Publish
-npm-skills deprecate my-pkg 1.0.0 -M "Use v2" -t npm_xxxxx               # Deprecate
-npm-skills dist-tags set my-pkg stable --version 1.0.0 -t npm_xxxxx      # Set tag
-npm-skills access get my-pkg -t npm_xxxxx                                 # Get access
-npm-skills star add react -t npm_xxxxx                                    # Star
-npm-skills audit quick --deps "lodash=4.17.11"                            # Audit
+npm-skills publish ./pkg.tgz --name my-pkg --version 1.0.0 -t npm_xxxxx
+npm-skills deprecate my-pkg 1.0.0 -M "Use v2" -t npm_xxxxx
+npm-skills dist-tags set my-pkg stable --version 1.0.0 -t npm_xxxxx
+npm-skills access get my-pkg -t npm_xxxxx
+npm-skills star add react -t npm_xxxxx
+npm-skills audit quick --deps "lodash=4.17.11"
 
-# Mirror & Proxy
-npm-skills package react -m npm-mirror      # Use China mirror
-npm-skills package react --proxy http://127.0.0.1:7890  # Use HTTP proxy
-npm-skills package my-lib --registry https://npm.my-company.com  # Private registry
+# Mirror & Proxy & Private Registry
+npm-skills package react -m npm-mirror                                    # China mirror
+npm-skills package react --proxy http://127.0.0.1:7890                    # HTTP proxy
+npm-skills package my-lib --registry https://npm.my-company.com -t npm_x  # Private registry
 
 # Environment variables
-export NPM_MIRROR=npm-mirror                 # Default mirror for China
-export NPM_PROXY=http://127.0.0.1:7890       # Default proxy
-export NPM_REGISTRY=https://npm.company.com  # Default custom registry
-npm-skills package react                    # Uses env vars automatically
+export NPM_MIRROR=npm-mirror
+export NPM_PROXY=http://127.0.0.1:7890
+export NPM_REGISTRY=https://npm.company.com
+npm-skills package react    # Auto-uses env vars
 
-npm-skills --help                           # Show all commands & flags
+npm-skills --help           # Show all 26 commands
 ```
 
-### 4. 📡 MCP Server (for AI Agents)
+### 4. 📡 MCP Server (for AI Tool Chains)
 
-An MCP (Model Context Protocol) server that exposes NPM registry operations as tools for AI agents. Works with Claude Code, Cursor, and any MCP-compatible AI client.
+An MCP (Model Context Protocol) server that exposes NPM registry operations as tools for any MCP-compatible AI client — Claude Code, Cursor, Windsurf, and more.
 
+**Install:**
 ```bash
-# Build the MCP server
-go build -o ~/.local/bin/npm-mcp-server ./cmd/mcp-server/
-
-# Or use the install script (builds both CLI and MCP server)
-bash scripts/install.sh
+bash scripts/install.sh   # Builds both CLI and MCP server
 ```
 
-**Claude Code integration:**
+**Configuration (Claude Code / Cursor / any MCP client):**
 ```json
 {
   "mcpServers": {
@@ -123,76 +169,63 @@ bash scripts/install.sh
 }
 ```
 
-**Available MCP Tools (33 total):**
+**33 MCP Tools** available, including:
 
-*Read Tools:*
-
-| Tool | Description |
-|------|-------------|
-| `npm_registry_info` | Registry status and statistics |
-| `npm_mirrors` | List available mirror sources |
-| `npm_package` | Full package metadata (large response) |
-| `npm_package_summary` | Lightweight package metadata (recommended) |
-| `npm_search` | Search packages with pagination and weighting |
-| `npm_version` | Specific version metadata |
-| `npm_versions` | All published version numbers |
-| `npm_latest_version` | Latest version number |
-| `npm_dist_tags` | Distribution tags (latest, next, beta) |
-| `npm_download_stats` | Download count for a period |
-| `npm_download_range` | Daily download trend data |
-| `npm_whoami` | Check auth status |
-
-*Write Tools (require token):*
-
-| Tool | Description |
-|------|-------------|
-| `npm_dist_tag_set` | Set a dist-tag to a version |
-| `npm_dist_tag_delete` | Delete a dist-tag |
-| `npm_dist_tags_set` | Batch set multiple dist-tags |
-| `npm_star` | Star a package |
-| `npm_unstar` | Unstar a package |
-| `npm_stargazers` | Get users who starred a package |
-| `npm_starred_by_user` | Get packages starred by user |
-| `npm_access_get` | Get package access settings |
-| `npm_collaborators` | List package collaborators |
-| `npm_token_list` | List API tokens |
-| `npm_audit_quick` | Quick security audit |
-| `npm_audit_advisory` | Get security advisory by ID |
-| `npm_hook_list` | List webhooks |
-| `npm_hook_get` | Get webhook details |
-| `npm_org_get` | Get organization info |
-| `npm_org_members` | List org members |
-| `npm_org_packages` | List org packages |
-| `npm_team_list` | List teams in an org |
-| `npm_team_members` | List team members |
-| `npm_team_packages` | List team packages |
-| `npm_changes` | Get registry changes feed |
+| Read Tools | Write Tools |
+|---|---|
+| `npm_registry_info`, `npm_mirrors`, `npm_package`, `npm_package_summary`, `npm_search`, `npm_version`, `npm_versions`, `npm_latest_version`, `npm_dist_tags`, `npm_download_stats`, `npm_download_range`, `npm_whoami` | `npm_dist_tag_set`, `npm_dist_tag_delete`, `npm_dist_tags_set`, `npm_star`, `npm_unstar`, `npm_stargazers`, `npm_access_get`, `npm_collaborators`, `npm_token_list`, `npm_audit_quick`, `npm_audit_advisory`, `npm_hook_list`, `npm_hook_get`, `npm_org_get`, `npm_org_members`, `npm_org_packages`, `npm_team_list`, `npm_team_members`, `npm_team_packages`, `npm_changes` |
 
 ---
 
-## Introduction
+## ✨ Features
 
-NPM Crawler is a high-performance NPM Registry client library written in Go, providing a simple and easy-to-use API to access package information in the NPM Registry. This library supports multiple NPM mirror sources, including the official Registry, Taobao mirror, Huawei Cloud mirror, etc., and also supports proxy configuration to easily handle various network environments.
+- 🤖 **AI-Native First**: Designed as a Skill with progressive disclosure for AI agents
+- 🚀 **High Performance**: Go-based with concurrent requests and streaming downloads
+- 🌐 **8 Mirror Sources**: Built-in support for official, China, and global mirrors
+- 🔄 **Proxy Support**: HTTP proxy configuration for restricted networks
+- 📦 **Full API Coverage**: 70+ SDK methods covering all major NPM Registry endpoints
+- 🛡️ **Typed Errors**: `ErrNotFound`, `ErrUnauthorized`, `ErrRateLimited`, etc. with `errors.Is()` support
+- ⏱️ **Timeout Control**: Per-client timeout via `Options.SetTimeout()`
+- 🔒 **Auth Support**: Bearer token for publish, unpublish, and all write operations
+- 📊 **Download Analytics**: Point stats, range stats, bulk stats with auto-chunking (>128 packages)
+- 🔍 **Package Search**: Pagination, quality/popularity/maintenance scoring
+- 📡 **MCP Protocol**: 33 tools for AI tool chains
+- 🏗️ **Cross-Platform**: Pre-built binaries for Linux, macOS, Windows, FreeBSD, OpenBSD, NetBSD, Illumos, Solaris
 
-## Features
+## 📥 Installation
 
-- 🤖 **AI-Native**: Designed as a Skill for AI agents with progressive disclosure
-- 🚀 **High Performance**: Based on Go's high concurrency features, providing fast NPM Registry access
-- 🌐 **Multi-Mirror Source Support**: Built-in support for multiple NPM mirror sources
-- 🔄 **Proxy Support**: Configurable HTTP proxy to adapt to various network environments
-- 📦 **Complete Types**: Complete Go type definitions corresponding to various NPM package metadata
-- 🧪 **Comprehensive Testing**: Complete unit test coverage
-- 📝 **Detailed Documentation**: Bilingual annotations and documentation in both Chinese and English
+### Download Binary (Recommended)
 
-## Installation
+Pre-built binaries are available from the [Latest Release](https://github.com/scagogogo/npm-skills/releases/latest):
+
+```bash
+# Linux (x86_64)
+curl -sL https://github.com/scagogogo/npm-skills/releases/latest/download/npm-skills_0.2.0_linux_x86_64.tar.gz | tar -xz
+sudo mv npm-skills npm-mcp-server /usr/local/bin/
+
+# macOS (Apple Silicon)
+curl -sL https://github.com/scagogogo/npm-skills/releases/latest/download/npm-skills_0.2.0_aarch64.tar.gz | tar -xz
+sudo mv npm-skills npm-mcp-server /usr/local/bin/
+
+# Windows — download the .zip from the releases page
+```
+
+### Go Install
+
+```bash
+go install github.com/scagogogo/npm-skills/cmd/npm-skills@latest
+go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
+```
+
+### Go Module
 
 ```bash
 go get github.com/scagogogo/npm-skills
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
-### Basic Usage
+### Go SDK
 
 ```go
 package main
@@ -201,284 +234,63 @@ import (
     "context"
     "fmt"
     "log"
+    "time"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
-    // Create default Registry client (using official npmjs.org)
+    // Create client (official registry by default)
     client := registry.NewRegistry()
-    
-    // Or use Taobao mirror
-    // client := registry.NewTaoBaoRegistry()
-    
     ctx := context.Background()
-    
-    // Get package information
-    pkg, err := client.GetPackageInformation(ctx, "react")
+
+    // Get lightweight package info
+    pkg, err := client.GetAbbreviatedPackageInformation(ctx, "react")
     if err != nil {
-        log.Fatalf("Failed to get package information: %v", err)
+        log.Fatal(err)
     }
-    
-    fmt.Printf("Package Name: %s\n", pkg.Name)
-    // Output: Package Name: react
-    
-    fmt.Printf("Description: %s\n", pkg.Description)
-    // Output: Description: React is a JavaScript library for building user interfaces.
-    
-    fmt.Printf("Latest Version: %s\n", pkg.DistTags["latest"])
-    // Output: Latest Version: 18.2.0
-    
-    // Get Registry information
-    info, err := client.GetRegistryInformation(ctx)
+    fmt.Printf("Package: %s, Latest: %s\n", pkg.Name, pkg.DistTags["latest"])
+
+    // Search packages
+    results, err := client.SearchPackages(ctx, "http client", 5)
     if err != nil {
-        log.Fatalf("Failed to get Registry information: %v", err)
+        log.Fatal(err)
     }
-    
-    fmt.Printf("Registry Name: %s\n", info.DbName)
-    // Output: Registry Name: registry
-    
-    fmt.Printf("Total Packages: %d\n", info.DocCount)
-    // Output: Total Packages: 2400000
-}
-```
+    for _, obj := range results.Objects {
+        fmt.Printf("  %s — %s\n", obj.Package.Name, obj.Package.Description)
+    }
 
-### Using Proxy
+    // Download stats
+    stats, err := client.GetDownloadStats(ctx, "react", "last-week")
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("React downloads (last week): %d\n", stats.Downloads)
 
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
-
-func main() {
-    // Create options and configure proxy
+    // Custom registry with auth & timeout
     options := registry.NewOptions().
-        SetRegistryURL("https://registry.npmjs.org").
-        SetProxy("http://your-proxy-server:8080")
-    
-    // Create client with proxy
-    client := registry.NewRegistry(options)
-    
-    ctx := context.Background()
-    
-    // Get package information
-    pkg, err := client.GetPackageInformation(ctx, "react")
-    if err != nil {
-        log.Fatalf("Failed to get package information: %v", err)
-    }
-    
-    fmt.Printf("Package Name: %s\n", pkg.Name)
-    // Output: Package Name: react
-    
-    fmt.Printf("Description: %s\n", pkg.Description)
-    // Output: Description: React is a JavaScript library for building user interfaces.
+        SetRegistryURL("https://npm.my-company.com").
+        SetToken("npm_xxxxx").
+        SetTimeout(30 * time.Second)
+    privateClient := registry.NewRegistry(options)
+    _ = privateClient
 }
 ```
 
-## API Documentation
+## 🪞 Supported Mirror Sources
 
-### Registry Related
+| Mirror | URL | Region | SDK Method |
+|--------|-----|--------|------------|
+| NPM Official | `https://registry.npmjs.org` | Global | `NewRegistry()` |
+| NPM Mirror | `https://registry.npmmirror.com` | China | `NewNpmMirrorRegistry()` |
+| Taobao | `https://registry.npm.taobao.org` | China | `NewTaoBaoRegistry()` |
+| Huawei Cloud | `https://mirrors.huaweicloud.com/repository/npm` | China | `NewHuaWeiCloudRegistry()` |
+| Tencent Cloud | `http://mirrors.cloud.tencent.com/npm` | China | `NewTencentRegistry()` |
+| CNPM | `http://r.cnpmjs.org` | China | `NewCnpmRegistry()` |
+| Yarn | `https://registry.yarnpkg.com` | Global | `NewYarnRegistry()` |
+| NPM CouchDB | `https://skimdb.npmjs.com` | Global | `NewNpmjsComRegistry()` |
 
-#### Creating Registry Client
-
-```go
-// NewRegistry creates a new Registry client instance
-//
-// Parameters:
-//   - options: Optional configuration options, if not provided, default configuration will be used
-//
-// Return Value:
-//   - *Registry: Newly created Registry client instance
-func NewRegistry(options ...*Options) *Registry
-```
-
-#### Creating Clients for Specific Mirror Sources
-
-```go
-// Create Registry client using Taobao NPM mirror
-func NewTaoBaoRegistry() *Registry
-
-// Create Registry client using NPM Mirror (new domain for former Taobao mirror)
-func NewNpmMirrorRegistry() *Registry
-
-// Create Registry client using Huawei Cloud mirror
-func NewHuaWeiCloudRegistry() *Registry
-
-// Create Registry client using Tencent Cloud mirror
-func NewTencentRegistry() *Registry
-
-// Create Registry client using CNPM mirror
-func NewCnpmRegistry() *Registry
-
-// Create Registry client using Yarn official mirror
-func NewYarnRegistry() *Registry
-
-// Create Registry client using npmjs.com mirror
-func NewNpmjsComRegistry() *Registry
-```
-
-#### Getting Registry Information
-
-```go
-// GetRegistryInformation gets the status information of NPM Registry
-//
-// Parameters:
-//   - ctx: Context, can be used to cancel requests or set timeouts
-//
-// Return Value:
-//   - *models.RegistryInformation: Registry status information
-//   - error: Returns error if request fails
-func (x *Registry) GetRegistryInformation(ctx context.Context) (*models.RegistryInformation, error)
-```
-
-#### Getting Package Information
-
-```go
-// GetPackageInformation gets detailed information of the specified NPM package
-//
-// Parameters:
-//   - ctx: Context, can be used to cancel requests or set timeouts
-//   - packageName: Name of the package to query, e.g. "react", "lodash", etc.
-//
-// Return Value:
-//   - *models.Package: Detailed package information
-//   - error: Returns error if request fails
-func (x *Registry) GetPackageInformation(ctx context.Context, packageName string) (*models.Package, error)
-```
-
-### Configuration Options Related
-
-#### Creating Options
-
-```go
-// NewOptions creates and returns a new default configuration options instance
-//
-// Default Configuration:
-//   - RegistryURL: "https://registry.npmjs.org"
-//   - Proxy: No proxy setting
-func NewOptions() *Options
-```
-
-#### Setting Registry URL
-
-```go
-// SetRegistryURL sets the URL address of the NPM repository server
-//
-// Parameters:
-//   - url: A valid NPM repository URL address string
-//
-// Return Value:
-//   - *Options: Updated options object (supports method chaining)
-func (o *Options) SetRegistryURL(url string) *Options
-```
-
-#### Setting Proxy
-
-```go
-// SetProxy sets the URL address of the HTTP proxy server
-//
-// Parameters:
-//   - proxyUrl: HTTP proxy server URL address string
-//
-// Return Value:
-//   - *Options: Updated options object (supports method chaining)
-func (o *Options) SetProxy(proxyUrl string) *Options
-```
-
-### Main Models
-
-#### Package
-
-Represents the complete information structure of an NPM package:
-
-```go
-type Package struct {
-    ID             string                 `json:"_id"`            // Package ID
-    Rev            string                 `json:"_rev"`           // Revision number
-    Name           string                 `json:"name"`           // Package name
-    Description    string                 `json:"description"`    // Package description
-    DistTags       map[string]string      `json:"dist-tags"`      // Distribution tags, such as latest
-    Versions       map[string]Version     `json:"versions"`       // Version information mapping
-    Maintainers    []Maintainer           `json:"maintainers"`    // Maintainer list
-    Time           map[string]string      `json:"time"`           // Time information
-    Repository     Repository             `json:"repository"`     // Repository information
-    ReadMe         string                 `json:"readme"`         // README content
-    ReadMeFilename string                 `json:"readmeFilename"` // README filename
-    Homepage       string                 `json:"homepage"`       // Project homepage
-    Bugs           map[string]interface{} `json:"bugs"`           // Bug tracking information
-    License        string                 `json:"license"`        // License
-    Users          map[string]bool        `json:"users"`          // User information
-    Keywords       []string               `json:"keywords"`       // Keyword list
-    Author         Author                 `json:"author"`         // Author information
-    Contributors   []Contributor          `json:"contributors"`   // Contributor list
-    Deprecated     string                 `json:"deprecated"`     // Deprecation notice
-    Other          map[string]interface{} `json:"other"`          // Other fields
-}
-```
-
-#### Version
-
-Represents specific version information of an NPM package:
-
-```go
-type Version struct {
-    Name            string               `json:"name"`            // Package name
-    Version         string               `json:"version"`         // Version number
-    Description     string               `json:"description"`     // Version description
-    Main            string               `json:"main"`            // Main entry file
-    Scripts         *Script              `json:"scripts"`         // Script commands
-    Repository      *Repository          `json:"repository"`      // Repository
-    Keywords        []string             `json:"keywords"`        // Keyword list
-    Author          *User                `json:"author"`          // Author information
-    License         string               `json:"license"`         // License
-    Bugs            *Bugs                `json:"bugs"`            // Bug tracking
-    Homepage        string               `json:"homepage"`        // Project homepage
-    Dependencies    map[string]string    `json:"dependencies"`    // Runtime dependencies
-    DevDependencies map[string]string    `json:"devDependencies"` // Development dependencies
-    Dist            *Dist                `json:"dist"`            // Distribution information
-    // Other fields...
-}
-```
-
-#### RegistryInformation
-
-Represents the status information of NPM Registry:
-
-```go
-type RegistryInformation struct {
-    DbName            string `json:"db_name"`              // Database name
-    DocCount          int    `json:"doc_count"`            // Total documents (packages)
-    DocDelCount       int    `json:"doc_del_count"`        // Number of deleted documents
-    UpdateSeq         int    `json:"update_seq"`           // Update sequence number
-    PurgeSeq          int    `json:"purge_seq"`            // Purge sequence number
-    CompactRunning    bool   `json:"compact_running"`      // Whether compaction is running
-    DiskSize          int64  `json:"disk_size"`            // Disk usage size
-    DataSize          int64  `json:"data_size"`            // Data size
-    InstanceStartTime string `json:"instance_start_time"`  // Instance start time
-    // Other fields...
-}
-```
-
-## Supported Mirror Sources
-
-| Mirror Source | URL | Region | Creation Method |
-|---------------|-----|--------|-----------------|
-| NPM Official | https://registry.npmjs.org | Global | `NewRegistry()` |
-| Taobao NPM | https://registry.npm.taobao.org | China | `NewTaoBaoRegistry()` |
-| NPM Mirror | https://registry.npmmirror.com | China | `NewNpmMirrorRegistry()` |
-| Huawei Cloud | https://mirrors.huaweicloud.com/repository/npm | China | `NewHuaWeiCloudRegistry()` |
-| Tencent Cloud | http://mirrors.cloud.tencent.com/npm | China | `NewTencentRegistry()` |
-| CNPM | http://r.cnpmjs.org | China | `NewCnpmRegistry()` |
-| Yarn | https://registry.yarnpkg.com | Global | `NewYarnRegistry()` |
-| NPM CouchDB | https://skimdb.npmjs.com | Global | `NewNpmjsComRegistry()` |
-
-## Contribution Guide
+## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -488,11 +300,13 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Create a Pull Request
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
-- [NPM Registry](https://registry.npmjs.org) - Provides API and data
-- [Go Requests](https://github.com/crawler-go-go-go/go-requests) - HTTP client library
+- [NPM Registry](https://registry.npmjs.org) — API and data
+- [Go Requests](https://github.com/crawler-go-go-go/go-requests) — HTTP client library
+- [Cobra](https://github.com/spf13/cobra) — CLI framework
+- [MCP-Go](https://github.com/mark3labs/mcp-go) — MCP server framework

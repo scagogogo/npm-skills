@@ -1,117 +1,231 @@
-# NPM Crawler
-
 <div align="center">
 
-[切换到英文版](README.md)
+# NPM Skills
+
+[Switch to English](README.md)
 
 <img src="https://cdn.worldvectorlogo.com/logos/npm-2.svg" width="180" alt="NPM Logo" style="filter: brightness(0.9);">
 
 [![Go Tests](https://github.com/scagogogo/npm-skills/actions/workflows/go-test.yml/badge.svg)](https://github.com/scagogogo/npm-skills/actions/workflows/go-test.yml)
+[![Release](https://github.com/scagogogo/npm-skills/actions/workflows/release.yml/badge.svg)](https://github.com/scagogogo/npm-skills/releases)
 [![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-skills.svg)](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-_高性能的 NPM Registry 客户端，支持多镜像源、代理配置和完整写操作_
+**面向 AI 智能体和开发者的 NPM Registry 客户端** — 查询包信息、管理 dist-tags、发布、审计等。
+
+[四种接入方式](#-四种接入方式) · [下载](https://github.com/scagogogo/npm-skills/releases/latest) · [文档](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 
 </div>
 
-## 三种使用方式
+---
 
-NPM Crawler 以 **AI 原生 (AI-native) 为首要设计目标**，提供三种互补的交互方式：
+## ⚡ 一键安装 Skill
 
-### 1. 🤖 Claude Code Skill（主要方式）
+在运行 Claude Code 的终端中，复制粘贴以下命令：
 
-本仓库是一个 **Claude Code Skill** — 可直接安装到 Claude Code 中，AI 智能体会自动发现并使用它。
-
-**安装为 Skill：**
-```bash
-# 在 Claude Code 中，从 GitHub 安装：
+```
 claude skill add github.com/scagogogo/npm-skills
-
-# 或克隆后本地安装：
-git clone https://github.com/scagogogo/npm-skills.git
-cd npm-skills && bash scripts/install.sh
 ```
 
-安装后，当你询问以下问题时，Claude Code 会自动使用此 Skill：
-- "查找 axios NPM 包的信息"
-- "下载 react 的 tarball"
-- "搜索 HTTP 客户端库"
-- "获取 vue 的下载统计"
-- "使用淘宝镜像查看 NPM 注册表"
+搞定！此后当你询问包信息、版本、下载量、发布或任何 NPM 相关问题时，Claude Code 会自动使用 NPM Skills。
 
-**AI 触发词**: `npm package`, `NPM registry`, `search npm`, `download npm tarball`, `get npm stats`, `npm mirror`
+---
 
-Skill 清单 (`SKILL.md`) 提供渐进式披露：
-- **即时上下文**: frontmatter 中的 name + description (~100 词)
-- **核心指引**: CLI 命令 + 使用模式
-- **深入参考**: 完整 API 文档在 `references/api.md` (按需加载)
+## 🔌 四种接入方式
 
-### 2. 📦 Go SDK
+NPM Skills 以 **AI 原生优先**为设计理念，提供四种互补的方式与 NPM Registry 交互：
 
-用于程序化访问 NPM Registry 的嵌入式 Go 库：
+### 1. 🤖 Skill（AI 智能体）— 主要方式
+
+本仓库是一个 **Claude Code Skill** — 安装后 AI 智能体会自动发现并使用它，无需手动调用 Shell。
+
+**安装：**
+```bash
+claude skill add github.com/scagogogo/npm-skills
+```
+
+安装后，直接用自然语言向 Claude Code 提问即可：
+- *"查找 axios NPM 包的信息"*
+- *"下载 react 的 tarball"*
+- *"搜索 HTTP 客户端库"*
+- *"获取 vue 上个月的下载统计"*
+- *"用国内镜像查看 NPM 注册表"*
+- *"发布包到私有仓库"*
+- *"审计我的依赖漏洞"*
+
+**触发词**：`npm package`、`npm publish`、`NPM registry`、`search npm`、`npm stats`、`npm mirror`、`npm 版本`、`npm 包`、`npm 镜像`、`npm 发布`
+
+Skill 清单 (`SKILL.md`) 采用渐进式披露设计：
+- **即时上下文**：frontmatter 中的 name + description（约 100 词）
+- **核心指引**：CLI 命令 + 使用模式
+- **深入参考**：完整 API 文档在 `references/api.md`（按需加载）
+
+### 2. 📦 Go SDK（开发者）
+
+即插即用的 Go 库，提供完整类型安全：
 
 ```go
 import "github.com/scagogogo/npm-skills/pkg/registry"
 
+// 默认客户端（官方 Registry）
 client := registry.NewRegistry()
-pkg, err := client.GetPackageInformation(ctx, "react")
+
+// 自定义客户端
+options := registry.NewOptions().
+    SetRegistryURL("https://registry.npmjs.org").
+    SetToken("npm_xxxxx").
+    SetProxy("http://proxy:8080").
+    SetTimeout(30 * time.Second)
+client = registry.NewRegistry(options)
+
+// 读取操作
+pkg, _ := client.GetPackageInformation(ctx, "react")
+versions, _ := client.GetPackageVersions(ctx, "react")
+stats, _ := client.GetDownloadStats(ctx, "react", "last-week")
+rangeStats, _ := client.GetDownloadRangeStatsByDateRange(ctx, "react", "2024-01-01", "2024-06-30")
+
+// 写入操作（需要 token）
+client.SetDistTag(ctx, "my-pkg", "next", "2.0.0-rc.1")
+client.PublishPackage(ctx, pkg)
+client.DeprecateVersion(ctx, "my-pkg", "1.0.0", "Use v2.0.0")
+
+// 类型化错误，方便程序化处理
+import "errors"
+_, err := client.GetPackageInformation(ctx, "nonexistent")
+if errors.Is(err, registry.ErrNotFound) {
+    // 处理 404
+}
 ```
 
 ### 3. 🖥️ CLI 工具
 
-基于 [Cobra](https://github.com/spf13/cobra) 构建的命令行界面，支持彩色输出、自动补全、代理和镜像源：
+命令行界面，支持彩色输出、代理和镜像源。[所有主流平台](https://github.com/scagogogo/npm-skills/releases/latest)均有预编译二进制文件。
 
+**安装：**
 ```bash
-# 安装 CLI
+# 从 GitHub Release 下载（推荐）
+# 参见：https://github.com/scagogogo/npm-skills/releases/latest
+
+# 或从源码构建
 bash scripts/install.sh
 
-# 基本使用
-npm-skills package react                    # 获取包信息
-npm-skills search "http client" -l 10       # 搜索（限制数量）
-npm-skills download-stats axios -p last-month # 下载统计
-npm-skills download lodash 4.17.21 ./lodash.tgz  # 下载 tarball
-npm-skills pkg-version axios 1.0.0          # 特定版本信息
-npm-skills mirrors                          # 列出镜像源
+# 或 go install
+go install github.com/scagogogo/npm-skills/cmd/npm-skills@latest
+```
 
-# 镜像 & 代理
-npm-skills package react -m npm-mirror      # 使用国内镜像
-npm-skills package react --proxy http://127.0.0.1:7890  # 使用 HTTP 代理
-npm-skills package my-lib --registry https://npm.my-company.com  # 私有仓库
+**使用：**
+```bash
+# 读取操作
+npm-skills package-summary react            # 轻量包信息（推荐）
+npm-skills package react                    # 完整包元数据
+npm-skills search "http client" -l 10       # 搜索包
+npm-skills versions react --latest          # 获取最新版本
+npm-skills dist-tags get react              # 获取 dist-tags
+npm-skills download-stats axios -p last-month  # 下载统计
+npm-skills download lodash 4.17.21 ./lodash.tgz  # 下载 tarball
+npm-skills mirrors                          # 列出镜像源
+npm-skills whoami --token npm_xxxxx         # 检查认证状态
+
+# 写入操作（需要 --token）
+npm-skills publish ./pkg.tgz --name my-pkg --version 1.0.0 -t npm_xxxxx
+npm-skills deprecate my-pkg 1.0.0 -M "Use v2" -t npm_xxxxx
+npm-skills dist-tags set my-pkg stable --version 1.0.0 -t npm_xxxxx
+npm-skills access get my-pkg -t npm_xxxxx
+npm-skills star add react -t npm_xxxxx
+npm-skills audit quick --deps "lodash=4.17.11"
+
+# 镜像 & 代理 & 私有仓库
+npm-skills package react -m npm-mirror                                    # 国内镜像
+npm-skills package react --proxy http://127.0.0.1:7890                    # HTTP 代理
+npm-skills package my-lib --registry https://npm.my-company.com -t npm_x  # 私有仓库
 
 # 环境变量
-export NPM_MIRROR=npm-mirror                 # 默认使用国内镜像
-export NPM_PROXY=http://127.0.0.1:7890       # 默认代理
-export NPM_REGISTRY=https://npm.company.com  # 默认自定义仓库
-npm-skills package react                    # 自动使用环境变量
+export NPM_MIRROR=npm-mirror
+export NPM_PROXY=http://127.0.0.1:7890
+export NPM_REGISTRY=https://npm.company.com
+npm-skills package react    # 自动使用环境变量
 
-npm-skills --help                           # 显示所有命令和选项
+npm-skills --help           # 显示所有 26 个命令
 ```
+
+### 4. 📡 MCP 服务器（AI 工具链）
+
+MCP（Model Context Protocol）服务器，将 NPM Registry 操作暴露为工具，供任何 MCP 兼容的 AI 客户端使用 — Claude Code、Cursor、Windsurf 等。
+
+**安装：**
+```bash
+bash scripts/install.sh   # 同时构建 CLI 和 MCP 服务器
+```
+
+**配置（Claude Code / Cursor / 任何 MCP 客户端）：**
+```json
+{
+  "mcpServers": {
+    "npm-registry": {
+      "command": "npm-mcp-server",
+      "args": ["--mirror", "npm-mirror"]
+    }
+  }
+}
+```
+
+**33 个 MCP 工具**可用，包括：
+
+| 读取工具 | 写入工具 |
+|---|---|
+| `npm_registry_info`、`npm_mirrors`、`npm_package`、`npm_package_summary`、`npm_search`、`npm_version`、`npm_versions`、`npm_latest_version`、`npm_dist_tags`、`npm_download_stats`、`npm_download_range`、`npm_whoami` | `npm_dist_tag_set`、`npm_dist_tag_delete`、`npm_dist_tags_set`、`npm_star`、`npm_unstar`、`npm_stargazers`、`npm_access_get`、`npm_collaborators`、`npm_token_list`、`npm_audit_quick`、`npm_audit_advisory`、`npm_hook_list`、`npm_hook_get`、`npm_org_get`、`npm_org_members`、`npm_org_packages`、`npm_team_list`、`npm_team_members`、`npm_team_packages`、`npm_changes` |
 
 ---
 
-## 简介
+## ✨ 功能特点
 
-NPM Crawler 是一个用 Go 语言编写的高性能 NPM Registry 客户端库，提供了简单易用的 API 来访问 NPM Registry 中的包信息。该库支持多种 NPM 镜像源，包括官方 Registry、淘宝镜像、华为云镜像等，同时支持代理配置，可以轻松应对各种网络环境。
+- 🤖 **AI 原生优先**：以 Skill 设计，支持 AI 智能体渐进式披露
+- 🚀 **高性能**：基于 Go 的并发请求和流式下载
+- 🌐 **8 个镜像源**：内置官方、国内和全球镜像支持
+- 🔄 **代理支持**：HTTP 代理配置，适应受限网络环境
+- 📦 **完整 API 覆盖**：70+ SDK 方法，覆盖所有主要 NPM Registry 端点
+- 🛡️ **类型化错误**：`ErrNotFound`、`ErrUnauthorized`、`ErrRateLimited` 等，支持 `errors.Is()`
+- ⏱️ **超时控制**：通过 `Options.SetTimeout()` 设置客户端级超时
+- 🔒 **认证支持**：Bearer Token 支持发布、取消发布和所有写操作
+- 📊 **下载分析**：点统计、区间统计、批量统计（>128 个包自动分块）
+- 🔍 **包搜索**：分页、质量/流行度/维护度评分
+- 📡 **MCP 协议**：33 个工具供 AI 工具链使用
+- 🏗️ **跨平台**：Linux、macOS、Windows、FreeBSD、OpenBSD、NetBSD、Illumos、Solaris 预编译二进制
 
-## 功能特点
+## 📥 安装
 
-- 🤖 **AI 原生**: 作为 Skill 设计，支持 AI 智能体渐进式披露
-- 🚀 **高性能**: 基于 Go 的高并发特性，提供快速的 NPM Registry 访问
-- 🌐 **多镜像源支持**: 内置支持多种 NPM 镜像源
-- 🔄 **代理支持**: 可配置 HTTP 代理，适应各种网络环境
-- 📦 **完整类型**: 完整的 Go 类型定义，对应 NPM 包的各种元数据
-- 🧪 **全面测试**: 完整的单元测试覆盖
-- 📝 **详细文档**: 中英双语注释和文档
+### 下载二进制文件（推荐）
 
-## 安装
+[最新 Release](https://github.com/scagogogo/npm-skills/releases/latest) 提供预编译二进制文件：
+
+```bash
+# Linux (x86_64)
+curl -sL https://github.com/scagogogo/npm-skills/releases/latest/download/npm-skills_0.2.0_linux_x86_64.tar.gz | tar -xz
+sudo mv npm-skills npm-mcp-server /usr/local/bin/
+
+# macOS (Apple Silicon)
+curl -sL https://github.com/scagogogo/npm-skills/releases/latest/download/npm-skills_0.2.0_aarch64.tar.gz | tar -xz
+sudo mv npm-skills npm-mcp-server /usr/local/bin/
+
+# Windows — 从 releases 页面下载 .zip 文件
+```
+
+### Go Install
+
+```bash
+go install github.com/scagogogo/npm-skills/cmd/npm-skills@latest
+go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
+```
+
+### Go Module
 
 ```bash
 go get github.com/scagogogo/npm-skills
 ```
 
-## 快速开始
+## 🚀 快速开始
 
-### 基本使用
+### Go SDK
 
 ```go
 package main
@@ -120,284 +234,63 @@ import (
     "context"
     "fmt"
     "log"
+    "time"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
-    // 创建默认 Registry 客户端 (使用官方 npmjs.org)
+    // 创建客户端（默认使用官方 Registry）
     client := registry.NewRegistry()
-    
-    // 或使用淘宝镜像
-    // client := registry.NewTaoBaoRegistry()
-    
     ctx := context.Background()
-    
-    // 获取包信息
-    pkg, err := client.GetPackageInformation(ctx, "react")
+
+    // 获取轻量包信息
+    pkg, err := client.GetAbbreviatedPackageInformation(ctx, "react")
     if err != nil {
-        log.Fatalf("获取包信息失败: %v", err)
+        log.Fatal(err)
     }
-    
-    fmt.Printf("包名: %s\n", pkg.Name)
-    // 输出: 包名: react
-    
-    fmt.Printf("描述: %s\n", pkg.Description)
-    // 输出: 描述: React is a JavaScript library for building user interfaces.
-    
-    fmt.Printf("最新版本: %s\n", pkg.DistTags["latest"])
-    // 输出: 最新版本: 18.2.0
-    
-    // 获取 Registry 信息
-    info, err := client.GetRegistryInformation(ctx)
+    fmt.Printf("包名: %s, 最新版本: %s\n", pkg.Name, pkg.DistTags["latest"])
+
+    // 搜索包
+    results, err := client.SearchPackages(ctx, "http client", 5)
     if err != nil {
-        log.Fatalf("获取 Registry 信息失败: %v", err)
+        log.Fatal(err)
     }
-    
-    fmt.Printf("Registry 名称: %s\n", info.DbName)
-    // 输出: Registry 名称: registry
-    
-    fmt.Printf("包总数: %d\n", info.DocCount)
-    // 输出: 包总数: 2400000
-}
-```
+    for _, obj := range results.Objects {
+        fmt.Printf("  %s — %s\n", obj.Package.Name, obj.Package.Description)
+    }
 
-### 使用代理
+    // 下载统计
+    stats, err := client.GetDownloadStats(ctx, "react", "last-week")
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("React 上周下载量: %d\n", stats.Downloads)
 
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
-
-func main() {
-    // 创建选项并配置代理
+    // 自定义仓库（带认证和超时）
     options := registry.NewOptions().
-        SetRegistryURL("https://registry.npmjs.org").
-        SetProxy("http://your-proxy-server:8080")
-    
-    // 创建带代理的客户端
-    client := registry.NewRegistry(options)
-    
-    ctx := context.Background()
-    
-    // 获取包信息
-    pkg, err := client.GetPackageInformation(ctx, "react")
-    if err != nil {
-        log.Fatalf("获取包信息失败: %v", err)
-    }
-    
-    fmt.Printf("包名: %s\n", pkg.Name)
-    // 输出: 包名: react
-    
-    fmt.Printf("描述: %s\n", pkg.Description)
-    // 输出: 描述: React is a JavaScript library for building user interfaces.
+        SetRegistryURL("https://npm.my-company.com").
+        SetToken("npm_xxxxx").
+        SetTimeout(30 * time.Second)
+    privateClient := registry.NewRegistry(options)
+    _ = privateClient
 }
 ```
 
-## API 文档
+## 🪞 支持的镜像源
 
-### Registry 相关
-
-#### 创建 Registry 客户端
-
-```go
-// NewRegistry 创建一个新的 Registry 客户端实例
-//
-// 参数:
-//   - options: 可选的配置选项，如未提供则使用默认配置
-//
-// 返回值:
-//   - *Registry: 新创建的 Registry 客户端实例
-func NewRegistry(options ...*Options) *Registry
-```
-
-#### 创建特定镜像源的客户端
-
-```go
-// 创建使用淘宝 NPM 镜像源的 Registry 客户端
-func NewTaoBaoRegistry() *Registry
-
-// 创建使用 NPM Mirror 镜像源的 Registry 客户端 (原淘宝镜像新域名)
-func NewNpmMirrorRegistry() *Registry
-
-// 创建使用华为云镜像源的 Registry 客户端
-func NewHuaWeiCloudRegistry() *Registry
-
-// 创建使用腾讯云镜像源的 Registry 客户端
-func NewTencentRegistry() *Registry
-
-// 创建使用 CNPM 镜像源的 Registry 客户端
-func NewCnpmRegistry() *Registry
-
-// 创建使用 Yarn 官方镜像源的 Registry 客户端
-func NewYarnRegistry() *Registry
-
-// 创建使用 npmjs.com 镜像源的 Registry 客户端
-func NewNpmjsComRegistry() *Registry
-```
-
-#### 获取 Registry 信息
-
-```go
-// GetRegistryInformation 获取 NPM Registry 的状态信息
-//
-// 参数:
-//   - ctx: 上下文，可用于取消请求或设置超时
-//
-// 返回值:
-//   - *models.RegistryInformation: Registry 状态信息
-//   - error: 如果请求失败则返回错误
-func (x *Registry) GetRegistryInformation(ctx context.Context) (*models.RegistryInformation, error)
-```
-
-#### 获取包信息
-
-```go
-// GetPackageInformation 获取指定 NPM 包的详细信息
-//
-// 参数:
-//   - ctx: 上下文，可用于取消请求或设置超时
-//   - packageName: 要查询的包名称，例如 "react"、"lodash" 等
-//
-// 返回值:
-//   - *models.Package: 包的详细信息
-//   - error: 如果请求失败则返回错误
-func (x *Registry) GetPackageInformation(ctx context.Context, packageName string) (*models.Package, error)
-```
-
-### 配置选项相关
-
-#### 创建选项
-
-```go
-// NewOptions 创建并返回一个新的默认配置选项实例
-//
-// 默认配置:
-//   - RegistryURL: "https://registry.npmjs.org"
-//   - Proxy: 无代理设置
-func NewOptions() *Options
-```
-
-#### 设置 Registry URL
-
-```go
-// SetRegistryURL 设置 NPM 仓库服务器的 URL 地址
-//
-// 参数:
-//   - url: 一个有效的 NPM 仓库 URL 地址字符串
-//
-// 返回值:
-//   - *Options: 更新后的选项对象 (支持链式调用)
-func (o *Options) SetRegistryURL(url string) *Options
-```
-
-#### 设置代理
-
-```go
-// SetProxy 设置 HTTP 代理服务器的 URL 地址
-//
-// 参数:
-//   - proxyUrl: HTTP 代理服务器的 URL 地址字符串
-//
-// 返回值:
-//   - *Options: 更新后的选项对象 (支持链式调用)
-func (o *Options) SetProxy(proxyUrl string) *Options
-```
-
-### 主要模型
-
-#### Package
-
-表示一个 NPM 包的完整信息结构：
-
-```go
-type Package struct {
-    ID             string                 `json:"_id"`            // 包 ID
-    Rev            string                 `json:"_rev"`           // 修订号
-    Name           string                 `json:"name"`           // 包名称
-    Description    string                 `json:"description"`    // 包描述
-    DistTags       map[string]string      `json:"dist-tags"`      // 发布标签，如 latest
-    Versions       map[string]Version     `json:"versions"`       // 版本信息映射
-    Maintainers    []Maintainer           `json:"maintainers"`    // 维护者列表
-    Time           map[string]string      `json:"time"`           // 时间信息
-    Repository     Repository             `json:"repository"`     // 代码仓库信息
-    ReadMe         string                 `json:"readme"`         // README 内容
-    ReadMeFilename string                 `json:"readmeFilename"` // README 文件名
-    Homepage       string                 `json:"homepage"`       // 项目主页
-    Bugs           map[string]interface{} `json:"bugs"`           // 问题追踪信息
-    License        string                 `json:"license"`        // 许可证
-    Users          map[string]bool        `json:"users"`          // 用户信息
-    Keywords       []string               `json:"keywords"`       // 关键词列表
-    Author         Author                 `json:"author"`         // 作者信息
-    Contributors   []Contributor          `json:"contributors"`   // 贡献者列表
-    Deprecated     string                 `json:"deprecated"`     // 弃用说明
-    Other          map[string]interface{} `json:"other"`          // 其他字段
-}
-```
-
-#### Version
-
-表示 NPM 包的特定版本信息：
-
-```go
-type Version struct {
-    Name            string               `json:"name"`            // 包名称
-    Version         string               `json:"version"`         // 版本号
-    Description     string               `json:"description"`     // 版本描述
-    Main            string               `json:"main"`            // 主入口文件
-    Scripts         *Script              `json:"scripts"`         // 脚本命令
-    Repository      *Repository          `json:"repository"`      // 代码仓库
-    Keywords        []string             `json:"keywords"`        // 关键词列表
-    Author          *User                `json:"author"`          // 作者信息
-    License         string               `json:"license"`         // 许可证
-    Bugs            *Bugs                `json:"bugs"`            // 问题追踪
-    Homepage        string               `json:"homepage"`        // 项目主页
-    Dependencies    map[string]string    `json:"dependencies"`    // 运行时依赖
-    DevDependencies map[string]string    `json:"devDependencies"` // 开发依赖
-    Dist            *Dist                `json:"dist"`            // 分发信息
-    // 其他字段...
-}
-```
-
-#### RegistryInformation
-
-表示 NPM Registry 的状态信息：
-
-```go
-type RegistryInformation struct {
-    DbName            string `json:"db_name"`              // 数据库名称
-    DocCount          int    `json:"doc_count"`            // 文档(包)总数
-    DocDelCount       int    `json:"doc_del_count"`        // 已删除的文档数
-    UpdateSeq         int    `json:"update_seq"`           // 更新序列号
-    PurgeSeq          int    `json:"purge_seq"`            // 清除序列号
-    CompactRunning    bool   `json:"compact_running"`      // 是否正在压缩
-    DiskSize          int64  `json:"disk_size"`            // 磁盘占用大小
-    DataSize          int64  `json:"data_size"`            // 数据大小
-    InstanceStartTime string `json:"instance_start_time"`  // 实例启动时间
-    // 其他字段...
-}
-```
-
-## 支持的镜像源
-
-| 镜像源 | URL | 地域 | 创建方法 |
+| 镜像源 | URL | 地域 | SDK 方法 |
 |-------|-----|------|---------|
-| NPM 官方 | https://registry.npmjs.org | 全球 | `NewRegistry()` |
-| 淘宝 NPM | https://registry.npm.taobao.org | 中国 | `NewTaoBaoRegistry()` |
-| NPM Mirror | https://registry.npmmirror.com | 中国 | `NewNpmMirrorRegistry()` |
-| 华为云 | https://mirrors.huaweicloud.com/repository/npm | 中国 | `NewHuaWeiCloudRegistry()` |
-| 腾讯云 | http://mirrors.cloud.tencent.com/npm | 中国 | `NewTencentRegistry()` |
-| CNPM | http://r.cnpmjs.org | 中国 | `NewCnpmRegistry()` |
-| Yarn | https://registry.yarnpkg.com | 全球 | `NewYarnRegistry()` |
-| NPM CouchDB | https://skimdb.npmjs.com | 全球 | `NewNpmjsComRegistry()` |
+| NPM 官方 | `https://registry.npmjs.org` | 全球 | `NewRegistry()` |
+| NPM Mirror | `https://registry.npmmirror.com` | 中国 | `NewNpmMirrorRegistry()` |
+| 淘宝 | `https://registry.npm.taobao.org` | 中国 | `NewTaoBaoRegistry()` |
+| 华为云 | `https://mirrors.huaweicloud.com/repository/npm` | 中国 | `NewHuaWeiCloudRegistry()` |
+| 腾讯云 | `http://mirrors.cloud.tencent.com/npm` | 中国 | `NewTencentRegistry()` |
+| CNPM | `http://r.cnpmjs.org` | 中国 | `NewCnpmRegistry()` |
+| Yarn | `https://registry.yarnpkg.com` | 全球 | `NewYarnRegistry()` |
+| NPM CouchDB | `https://skimdb.npmjs.com` | 全球 | `NewNpmjsComRegistry()` |
 
-## 贡献指南
+## 🤝 贡献指南
 
 欢迎贡献代码！请遵循以下步骤：
 
@@ -407,11 +300,13 @@ type RegistryInformation struct {
 4. 推送到分支 (`git push origin feature/amazing-feature`)
 5. 创建 Pull Request
 
-## 许可证
+## 📄 许可证
 
-本项目采用 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。
+本项目采用 MIT 许可证 — 详情请参阅 [LICENSE](LICENSE) 文件。
 
-## 致谢
+## 🙏 致谢
 
-- [NPM Registry](https://registry.npmjs.org) - 提供 API 和数据
-- [Go Requests](https://github.com/crawler-go-go-go/go-requests) - HTTP 客户端库
+- [NPM Registry](https://registry.npmjs.org) — 提供 API 和数据
+- [Go Requests](https://github.com/crawler-go-go-go/go-requests) — HTTP 客户端库
+- [Cobra](https://github.com/spf13/cobra) — CLI 框架
+- [MCP-Go](https://github.com/mark3labs/mcp-go) — MCP 服务器框架
