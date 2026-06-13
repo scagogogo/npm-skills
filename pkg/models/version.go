@@ -33,12 +33,12 @@ type Version struct {
 	Funding     interface{} `json:"funding"`     // 资金赞助信息（可以是字符串、对象或数组）
 
 	// 依赖关系，key是依赖的包，value是版本约束
-	Dependencies         map[string]string `json:"dependencies"`          // 运行时依赖
-	DevDependencies      map[string]string `json:"devDependencies"`       // 开发时依赖
-	PeerDependencies     map[string]string `json:"peerDependencies"`      // 对等依赖
-	OptionalDependencies map[string]string `json:"optionalDependencies"`  // 可选依赖
-	BundledDependencies  interface{}       `json:"bundledDependencies"`   // 捆绑依赖（可以是 bool 或 []string）
-	BundleDependencies   interface{}       `json:"bundleDependencies"`    // 捆绑依赖（别名）
+	Dependencies         map[string]string `json:"dependencies"`         // 运行时依赖
+	DevDependencies      map[string]string `json:"devDependencies"`      // 开发时依赖
+	PeerDependencies     map[string]string `json:"peerDependencies"`     // 对等依赖
+	OptionalDependencies map[string]string `json:"optionalDependencies"` // 可选依赖
+	BundledDependencies  interface{}       `json:"bundledDependencies"`  // 捆绑依赖（可以是 bool 或 []string）
+	BundleDependencies   interface{}       `json:"bundleDependencies"`   // 捆绑依赖（别名）
 
 	// 平台和引擎约束
 	Engines map[string]string `json:"engines"` // 引擎版本约束，如 {"node": ">=14", "npm": ">=6"}
@@ -47,8 +47,8 @@ type Version struct {
 
 	// 元数据字段
 	PeerDependenciesMeta     map[string]PeerDependencyMeta `json:"peerDependenciesMeta"`     // 对等依赖的元数据
-	OptionalDependenciesMeta map[string]interface{}         `json:"optionalDependenciesMeta"` // 可选依赖的元数据
-	Workspaces               interface{}                    `json:"workspaces"`               // 工作区配置（可以是字符串或字符串数组）
+	OptionalDependenciesMeta map[string]interface{}        `json:"optionalDependenciesMeta"` // 可选依赖的元数据
+	Workspaces               interface{}                   `json:"workspaces"`               // 工作区配置（可以是字符串或字符串数组）
 
 	ID          string  `json:"_id"`         // 包ID，通常为 "name@version"
 	Dist        *Dist   `json:"dist"`        // 分发信息，包含下载URL和校验和
@@ -62,8 +62,8 @@ type Version struct {
 
 	Deprecated interface{} `json:"deprecated"` // 弃用说明，string 或 bool 类型
 
-	HasShrinkwrap bool `json:"_hasShrinkwrap"` // 是否包含 shrinkwrap
-	NodeVersion   string `json:"_nodeVersion"` // 发布时的 Node 版本
+	HasShrinkwrap bool   `json:"_hasShrinkwrap"` // 是否包含 shrinkwrap
+	NodeVersion   string `json:"_nodeVersion"`   // 发布时的 Node 版本
 }
 
 // Directories 表示 NPM 包的目录结构

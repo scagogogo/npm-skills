@@ -25,7 +25,7 @@ var tokenListCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"ls"},
 	Example: `  npm-skills token list -t npm_xxxxx`,
-	Args: cobra.NoArgs,
+	Args:    cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -55,7 +55,7 @@ var tokenGetCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Get details of a specific NPM access token") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills token get abc123 -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -136,7 +136,7 @@ var tokenDeleteCmd = &cobra.Command{
 		color.HiYellowString("Note: ") + "You cannot delete the token you are currently using.",
 	Aliases: []string{"rm", "revoke"},
 	Example: `  npm-skills token delete abc123 -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err

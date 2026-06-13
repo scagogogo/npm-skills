@@ -4,8 +4,8 @@ import "encoding/json"
 
 // ChangesOptions CouchDB Changes Feed 查询参数
 type ChangesOptions struct {
-	Since      string `json:"since,omitempty"`       // 起始更新序列号
-	Limit      int    `json:"limit,omitempty"`        // 限制返回结果数量
+	Since       string `json:"since,omitempty"`        // 起始更新序列号
+	Limit       int    `json:"limit,omitempty"`        // 限制返回结果数量
 	IncludeDocs bool   `json:"include_docs,omitempty"` // 是否包含完整文档
 }
 

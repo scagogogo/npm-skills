@@ -98,8 +98,8 @@ func (x *LoginResult) ToJsonString() string {
 //
 // 用于注册新用户时提交的信息。
 type UserCreation struct {
-	ID       string `json:"_id"`     // 固定格式: "org.couchdb.user:<name>"
-	Name     string `json:"name"`    // 用户名
+	ID       string `json:"_id"`      // 固定格式: "org.couchdb.user:<name>"
+	Name     string `json:"name"`     // 用户名
 	Password string `json:"password"` // 密码
 	Email    string `json:"email"`    // 邮箱地址
 	Type     string `json:"type"`     // 固定值: "user"

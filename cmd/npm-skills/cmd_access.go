@@ -25,7 +25,7 @@ var accessGetCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Get package access settings") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills access get my-package -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -155,7 +155,7 @@ var revokeCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Revoke user access from a package") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills access revoke my-package username -t npm_xxxxx`,
-	Args: cobra.ExactArgs(2),
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err

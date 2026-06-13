@@ -30,7 +30,7 @@ var auditQuickCmd = &cobra.Command{
 		"Submits a dependency list for a fast vulnerability check.\n" +
 		"Returns vulnerability counts by severity level.",
 	Example: `  npm-skills audit quick --deps "lodash=4.17.11,express=4.17.1"`,
-	Args: cobra.NoArgs,
+	Args:    cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if auditQuickDeps == "" {
 			return fmt.Errorf("--deps is required (format: name=version,name2=version2)")
@@ -71,7 +71,7 @@ var auditBulkCmd = &cobra.Command{
 		"Submits package names and version ranges, returns matching security advisories\n" +
 		"with full details including CVE, severity, and patch information.",
 	Example: `  npm-skills audit bulk --advisories "lodash=<4.17.12,express=<4.17.3"`,
-	Args: cobra.NoArgs,
+	Args:    cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if auditBulkAdvisories == "" {
 			return fmt.Errorf("--advisories is required (format: name=<version,name2=<version2)")
@@ -109,7 +109,7 @@ var auditAdvisoryCmd = &cobra.Command{
 		"Returns full details of a security advisory including overview,\n" +
 		"recommendation, and affected versions.",
 	Example: `  npm-skills audit advisory 1234`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		advisoryID, err := strconv.Atoi(args[0])
 		if err != nil {

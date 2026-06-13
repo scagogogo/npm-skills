@@ -17,27 +17,27 @@ import (
 //   - DistTags: 分发标签信息，如 "latest"、"next" 等
 //   - Time: 各版本发布时间信息
 type Package struct {
-	ID             string                 `json:"_id"`
-	Rev            string                 `json:"_rev"`
-	Name           string                 `json:"name"`
-	Description    string                 `json:"description"`
-	DistTags       map[string]string      `json:"dist-tags"`
-	Versions       map[string]Version     `json:"versions"`
-	Maintainers    []Maintainer           `json:"maintainers"`
-	Time           map[string]string      `json:"time"`
-	Repository     Repository             `json:"repository"`
-	ReadMe         string                 `json:"readme"`
-	ReadMeFilename string                 `json:"readmeFilename"`
-	Homepage       string                 `json:"homepage"`
-	Bugs           *Bugs                  `json:"bugs"`
-	License        string                 `json:"license"`
-	Users          map[string]bool        `json:"users"`
-	Keywords       []string               `json:"keywords"`
-	Author         Author                 `json:"author"`
-	Contributors   []Contributor          `json:"contributors"`
-	Deprecated     interface{}            `json:"deprecated"` // 弃用说明，可以是 string、bool 或 nil
-	Funding        interface{}            `json:"funding"`    // 资金赞助信息
-	Attachments    map[string]Attachment  `json:"_attachments"` // 发布时包含的附件（tarball 数据）
+	ID             string                `json:"_id"`
+	Rev            string                `json:"_rev"`
+	Name           string                `json:"name"`
+	Description    string                `json:"description"`
+	DistTags       map[string]string     `json:"dist-tags"`
+	Versions       map[string]Version    `json:"versions"`
+	Maintainers    []Maintainer          `json:"maintainers"`
+	Time           map[string]string     `json:"time"`
+	Repository     Repository            `json:"repository"`
+	ReadMe         string                `json:"readme"`
+	ReadMeFilename string                `json:"readmeFilename"`
+	Homepage       string                `json:"homepage"`
+	Bugs           *Bugs                 `json:"bugs"`
+	License        string                `json:"license"`
+	Users          map[string]bool       `json:"users"`
+	Keywords       []string              `json:"keywords"`
+	Author         Author                `json:"author"`
+	Contributors   []Contributor         `json:"contributors"`
+	Deprecated     interface{}           `json:"deprecated"`   // 弃用说明，可以是 string、bool 或 nil
+	Funding        interface{}           `json:"funding"`      // 资金赞助信息
+	Attachments    map[string]Attachment `json:"_attachments"` // 发布时包含的附件（tarball 数据）
 }
 
 // Attachment represents a package attachment (tarball data) in the _attachments field.

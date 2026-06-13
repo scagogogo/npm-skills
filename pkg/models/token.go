@@ -51,8 +51,8 @@ func (x *Token) ToJsonString() string {
 // 用于创建新的 NPM 访问令牌时提供的信息。
 // 需要提供当前用户的密码以确认身份。
 type TokenCreation struct {
-	Password string   `json:"password"`             // 当前用户的密码
-	Readonly bool     `json:"readonly"`             // 是否为只读令牌
+	Password string   `json:"password"`                 // 当前用户的密码
+	Readonly bool     `json:"readonly"`                 // 是否为只读令牌
 	CIDR     []string `json:"cidr_whitelist,omitempty"` // IP 白名单
 }
 

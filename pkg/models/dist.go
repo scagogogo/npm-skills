@@ -13,18 +13,18 @@ package models
 //   - FileCount: 包中文件的数量
 //   - UnpackedSize: 解压后的大小（字节）
 type Dist struct {
-	Shasum       string       `json:"shasum"`       // 包的 SHA1 校验和
-	Tarball      string       `json:"tarball"`      // 包的下载 URL
-	Integrity    string       `json:"integrity"`    // 完整性校验值
-	Signatures   []*Signature `json:"signatures"`   // 签名信息列表
-	FileCount    int          `json:"fileCount"`    // 包中文件的数量
-	UnpackedSize int64        `json:"unpackedSize"` // 解压后的大小（字节）
+	Shasum       string       `json:"shasum"`        // 包的 SHA1 校验和
+	Tarball      string       `json:"tarball"`       // 包的下载 URL
+	Integrity    string       `json:"integrity"`     // 完整性校验值
+	Signatures   []*Signature `json:"signatures"`    // 签名信息列表
+	FileCount    int          `json:"fileCount"`     // 包中文件的数量
+	UnpackedSize int64        `json:"unpackedSize"`  // 解压后的大小（字节）
 	NpmSignature string       `json:"npm-signature"` // NPM 签名
 }
 
 // Signature 表示 NPM 包的签名信息
 //
-// NPM 使用签名来验证包的发布者身份，确保包来源可信
+// # NPM 使用签名来验证包的发布者身份，确保包来源可信
 //
 // 主要字段说明:
 //   - Keyid: 签名密钥的 ID

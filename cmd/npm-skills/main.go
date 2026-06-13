@@ -25,12 +25,12 @@ func Version() string {
 
 // Global flags
 var (
-	globalMirror      string
-	globalRegistry    string
-	globalProxy       string
-	globalToken       string
-	globalTimeout     int
-	globalNoColor     bool
+	globalMirror   string
+	globalRegistry string
+	globalProxy    string
+	globalToken    string
+	globalTimeout  int
+	globalNoColor  bool
 )
 
 var rootCmd = &cobra.Command{
@@ -60,7 +60,7 @@ var rootCmd = &cobra.Command{
 		color.New(color.FgGreen).Sprint("Examples:"),
 		color.New(color.FgGreen).Sprint("Proxy / Mirror:"),
 	),
-	Version: version,
+	Version:       version,
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {

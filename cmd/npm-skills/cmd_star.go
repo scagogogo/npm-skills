@@ -24,7 +24,7 @@ var starAddCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"star"},
 	Example: `  npm-skills star add react -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -57,7 +57,7 @@ var starRemoveCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"unstar"},
 	Example: `  npm-skills star remove react -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -89,7 +89,7 @@ var starListCmd = &cobra.Command{
 		"Returns the package names that the specified user has starred.",
 	Aliases: []string{"ls"},
 	Example: `  npm-skills star list myuser`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		username := args[0]
 		printInfo("Getting starred packages for %s from %s...", username, currentMirrorLabel())
@@ -117,7 +117,7 @@ var stargazersCmd = &cobra.Command{
 		"Returns usernames of all users who have starred the specified package.",
 	Aliases: []string{"sg"},
 	Example: `  npm-skills star stargazers react`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		packageName := args[0]
 		printInfo("Getting stargazers for %s from %s...", packageName, currentMirrorLabel())

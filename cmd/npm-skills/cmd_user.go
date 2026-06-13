@@ -56,11 +56,11 @@ var loginCmd = &cobra.Command{
 }
 
 var signupCmd = &cobra.Command{
-	Use:   "signup",
-	Short: "Create a new NPM user account",
-	Long: color.New(color.FgCyan).Sprintf("Create a new NPM user account"),
+	Use:     "signup",
+	Short:   "Create a new NPM user account",
+	Long:    color.New(color.FgCyan).Sprintf("Create a new NPM user account"),
 	Example: `  npm-skills user signup --username myuser --password mypass --email me@example.com`,
-	Args: cobra.NoArgs,
+	Args:    cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if signupUsername == "" || signupPassword == "" || signupEmail == "" {
 			return fmt.Errorf("--username, --password, and --email are required")
@@ -85,12 +85,12 @@ var signupCmd = &cobra.Command{
 }
 
 var userGetCmd = &cobra.Command{
-	Use:   "get <username>",
-	Short: "Get user profile information",
-	Long: color.New(color.FgCyan).Sprintf("Get user profile information"),
+	Use:     "get <username>",
+	Short:   "Get user profile information",
+	Long:    color.New(color.FgCyan).Sprintf("Get user profile information"),
 	Aliases: []string{"info"},
 	Example: `  npm-skills user get myuser`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err

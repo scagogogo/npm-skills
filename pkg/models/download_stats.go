@@ -52,10 +52,10 @@ func (ds *DownloadStats) ToJsonString() string {
 //   - Package: 包名称
 //   - Downloads: 每日下载统计列表
 type DownloadRangeStats struct {
-	Start     string            `json:"start"`     // 统计开始日期
-	End       string            `json:"end"`       // 统计结束日期
-	Package   string            `json:"package"`   // 包名称
-	Downloads []DailyDownloads  `json:"downloads"` // 每日下载统计
+	Start     string           `json:"start"`     // 统计开始日期
+	End       string           `json:"end"`       // 统计结束日期
+	Package   string           `json:"package"`   // 包名称
+	Downloads []DailyDownloads `json:"downloads"` // 每日下载统计
 }
 
 // DailyDownloads 表示单日的下载统计

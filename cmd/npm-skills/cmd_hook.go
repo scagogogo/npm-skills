@@ -67,7 +67,7 @@ var hookGetCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Get details of a specific webhook") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills hook get hook-id-here -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -199,7 +199,7 @@ var hookDeleteCmd = &cobra.Command{
 		"and no further notifications will be sent.",
 	Aliases: []string{"rm"},
 	Example: `  npm-skills hook delete hook-id-here -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err

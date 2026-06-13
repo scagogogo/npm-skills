@@ -6,21 +6,21 @@ import "encoding/json"
 //
 // 表示一个 NPM 安全公告，包含漏洞详情、影响范围和修复建议。
 type Advisory struct {
-	ID              int             `json:"id"`
-	Created         string          `json:"created"`
-	Updated         string          `json:"updated"`
-	Title           string          `json:"title"`
-	Severity        string          `json:"severity"`   // "low", "moderate", "high", "critical"
-	CVE             string          `json:"cve,omitempty"`
-	CWE             string          `json:"cwe,omitempty"`
-	ModuleName      string          `json:"module_name"`
-	Vulnerable      string          `json:"vulnerable_versions"`
-	Patched         string          `json:"patched_versions"`
-	URL             string          `json:"url"`
-	Overview        string          `json:"overview,omitempty"`
-	Recommendation  string          `json:"recommendation,omitempty"`
-	References      json.RawMessage `json:"references,omitempty"` // 可以是字符串或字符串数组
-	Access          string          `json:"access,omitempty"`
+	ID             int             `json:"id"`
+	Created        string          `json:"created"`
+	Updated        string          `json:"updated"`
+	Title          string          `json:"title"`
+	Severity       string          `json:"severity"` // "low", "moderate", "high", "critical"
+	CVE            string          `json:"cve,omitempty"`
+	CWE            string          `json:"cwe,omitempty"`
+	ModuleName     string          `json:"module_name"`
+	Vulnerable     string          `json:"vulnerable_versions"`
+	Patched        string          `json:"patched_versions"`
+	URL            string          `json:"url"`
+	Overview       string          `json:"overview,omitempty"`
+	Recommendation string          `json:"recommendation,omitempty"`
+	References     json.RawMessage `json:"references,omitempty"` // 可以是字符串或字符串数组
+	Access         string          `json:"access,omitempty"`
 }
 
 // ToJsonString 将 Advisory 对象转换为 JSON 字符串

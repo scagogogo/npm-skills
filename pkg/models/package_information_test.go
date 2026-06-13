@@ -63,7 +63,7 @@ func TestPackage(t *testing.T) {
 		Contributors: []Contributor{
 			{
 				Name: "contributor1",
-				Url:   "https://github.com/contributor1",
+				Url:  "https://github.com/contributor1",
 			},
 		},
 	}

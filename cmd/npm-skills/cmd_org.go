@@ -23,7 +23,7 @@ var orgGetCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Get organization details") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills org get myorg -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -54,7 +54,7 @@ var orgCreateCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Create a new organization") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills org create myorg -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -87,7 +87,7 @@ var orgDeleteCmd = &cobra.Command{
 		color.HiRedString("WARNING: ") + "This is an irreversible operation.",
 	Aliases: []string{"rm"},
 	Example: `  npm-skills org delete myorg -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -119,7 +119,7 @@ var orgMembersCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"member"},
 	Example: `  npm-skills org members myorg -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -150,7 +150,7 @@ var orgMemberAddCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Add a member to an organization") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills org member-add myorg username -t npm_xxxxx`,
-	Args: cobra.ExactArgs(2),
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -183,7 +183,7 @@ var orgMemberRemoveCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"member-rm"},
 	Example: `  npm-skills org member-remove myorg username -t npm_xxxxx`,
-	Args: cobra.ExactArgs(2),
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -216,7 +216,7 @@ var orgPackagesCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"pkgs"},
 	Example: `  npm-skills org packages myorg -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -250,7 +250,7 @@ var teamListCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"teams"},
 	Example: `  npm-skills org team-list myorg -t npm_xxxxx`,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -281,7 +281,7 @@ var teamCreateCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Create a team in an organization") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills org team-create myorg devteam -t npm_xxxxx`,
-	Args: cobra.ExactArgs(2),
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -315,7 +315,7 @@ var teamDeleteCmd = &cobra.Command{
 		color.HiRedString("WARNING: ") + "This is an irreversible operation.",
 	Aliases: []string{"team-rm"},
 	Example: `  npm-skills org team-delete myorg devteam -t npm_xxxxx`,
-	Args: cobra.ExactArgs(2),
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -347,7 +347,7 @@ var teamMembersCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("List members of a team") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills org team-members myorg devteam -t npm_xxxxx`,
-	Args: cobra.ExactArgs(2),
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -379,7 +379,7 @@ var teamMemberAddCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("Add a member to a team") + "\n\n" +
 		"Requires authentication token. The user must already be a member of the organization.",
 	Example: `  npm-skills org team-member-add myorg devteam username -t npm_xxxxx`,
-	Args: cobra.ExactArgs(3),
+	Args:    cobra.ExactArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -413,7 +413,7 @@ var teamMemberRemoveCmd = &cobra.Command{
 		"Requires authentication token.",
 	Aliases: []string{"team-member-rm"},
 	Example: `  npm-skills org team-member-remove myorg devteam username -t npm_xxxxx`,
-	Args: cobra.ExactArgs(3),
+	Args:    cobra.ExactArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err
@@ -446,7 +446,7 @@ var teamPackagesCmd = &cobra.Command{
 	Long: color.New(color.FgCyan).Sprintf("List packages a team has access to") + "\n\n" +
 		"Requires authentication token.",
 	Example: `  npm-skills org team-packages myorg devteam -t npm_xxxxx`,
-	Args: cobra.ExactArgs(2),
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := requireToken(); err != nil {
 			return err

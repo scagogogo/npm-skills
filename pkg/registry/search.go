@@ -12,11 +12,11 @@ import (
 //
 // 用于控制搜索行为，包括分页和结果权重调整。
 type SearchOptions struct {
-	From         int     // 分页偏移量，默认 0
-	Size         int     // 返回结果数量，默认 20
-	Quality      float64 // 质量权重，0.0-1.0
-	Popularity   float64 // 流行度权重，0.0-1.0
-	Maintenance  float64 // 维护性权重，0.0-1.0
+	From        int     // 分页偏移量，默认 0
+	Size        int     // 返回结果数量，默认 20
+	Quality     float64 // 质量权重，0.0-1.0
+	Popularity  float64 // 流行度权重，0.0-1.0
+	Maintenance float64 // 维护性权重，0.0-1.0
 }
 
 // SearchPackages 搜索 NPM 包

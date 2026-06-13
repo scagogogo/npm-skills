@@ -221,8 +221,8 @@ func TestVersionWithPeerDependencies(t *testing.T) {
 		Engines: map[string]string{
 			"node": ">=16",
 		},
-		OS:  []string{"linux", "darwin"},
-		CPU: []string{"x64", "arm64"},
+		OS:   []string{"linux", "darwin"},
+		CPU:  []string{"x64", "arm64"},
 		Type: "module",
 	}
 
