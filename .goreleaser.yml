@@ -201,33 +201,38 @@ release:
   prerelease: auto
   mode: replace
 
-brews:
-  - name: npm-skills
-    ids:
-      - npm-skills-archive
-    tap:
-      owner: scagogogo
-      name: homebrew-tap
-      branch: main
-    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    homepage: "https://github.com/scagogogo/npm-skills"
-    description: "NPM Registry client — query and manage packages, versions, dist-tags, downloads, access, stars, tokens, webhooks, orgs, and audit"
-    license: "MIT"
-    install: |
-      bin.install "npm-skills"
-      bin.install "npm-mcp-server"
-    test: |
-      system "#{bin}/npm-skills", "--version"
-
-scoops:
-  - name: npm-skills
-    ids:
-      - npm-skills-archive
-    bucket:
-      owner: scagogogo
-      name: scoop-bucket
-      branch: main
-    commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
-    homepage: "https://github.com/scagogogo/npm-skills"
-    description: "NPM Registry client — query and manage packages, versions, dist-tags, downloads, access, stars, tokens, webhooks, orgs, and audit"
-    license: MIT
+# Homebrew and Scoop configurations are commented out until the
+# respective tap/bucket repositories are created.
+# Uncomment and configure once scagogogo/homebrew-tap and
+# scagogogo/scoop-bucket repos exist.
+#
+# brews:
+#   - name: npm-skills
+#     ids:
+#       - npm-skills-archive
+#     repository:
+#       owner: scagogogo
+#       name: homebrew-tap
+#       branch: main
+#     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+#     homepage: "https://github.com/scagogogo/npm-skills"
+#     description: "NPM Registry client"
+#     license: "MIT"
+#     install: |
+#       bin.install "npm-skills"
+#       bin.install "npm-mcp-server"
+#     test: |
+#       system "#{bin}/npm-skills", "--version"
+#
+# scoops:
+#   - name: npm-skills
+#     ids:
+#       - npm-skills-archive
+#     repository:
+#       owner: scagogogo
+#       name: scoop-bucket
+#       branch: main
+#     commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
+#     homepage: "https://github.com/scagogogo/npm-skills"
+#     description: "NPM Registry client"
+#     license: MIT
