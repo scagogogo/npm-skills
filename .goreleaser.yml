@@ -167,6 +167,7 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else if eq .Arch "arm64" }}aarch64
       {{- else }}{{ .Arch }}{{ end }}
+    allow_different_binary_count: true
     format_overrides:
       - goos: windows
         format: zip
