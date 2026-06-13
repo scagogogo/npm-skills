@@ -35,7 +35,7 @@ go mod init your-project-name
 ### Using go get (Recommended)
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 ### Add to go.mod
@@ -48,7 +48,7 @@ module your-project
 go 1.20
 
 require (
-    github.com/scagogogo/npm-crawler latest
+    github.com/scagogogo/npm-skills latest
 )
 ```
 
@@ -63,10 +63,10 @@ If you need a specific version:
 
 ```bash
 # Install specific version
-go get github.com/scagogogo/npm-crawler@v1.0.0
+go get github.com/scagogogo/npm-skills@v1.0.0
 
 # Install latest pre-release version
-go get github.com/scagogogo/npm-crawler@latest
+go get github.com/scagogogo/npm-skills@latest
 ```
 
 ## Verify Installation
@@ -82,7 +82,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -163,7 +163,7 @@ options := registry.NewOptions().
 
 ### 3. Go Version Incompatibility
 
-**Error**: `package github.com/scagogogo/npm-crawler: module requires Go 1.20`
+**Error**: `package github.com/scagogogo/npm-skills: module requires Go 1.20`
 
 **Solution**:
 - Upgrade Go to version 1.20 or higher
@@ -171,7 +171,7 @@ options := registry.NewOptions().
 
 ### 4. Module Import Issues
 
-**Error**: `cannot find module providing package github.com/scagogogo/npm-crawler`
+**Error**: `cannot find module providing package github.com/scagogogo/npm-skills`
 
 **Solution**:
 ```bash
@@ -313,6 +313,6 @@ After installation, you can:
 1. Check the [Getting Started Guide](/en/getting-started) to learn basic usage
 2. Read the [API Documentation](/en/api/) to understand all features
 3. Browse [example code](/en/examples/basic) to learn practical applications
-4. Participate in the [GitHub project](https://github.com/scagogogo/npm-crawler) to contribute code
+4. Participate in the [GitHub project](https://github.com/scagogogo/npm-skills) to contribute code
 
-If you encounter issues, please report them in [GitHub Issues](https://github.com/scagogogo/npm-crawler/issues). 
+If you encounter issues, please report them in [GitHub Issues](https://github.com/scagogogo/npm-skills/issues). 

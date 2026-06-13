@@ -1,3 +1,31 @@
 display_name: NPM Registry Crawler
-short_description: Query NPM registry for package information, search packages, get download stats, and download tarballs. Supports multiple mirror sources including npmjs.org, Taobao, NPMMirror, Huawei Cloud, and more.
-default_prompt: I need to find information about an NPM package called "${package_name}". Can you help me get its description, latest version, dependencies, and download statistics?
+short_description: Query NPM registry for package info, search packages, get download stats, list versions, check dist-tags, and download tarballs. Supports custom registry, 8 mirror sources, HTTP proxy, and auth token.
+default_prompt: I need to find information about an NPM package. Can you help me look it up?
+tools:
+  - name: npm-skills
+    description: >
+      NPM Registry CLI tool built with Cobra. All commands output JSON to stdout.
+      Global flags: --mirror/-m (official|taobao|npm-mirror|huawei|tencent|cnpm|yarn|npmjscom or URL),
+        --registry (custom registry URL, overrides --mirror),
+        --proxy (HTTP proxy URL), --timeout (seconds), --no-color
+      Env vars: NPM_MIRROR, NPM_REGISTRY, NPM_PROXY, NPM_TOKEN (used as defaults for flags)
+      Commands:
+        npm-skills registry-info - Get registry status
+        npm-skills package <name> - Get full package info (can be large)
+        npm-skills package-summary <name> - Get lightweight package info (recommended)
+        npm-skills search <query> -l <limit> - Search packages
+        npm-skills search <query> --from <offset> --popularity <weight> - Advanced search
+        npm-skills pkg-version <name> <version> - Get version info
+        npm-skills versions <name> - List all published versions
+        npm-skills versions <name> --latest - Get latest version only
+        npm-skills dist-tags <name> - Get dist-tags (latest, next, beta)
+        npm-skills dist-tags <name> --abbreviated - Get dist-tags (lightweight)
+        npm-skills download-stats <name> -p <period> - Get download counts
+        npm-skills download-stats-date <name> --start <date> --end <date> - Custom date range
+        npm-skills download-stats-bulk <names...> -p <period> - Bulk stats (up to 128)
+        npm-skills download-stats-bulk <names...> --range - Bulk daily trends
+        npm-skills download-range <name> -p <period> - Daily download trends
+        npm-skills download <name> <version> <dest> - Download tarball
+        npm-skills mirrors - List mirror sources
+        npm-skills config - Show current configuration
+        npm-skills whoami --token <token> - Check auth status

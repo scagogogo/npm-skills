@@ -17,17 +17,38 @@ type Version struct {
 	Version     string      `json:"version"`     // 版本号，如 "1.0.0"
 	Description string      `json:"description"` // 版本描述
 	Main        string      `json:"main"`        // 主入口文件
-	Scripts     Script      `json:"scripts"`      // 脚本命令定义（支持任意 npm script key）
+	Module      string      `json:"module"`      // ES Module 入口文件
+	Types       string      `json:"types"`       // TypeScript 类型声明入口
+	Typings     string      `json:"typings"`     // TypeScript 类型声明入口（别名）
+	Type        string      `json:"type"`        // 模块类型: "commonjs" 或 "module"
+	Exports     interface{} `json:"exports"`     // 现代包导出映射（可以是字符串或条件导出对象）
+	Bin         interface{} `json:"bin"`         // 可执行文件映射（可以是字符串或 map[string]string）
+	Scripts     Script      `json:"scripts"`     // 脚本命令定义（支持任意 npm script key）
 	Repository  *Repository `json:"repository"`  // 代码仓库信息
 	Keywords    []string    `json:"keywords"`    // 关键词列表
 	Author      *User       `json:"author"`      // 作者信息
 	License     string      `json:"license"`     // 许可证类型
 	Bugs        *Bugs       `json:"bugs"`        // 问题跟踪链接
 	Homepage    string      `json:"homepage"`    // 项目主页
+	Funding     interface{} `json:"funding"`     // 资金赞助信息（可以是字符串、对象或数组）
 
 	// 依赖关系，key是依赖的包，value是版本约束
-	Dependencies    map[string]string `json:"dependencies"`    // 运行时依赖
-	DevDependencies map[string]string `json:"devDependencies"` // 开发时依赖
+	Dependencies         map[string]string `json:"dependencies"`          // 运行时依赖
+	DevDependencies      map[string]string `json:"devDependencies"`       // 开发时依赖
+	PeerDependencies     map[string]string `json:"peerDependencies"`      // 对等依赖
+	OptionalDependencies map[string]string `json:"optionalDependencies"`  // 可选依赖
+	BundledDependencies  interface{}       `json:"bundledDependencies"`   // 捆绑依赖（可以是 bool 或 []string）
+	BundleDependencies   interface{}       `json:"bundleDependencies"`    // 捆绑依赖（别名）
+
+	// 平台和引擎约束
+	Engines map[string]string `json:"engines"` // 引擎版本约束，如 {"node": ">=14", "npm": ">=6"}
+	OS      []string          `json:"os"`      // 操作系统兼容性约束，如 ["linux", "darwin", "!win32"]
+	CPU     []string          `json:"cpu"`     // CPU 架构兼容性约束，如 ["x64", "arm64"]
+
+	// 元数据字段
+	PeerDependenciesMeta     map[string]PeerDependencyMeta `json:"peerDependenciesMeta"`     // 对等依赖的元数据
+	OptionalDependenciesMeta map[string]interface{}         `json:"optionalDependenciesMeta"` // 可选依赖的元数据
+	Workspaces               interface{}                    `json:"workspaces"`               // 工作区配置（可以是字符串或字符串数组）
 
 	ID          string  `json:"_id"`         // 包ID，通常为 "name@version"
 	Dist        *Dist   `json:"dist"`        // 分发信息，包含下载URL和校验和
@@ -37,40 +58,57 @@ type Version struct {
 	Maintainers []*User `json:"maintainers"` // 维护者列表
 
 	// 目录结构信息
-	Directories struct {
-	} `json:"directories"`
+	Directories Directories `json:"directories"`
 
 	Deprecated interface{} `json:"deprecated"` // 弃用说明，string 或 bool 类型
+
+	HasShrinkwrap bool `json:"_hasShrinkwrap"` // 是否包含 shrinkwrap
+	NodeVersion   string `json:"_nodeVersion"` // 发布时的 Node 版本
 }
 
-// Script 类型定义在其他文件中
-// 表示 NPM 包的脚本命令定义
-//
-// 包含 NPM 包的各种生命周期脚本，如 install、test、build 等
-// 这些脚本可以通过 npm run [script-name] 来执行
+// Directories 表示 NPM 包的目录结构
+type Directories struct {
+	Man string `json:"man"` // man 手册页目录
+	Lib string `json:"lib"` // 库文件目录
+	Bin string `json:"bin"` // 可执行文件目录
+}
 
-// Dist 类型定义在其他文件中
-// 表示 NPM 包的分发信息
-//
-// 包含下载包所需的信息，如 tarball URL 和 校验和
-// 主要字段:
-//   - Shasum: 包的 SHA 校验和
-//   - Tarball: 包的下载 URL
-//   - Integrity: 完整性校验值，通常为 SRI 格式
-//   - NpmSignature: NPM 签名信息
+// PeerDependencyMeta 表示对等依赖的元数据信息
+type PeerDependencyMeta struct {
+	Optional bool `json:"optional"` // 标记此对等依赖是否为可选
+}
 
-// User 类型定义在其他文件中
-// 表示与 NPM 包相关的用户信息
-//
-// 可用于表示作者、维护者或发布者
-// 主要字段:
-//   - Name: 用户名
-//   - Email: 电子邮件地址
-//   - URL: 用户网站或主页
+// IsDeprecated returns whether this version is deprecated.
+// Handles the fact that Deprecated can be a string, bool, or nil.
+func (v *Version) IsDeprecated() bool {
+	if v.Deprecated == nil {
+		return false
+	}
+	switch d := v.Deprecated.(type) {
+	case bool:
+		return d
+	case string:
+		return d != ""
+	default:
+		return false
+	}
+}
 
-// Bugs 类型定义在其他文件中
-// 表示 NPM 包的问题跟踪信息
-//
-// 通常包含问题跟踪系统的 URL
-// 主要字段:
-//   - URL: 问题跟踪系统 URL
+// DeprecatedMessage returns the deprecation message if this version is deprecated.
+// Returns empty string if not deprecated.
+func (v *Version) DeprecatedMessage() string {
+	if v.Deprecated == nil {
+		return ""
+	}
+	switch d := v.Deprecated.(type) {
+	case bool:
+		if d {
+			return "this version has been deprecated"
+		}
+		return ""
+	case string:
+		return d
+	default:
+		return ""
+	}
+}

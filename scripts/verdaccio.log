@@ -1,0 +1,765 @@
+info --- config file  - /home/cc11001100/github/scagogogo/npm-skills/scripts/verdaccio-config.yaml
+info --- plugin @verdaccio/local-storage successfully loaded (storage)
+info --- using htpasswd file: /home/cc11001100/github/scagogogo/npm-skills/scripts/verdaccio-htpasswd
+info --- plugin verdaccio-htpasswd successfully loaded (authentication)
+info --- plugin @verdaccio/ui-theme successfully loaded (theme)
+warn --- http address - http://0.0.0.0:4873/ - verdaccio/6.7.2
+info <-- 127.0.0.1 requested 'GET /'
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+info <-- 127.0.0.1 requested 'GET /'
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 51/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 51/161
+(node:3924964) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1354/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1354/53
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1161
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/564
+info <-- 127.0.0.1 requested 'GET /'
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+info <-- 127.0.0.1 requested 'GET /'
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+http <-- 200, user: null(127.0.0.1), req: 'GET /', bytes: 0/812
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/564
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/564
+info <-- 127.0.0.1 requested 'GET /-/v1/search?size=5&text=npm-skills'
+info --- search for uplink npmjs
+info --- making request: 'GET https://registry.npmjs.org/-/v1/search?size=5&text=npm-skills'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=5&text=npm-skills', bytes: 0/0
+info --- search endpoint ok results undefined
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=5&text=npm-skills', bytes: 0/650
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package/1.0.0'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/666
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/24
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 51/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'PUT /-user/org.couchdb.user:testuser'
+http <-- 400, user: null(127.0.0.1), req: 'PUT /-user/org.couchdb.user:testuser', error: invalid tag
+http <-- 400, user: null(127.0.0.1), req: 'PUT /-user/org.couchdb.user:testuser', error: invalid tag
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 51/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'GET /-/npm/v1/tokens'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/npm/v1/tokens', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/npm/v1/tokens', bytes: 0/52
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 51/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 51/173
+info <-- 127.0.0.1 requested 'GET /-/whoami'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/whoami', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/whoami', bytes: 0/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/564
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/564
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/24
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/latest'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', error: File not found
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package/1.0.0'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/666
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/787
+info <-- 127.0.0.1 requested 'GET /-/v1/search?size=5&text=test'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/0
+info --- search for uplink npmjs
+info --- making request: 'GET https://registry.npmjs.org/-/v1/search?size=5&text=test'
+info --- search endpoint ok results undefined
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/1792
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 415, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: content-type is missing, expect: application/json
+http <-- 415, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: content-type is missing, expect: application/json
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 415, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: content-type is missing, expect: application/json
+http <-- 415, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: content-type is missing, expect: application/json
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 415, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: content-type is missing, expect: application/json
+http <-- 415, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: content-type is missing, expect: application/json
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', error: File not found
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', error: File not found
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/collaborators'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/collaborators', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/collaborators', error: File not found
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/access'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', error: File not found
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/563
+info <-- 127.0.0.1 requested 'GET /-/whoami'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/whoami', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/whoami', bytes: 0/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/563
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/563
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/787
+info <-- 127.0.0.1 requested 'GET /-/v1/search?size=20&text=test'
+info --- search for uplink npmjs
+info --- making request: 'GET https://registry.npmjs.org/-/v1/search?size=20&text=test'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=20&text=test', bytes: 0/0
+info --- search endpoint ok results undefined
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=20&text=test', bytes: 0/4568
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/29
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/45
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/24
+info <-- 127.0.0.1 requested 'GET /-/whoami'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/whoami', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/whoami', bytes: 0/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/563
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/563
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/latest'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', error: File not found
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/787
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package/1.0.0'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/666
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/787
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/access'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', error: File not found
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/29
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', error: File not found
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'POST /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/0
+http <-- 201, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/27
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/570
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 778/0
+info --- unpublishing npm-skills-test-package@1.0.0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 778/49
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/357
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/357
+info <-- 127.0.0.1 requested 'GET /-/v1/search?size=5&text=test'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/0
+info --- search for uplink npmjs
+info --- making request: 'GET https://registry.npmjs.org/-/v1/search?size=5&text=test'
+error--- error reading  package.json: cannot get lastest version of none
+error--- search error: unknown error
+info --- search endpoint ok results undefined
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/1793
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/173
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/latest'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', bytes: 0/0
+http <-- 404, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', error: File not found
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/nonexistent'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/nonexistent', bytes: 0/0
+http <-- 404, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/nonexistent', error: File not found
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser2'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser2', bytes: 46/0
+http <-- 201, user: testuser2(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser2', bytes: 46/150
+info <-- 127.0.0.1 requested 'GET /-/whoami'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/whoami', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/whoami', bytes: 0/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/357
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/357
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/latest'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', error: File not found
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/247
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package/1.0.0'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', error: this version doesn't exist: 1.0.0
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/247
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/access'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', error: File not found
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 404, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 404, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 404, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', error: File not found
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'POST /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/0
+http <-- 404, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'POST /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/0
+http <-- 404, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'POST /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/0
+http <-- 404, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/357
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 778/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 778/49
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/357
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/357
+info <-- 127.0.0.1 requested 'GET /-/v1/search?size=5&text=test'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/0
+info --- search for uplink npmjs
+info --- making request: 'GET https://registry.npmjs.org/-/v1/search?size=5&text=test'
+error--- error reading  package.json: cannot get lastest version of none
+error--- search error: unknown error
+info --- search endpoint ok results undefined
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/1792
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/173
+info <-- 127.0.0.1 requested 'DELETE /npm-skills-test-package/-rev/6-0c30f50e6063e73c'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /npm-skills-test-package/-rev/6-0c30f50e6063e73c', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /npm-skills-test-package/-rev/6-0c30f50e6063e73c', bytes: 0/30
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1080/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1080/53
+info <-- 127.0.0.1 requested 'GET /-/whoami'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/whoami', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/whoami', bytes: 0/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/994
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/994
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/latest'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', error: File not found
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/24
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/758
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package/1.0.0'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/527
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/758
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/access'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', error: File not found
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/29
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', error: File not found
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/45
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'POST /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/0
+http <-- 201, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/27
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1015
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 777/0
+info --- unpublishing npm-skills-test-package@1.0.0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 777/49
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/356
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/356
+info <-- 127.0.0.1 requested 'GET /-/v1/search?size=5&text=test'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/0
+info --- search for uplink npmjs
+info --- making request: 'GET https://registry.npmjs.org/-/v1/search?size=5&text=test'
+error--- error reading  package.json: cannot get lastest version of none
+error--- search error: unknown error
+info --- search endpoint ok results undefined
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/1792
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/173
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/356
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/356
+info <-- 127.0.0.1 requested 'DELETE /npm-skills-test-package/-rev/7-ff9ac694c0758018'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /npm-skills-test-package/-rev/7-ff9ac694c0758018', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /npm-skills-test-package/-rev/7-ff9ac694c0758018', bytes: 0/30
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1080/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1080/53
+info <-- 127.0.0.1 requested 'GET /-/whoami'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/whoami', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/whoami', bytes: 0/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/994
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/994
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/latest'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/latest', error: File not found
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/24
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/758
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package/1.0.0'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/527
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/758
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/access'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/access', error: File not found
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/29
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 404, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags/stable', error: File not found
+info <-- 127.0.0.1 requested 'GET /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/package/npm-skills-test-package/dist-tags', bytes: 0/45
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'POST /-/package/npm-skills-test-package/dist-tags'
+http <-- 200, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/0
+http <-- 201, user: testuser(127.0.0.1), req: 'POST /-/package/npm-skills-test-package/dist-tags', bytes: 16/27
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1015
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1015
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1626/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1626/49
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1015
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1015
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1015
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1243/0
+info --- deprecating npm-skills-test-package@1.0.0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1243/49
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package/1.0.0'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package/1.0.0', bytes: 0/556
+info <-- 127.0.0.1 requested 'GET /-/v1/search?size=5&text=test'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/0
+info --- search for uplink npmjs
+info --- making request: 'GET https://registry.npmjs.org/-/v1/search?size=5&text=test'
+info --- search endpoint ok results undefined
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/v1/search?size=5&text=test', bytes: 0/1792
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/173
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/537
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/543
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/537
+info <-- 127.0.0.1 requested 'GET /-/whoami'
+http <-- 200, user: null(127.0.0.1), req: 'GET /-/whoami', bytes: 0/0
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /-/whoami', bytes: 0/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/537
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 404, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 404, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 404, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/537
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/537
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1244/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1244/49
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'PUT /-/user/org.couchdb.user:testuser'
+http <-- 200, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', bytes: 48/0
+http <-- 409, user: null(127.0.0.1), req: 'PUT /-/user/org.couchdb.user:testuser', error: username is already registered
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 404, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', error: this version doesn't exist
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1049
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1049
+info <-- 127.0.0.1 requested 'DELETE /npm-skills-test-package/-rev/11-409b488b957b9cf9'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /npm-skills-test-package/-rev/11-409b488b957b9cf9', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /npm-skills-test-package/-rev/11-409b488b957b9cf9', bytes: 0/30
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1064/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1064/53
+info <-- 127.0.0.1 requested 'PUT /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /-/package/npm-skills-test-package/dist-tags/stable', bytes: 7/29
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/1009
+info <-- 127.0.0.1 requested 'DELETE /-/package/npm-skills-test-package/dist-tags/stable'
+http <-- 200, user: null(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/0
+http <-- 201, user: testuser(127.0.0.1), req: 'DELETE /-/package/npm-skills-test-package/dist-tags/stable', bytes: 0/26
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/986
+info <-- 127.0.0.1 requested 'GET /npm-skills-test-package'
+http <-- 200, user: null(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/0
+info --- making request: 'GET https://registry.npmjs.org/npm-skills-test-package'
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package' (streaming)
+http --- 404, req: 'GET https://registry.npmjs.org/npm-skills-test-package', bytes: 0/21
+http <-- 200, user: testuser(127.0.0.1), req: 'GET /npm-skills-test-package', bytes: 0/986
+info <-- 127.0.0.1 requested 'PUT /npm-skills-test-package'
+http <-- 200, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1221/0
+info --- deprecating npm-skills-test-package@1.0.0
+http <-- 201, user: testuser(127.0.0.1), req: 'PUT /npm-skills-test-package', bytes: 1221/49

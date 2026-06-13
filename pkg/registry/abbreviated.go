@@ -3,19 +3,13 @@ package registry
 import (
 	"context"
 	"fmt"
-	"net/http"
+	"net/url"
 
 	"github.com/crawler-go-go-go/go-requests"
-	"github.com/scagogogo/npm-crawler/pkg/models"
+	"github.com/scagogogo/npm-skills/pkg/models"
 )
 
-// requestSettingHeader 创建一个设置自定义 HTTP header 的 RequestSetting
-func requestSettingHeader(key, value string) requests.RequestSetting {
-	return func(client *http.Client, httpRequest *http.Request) error {
-		httpRequest.Header.Set(key, value)
-		return nil
-	}
-}
+// requestSettingHeader 已移至 request.go 文件
 
 // GetAbbreviatedPackageInformation 获取指定包的精简元数据
 //
@@ -40,7 +34,7 @@ func requestSettingHeader(key, value string) requests.RequestSetting {
 //	}
 //	fmt.Println("Latest:", pkg.DistTags["latest"])
 func (x *Registry) GetAbbreviatedPackageInformation(ctx context.Context, packageName string) (*models.Package, error) {
-	targetUrl := fmt.Sprintf("%s/%s", x.options.RegistryURL, packageName)
+	targetUrl := fmt.Sprintf("%s/%s", x.options.RegistryURL, url.PathEscape(packageName))
 	opts := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler())
 	opts.AppendRequestSetting(requestSettingHeader("Accept", "application/vnd.npm.install-v1+json"))
 	if x.options.Proxy != "" {

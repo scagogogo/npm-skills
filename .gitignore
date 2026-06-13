@@ -1,1 +1,4 @@
 .idea
+/npm-crawler
+coverage.txt
+coverage.html

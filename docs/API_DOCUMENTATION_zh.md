@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-crawler.svg)](https://pkg.go.dev/github.com/scagogogo/npm-crawler)
+[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-skills.svg)](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 _完整的 API 参考和使用指南_
@@ -42,7 +42,7 @@ NPM Crawler 提供了一个全面的 Go 客户端用于与 NPM 注册表交互�
 ## 安装
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 **要求:**
@@ -62,7 +62,7 @@ import (
     "log"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -96,7 +96,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -420,7 +420,7 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -470,7 +470,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func monitorRegistry(client *registry.Registry, interval time.Duration) {
@@ -553,7 +553,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type RegistryPool struct {
@@ -872,7 +872,7 @@ import (
     "net/http"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type PackageInfo struct {
@@ -934,7 +934,7 @@ import (
     "fmt"
     "strings"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type DependencyNode struct {
@@ -1023,7 +1023,7 @@ import (
     "strings"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type SecurityAudit struct {
@@ -1173,8 +1173,8 @@ func main() {
 - 添加翻译
 - 改进现有内容
 
-更多信息，请参阅我们的[贡献指南](https://github.com/scagogogo/npm-crawler/blob/main/README.md#贡献指南)。
+更多信息，请参阅我们的[贡献指南](https://github.com/scagogogo/npm-skills/blob/main/README.md#贡献指南)。
 
 ## 许可证
 
-本文档是 NPM Crawler 项目的一部分，采用 MIT 许可证。详情请参阅 [LICENSE](https://github.com/scagogogo/npm-crawler/blob/main/LICENSE)。
+本文档是 NPM Crawler 项目的一部分，采用 MIT 许可证。详情请参阅 [LICENSE](https://github.com/scagogogo/npm-skills/blob/main/LICENSE)。

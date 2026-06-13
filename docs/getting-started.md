@@ -12,7 +12,7 @@
 使用 Go 模块安装 NPM Crawler：
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 ## 基本使用
@@ -23,7 +23,7 @@ go get github.com/scagogogo/npm-crawler
 package main
 
 import (
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -162,7 +162,7 @@ import (
     "log"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -200,7 +200,7 @@ import (
     "fmt"
     "sync"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -233,4 +233,4 @@ func main() {
 
 - 查看完整的 [API 文档](/api/) 了解所有可用功能
 - 浏览 [示例代码](/examples/basic) 学习更多用法
-- 访问 [GitHub 仓库](https://github.com/scagogogo/npm-crawler) 查看源代码和贡献指南
+- 访问 [GitHub 仓库](https://github.com/scagogogo/npm-skills) 查看源代码和贡献指南

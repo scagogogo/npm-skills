@@ -18,7 +18,7 @@ A powerful and flexible Go library for interacting with NPM registries. NPM Craw
 ### Installation
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 ### Basic Usage
@@ -31,7 +31,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -179,8 +179,8 @@ We welcome contributions! Please see our [Contributing Guide](../CONTRIBUTING.md
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/scagogogo/npm-crawler.git
-cd npm-crawler
+git clone https://github.com/scagogogo/npm-skills.git
+cd npm-skills
 ```
 
 2. Install dependencies:
@@ -199,7 +199,7 @@ This project is licensed under the MIT License - see the [LICENSE](../LICENSE) f
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/scagogogo/npm-crawler)
-- [Go Package Documentation](https://pkg.go.dev/github.com/scagogogo/npm-crawler)
-- [Issue Tracker](https://github.com/scagogogo/npm-crawler/issues)
+- [GitHub Repository](https://github.com/scagogogo/npm-skills)
+- [Go Package Documentation](https://pkg.go.dev/github.com/scagogogo/npm-skills)
+- [Issue Tracker](https://github.com/scagogogo/npm-skills/issues)
 - [中文文档](../README.md) 

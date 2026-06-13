@@ -17,7 +17,7 @@ hero:
       link: /en/api/
     - theme: alt
       text: GitHub
-      link: https://github.com/scagogogo/npm-crawler
+      link: https://github.com/scagogogo/npm-skills
 
 features:
   - icon: 🚀
@@ -43,7 +43,7 @@ features:
 ## Installation
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 ## Quick Start
@@ -56,7 +56,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {

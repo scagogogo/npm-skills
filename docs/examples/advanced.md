@@ -13,8 +13,8 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/models"
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/models"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 包信息缓存
@@ -127,8 +127,8 @@ import (
     "math"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/models"
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/models"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 重试配置
@@ -247,7 +247,7 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 连接池管理器
@@ -368,7 +368,7 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
     "golang.org/x/time/rate"
 )
 
@@ -443,7 +443,7 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 镜像源状态
@@ -645,7 +645,7 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 指标收集器
@@ -798,8 +798,8 @@ func main() {
 这些高级示例需要额外的依赖：
 
 ```bash
-go mod init npm-crawler-advanced
-go get github.com/scagogogo/npm-crawler
+go mod init npm-skills-advanced
+go get github.com/scagogogo/npm-skills
 go get golang.org/x/time/rate
 go get golang.org/x/sync/semaphore
 go run example.go
@@ -809,4 +809,4 @@ go run example.go
 
 - 查看 [镜像源配置示例](/examples/mirrors) 了解如何优化不同地区的访问
 - 阅读 [API 文档](/api/) 了解所有可用功能
-- 查看 [GitHub 仓库](https://github.com/scagogogo/npm-crawler) 获取更多示例
+- 查看 [GitHub 仓库](https://github.com/scagogogo/npm-skills) 获取更多示例

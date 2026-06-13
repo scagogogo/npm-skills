@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/crawler-go-go-go/go-requests"
-	"github.com/scagogogo/npm-crawler/pkg/models"
+	"github.com/scagogogo/npm-skills/pkg/models"
 )
 
 // Registry NPM 注册表访问客户端，提供与 NPM Registry 交互的方法
@@ -133,7 +136,10 @@ func (x *Registry) GetRegistryInformation(ctx context.Context) (*models.Registry
 //	fmt.Println("包名:", pkg.Name)
 //	fmt.Println("最新版本:", pkg.DistTags.Latest)
 func (x *Registry) GetPackageInformation(ctx context.Context, packageName string) (*models.Package, error) {
-	targetUrl := fmt.Sprintf("%s/%s", x.options.RegistryURL, packageName)
+	if err := requirePackageName(packageName); err != nil {
+		return nil, err
+	}
+	targetUrl := fmt.Sprintf("%s/%s", x.options.RegistryURL, url.PathEscape(packageName))
 	bytes, err := x.getBytes(ctx, targetUrl)
 	if err != nil {
 		return nil, err
@@ -163,7 +169,10 @@ func (x *Registry) GetPackageInformation(ctx context.Context, packageName string
 //	fmt.Println("版本:", version.Version)
 //	fmt.Println("依赖:", version.Dependencies)
 func (x *Registry) GetPackageVersion(ctx context.Context, packageName, version string) (*models.Version, error) {
-	targetUrl := fmt.Sprintf("%s/%s/%s", x.options.RegistryURL, packageName, version)
+	if err := requirePackageName(packageName); err != nil {
+		return nil, err
+	}
+	targetUrl := fmt.Sprintf("%s/%s/%s", x.options.RegistryURL, url.PathEscape(packageName), version)
 	bytes, err := x.getBytes(ctx, targetUrl)
 	if err != nil {
 		return nil, err
@@ -194,7 +203,7 @@ func (x *Registry) DownloadTarball(ctx context.Context, packageName, version, de
 	// 先获取包的版本信息，以获取 tarball URL
 	versionInfo, err := x.GetPackageVersion(ctx, packageName, version)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get version info for '%s@%s': %w", packageName, version, err)
 	}
 
 	// 从版本信息中获取 tarball URL
@@ -203,14 +212,43 @@ func (x *Registry) DownloadTarball(ctx context.Context, packageName, version, de
 		return fmt.Errorf("tarball URL not found for package %s@%s", packageName, version)
 	}
 
-	// 使用 getBytes 获取 tarball 内容
-	bytes, err := x.getBytes(ctx, tarballURL)
+	// 使用 Options.GetHttpClient() 复用 HTTP 客户端配置（代理等）
+	httpClient, err := x.options.GetHttpClient()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create HTTP client: %w", err)
 	}
 
-	// 写入本地文件
-	return os.WriteFile(destPath, bytes, 0644)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, tarballURL, nil)
+	if err != nil {
+		return fmt.Errorf("failed to create download request: %w", err)
+	}
+	if x.options.Token != "" {
+		req.Header.Set("Authorization", "Bearer "+x.options.Token)
+	}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to download tarball for '%s@%s': %w", packageName, version, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("download failed with status %d for '%s@%s'", resp.StatusCode, packageName, version)
+	}
+
+	// 创建目标文件
+	f, err := os.Create(destPath)
+	if err != nil {
+		return fmt.Errorf("failed to create file '%s': %w", destPath, err)
+	}
+	defer f.Close()
+
+	// 流式写入文件
+	if _, err := io.Copy(f, resp.Body); err != nil {
+		return fmt.Errorf("failed to write tarball to '%s': %w", destPath, err)
+	}
+
+	return nil
 }
 
 // GetOptions 获取当前 Registry 客户端的配置选项
@@ -259,12 +297,22 @@ func unmarshalJson[T any](bytes []byte) (T, error) {
 //
 // 注意: 这是一个内部方法，支持代理设置和 Token 认证
 func (x *Registry) getBytes(ctx context.Context, targetUrl string) ([]byte, error) {
+	// Apply timeout from options if set
+	if x.options.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, x.options.Timeout)
+		defer cancel()
+	}
+
 	options := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler())
 	if x.options.Proxy != "" {
 		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
 	}
 	if x.options.Token != "" {
 		options.AppendRequestSetting(requestSettingHeader("Authorization", "Bearer "+x.options.Token))
+	}
+	if x.options.UserAgent != "" {
+		options.AppendRequestSetting(requestSettingHeader("User-Agent", x.options.UserAgent))
 	}
 	return requests.SendRequest[any, []byte](ctx, options)
 }

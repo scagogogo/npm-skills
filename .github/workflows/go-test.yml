@@ -26,7 +26,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.20'  # 使用 Go 1.20 版本，与 go.mod 保持一致
+        go-version: '1.24'  # 使用 Go 1.24 版本，与 go.mod 保持一致
         cache: true  # 启用依赖缓存，提高后续运行速度
 
     # 验证模块依赖

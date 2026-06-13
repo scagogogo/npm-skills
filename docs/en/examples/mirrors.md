@@ -41,7 +41,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -71,7 +71,7 @@ import (
     "log"
     "net/http"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -119,7 +119,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func testMirrorPerformance(name string, client *registry.Registry) {
@@ -169,7 +169,7 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type MirrorResult struct {
@@ -297,7 +297,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func monitorMirror(name string, client *registry.Registry) {

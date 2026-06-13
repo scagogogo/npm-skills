@@ -3,6 +3,7 @@ package registry
 import (
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // 默认 NPM 仓库地址
@@ -24,9 +25,12 @@ const DefaultRegistryURL = "https://registry.npmjs.org"
 //	// 使用选项创建 Registry 客户端
 //	registry := NewRegistry(options)
 type Options struct {
-	RegistryURL string
-	Proxy       string
-	Token       string // Bearer token for authenticated API requests
+	RegistryURL      string        // NPM 仓库服务器的 URL 地址
+	Proxy            string        // HTTP 代理服务器的 URL，用于网络请求
+	Token            string        // Bearer token for authenticated API requests
+	DownloadStatsURL string        // 下载统计 API 的基础 URL，默认为 https://api.npmjs.org/downloads
+	Timeout          time.Duration // 请求超时时间，默认为 0（不超时），由调用方通过 context 控制
+	UserAgent        string        // HTTP User-Agent 头，默认为 "npm-skills-sdk"
 }
 
 // NewOptions 创建并返回一个新的默认配置选项实例
@@ -45,6 +49,7 @@ type Options struct {
 func NewOptions() *Options {
 	return &Options{
 		RegistryURL: "https://registry.npmjs.org",
+		UserAgent:   "npm-skills-sdk",
 	}
 }
 
@@ -106,6 +111,55 @@ func (o *Options) SetProxy(proxyUrl string) *Options {
 //	registry := NewRegistry(options)
 func (o *Options) SetToken(token string) *Options {
 	o.Token = token
+	return o
+}
+
+// SetDownloadStatsURL 设置下载统计 API 的基础 URL
+//
+// 默认情况下，下载统计 API 使用 https://api.npmjs.org/downloads。
+// 对于私有仓库或镜像，可以设置此字段以覆盖默认值。
+//
+// 参数:
+//   - downloadStatsURL: 下载统计 API 的基础 URL
+//
+// 返回值:
+//   - *Options: 返回自身以支持链式调用
+func (o *Options) SetDownloadStatsURL(downloadStatsURL string) *Options {
+	o.DownloadStatsURL = downloadStatsURL
+	return o
+}
+
+// SetTimeout 设置请求超时时间
+//
+// 当设置了超时时间后，所有通过 Registry 客户端发出的请求都会自动应用此超时。
+// 如果传入 0，则表示不设置超时（由调用方通过 context 自行控制）。
+//
+// 参数:
+//   - timeout: 超时时间，例如 30*time.Second
+//
+// 返回值:
+//   - *Options: 更新后的选项对象 (支持链式调用)
+//
+// 使用示例:
+//
+//	options := NewOptions().SetTimeout(30 * time.Second)
+//	registry := NewRegistry(options)
+func (o *Options) SetTimeout(timeout time.Duration) *Options {
+	o.Timeout = timeout
+	return o
+}
+
+// SetUserAgent 设置 HTTP User-Agent 头
+//
+// 默认为 "npm-skills-sdk"。某些 NPM 镜像或代理可能要求设置合理的 User-Agent。
+//
+// 参数:
+//   - userAgent: User-Agent 字符串
+//
+// 返回值:
+//   - *Options: 更新后的选项对象 (支持链式调用)
+func (o *Options) SetUserAgent(userAgent string) *Options {
+	o.UserAgent = userAgent
 	return o
 }
 

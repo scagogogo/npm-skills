@@ -6,36 +6,44 @@
 
 <img src="https://cdn.worldvectorlogo.com/logos/npm-2.svg" width="180" alt="NPM Logo" style="filter: brightness(0.9);">
 
-[![Go Tests](https://github.com/scagogogo/npm-crawler/actions/workflows/go-test.yml/badge.svg)](https://github.com/scagogogo/npm-crawler/actions/workflows/go-test.yml)
-[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-crawler.svg)](https://pkg.go.dev/github.com/scagogogo/npm-crawler)
+[![Go Tests](https://github.com/scagogogo/npm-skills/actions/workflows/go-test.yml/badge.svg)](https://github.com/scagogogo/npm-skills/actions/workflows/go-test.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-skills.svg)](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-_High-performance NPM Registry client with multi-mirror source and proxy support_
+_High-performance NPM Registry client with multi-mirror source, proxy support, and full write operations_
 
 </div>
 
-## Three Ways to Use
+## Four Ways to Use
 
-NPM Crawler is designed to be **AI-native first**, offering three complementary ways to interact:
+NPM Crawler is designed to be **AI-native first**, offering four complementary ways to interact:
 
-### 1. 🤖 AI / Agent Mode (Primary)
+### 1. 🤖 Claude Code Skill (Primary)
 
-Designed for AI agents and autonomous workflows. AI can directly understand and invoke this tool's capabilities without manual intervention.
+This repository is a **Claude Code Skill** — install it directly into Claude Code and AI agents will automatically discover and use it.
 
-```markdown
-# This repository IS a Claude Code Skill
-# AI agents automatically discover and use it when you ask:
-# - "Find info about the axios NPM package"
-# - "Download the react tarball"
-# - "Search for HTTP client libraries"
-# - "Get download stats for vue"
+**Install as a Skill:**
+```bash
+# In Claude Code, install from GitHub:
+claude skill add github.com/scagogogo/npm-skills
+
+# Or clone and install locally:
+git clone https://github.com/scagogogo/npm-skills.git
+cd npm-skills && bash scripts/install.sh
 ```
+
+Once installed, Claude Code will automatically use this skill when you ask:
+- "Find info about the axios NPM package"
+- "Download the react tarball"
+- "Search for HTTP client libraries"
+- "Get download stats for vue"
+- "Check the NPM registry using Taobao mirror"
 
 **AI Trigger Phrases**: `npm package`, `NPM registry`, `search npm`, `download npm tarball`, `get npm stats`, `npm mirror`
 
 The Skill manifest (`SKILL.md`) provides AI-readable instructions with progressive disclosure:
 - **Immediate context**: name + description in frontmatter (~100 words)
-- **Core guidance**: Quick start + capabilities in body (~500 lines)
+- **Core guidance**: CLI commands + usage patterns in body
 - **Deep reference**: Full API docs in `references/api.md` (loaded on demand)
 
 ### 2. 📦 Go SDK
@@ -43,7 +51,7 @@ The Skill manifest (`SKILL.md`) provides AI-readable instructions with progressi
 Drop-in Go library for programmatic access to NPM Registry:
 
 ```go
-import "github.com/scagogogo/npm-crawler/pkg/registry"
+import "github.com/scagogogo/npm-skills/pkg/registry"
 
 client := registry.NewRegistry()
 pkg, err := client.GetPackageInformation(ctx, "react")
@@ -51,12 +59,114 @@ pkg, err := client.GetPackageInformation(ctx, "react")
 
 ### 3. 🖥️ CLI Tool
 
-Command-line interface for quick lookups and scripting:
+Command-line interface built with [Cobra](https://github.com/spf13/cobra), with colorful output, auto-completion, proxy & mirror support:
 
 ```bash
-cd examples/create_registry && go run main.go
-cd examples/download_tarball && go run main.go
+# Install the CLI
+bash scripts/install.sh
+
+# Basic usage
+npm-skills package react                    # Get package info (full)
+npm-skills package-summary react            # Get package info (lightweight, recommended)
+npm-skills search "http client" -l 10       # Search with limit
+npm-skills download-stats axios -p last-month # Download stats
+npm-skills download-stats-bulk react,vue -p last-week # Bulk download stats
+npm-skills download lodash 4.17.21 ./lodash.tgz  # Download tarball
+npm-skills pkg-version axios 1.0.0          # Specific version info
+npm-skills versions react --latest          # Get latest version
+npm-skills dist-tags react                  # Get dist-tags
+npm-skills mirrors                          # List mirror sources
+
+# Write operations (require --token)
+npm-skills publish ./pkg.tgz --name my-pkg --version 1.0.0 -t npm_xxxxx  # Publish
+npm-skills deprecate my-pkg 1.0.0 -M "Use v2" -t npm_xxxxx               # Deprecate
+npm-skills dist-tags set my-pkg stable --version 1.0.0 -t npm_xxxxx      # Set tag
+npm-skills access get my-pkg -t npm_xxxxx                                 # Get access
+npm-skills star add react -t npm_xxxxx                                    # Star
+npm-skills audit quick --deps "lodash=4.17.11"                            # Audit
+
+# Mirror & Proxy
+npm-skills package react -m npm-mirror      # Use China mirror
+npm-skills package react --proxy http://127.0.0.1:7890  # Use HTTP proxy
+npm-skills package my-lib --registry https://npm.my-company.com  # Private registry
+
+# Environment variables
+export NPM_MIRROR=npm-mirror                 # Default mirror for China
+export NPM_PROXY=http://127.0.0.1:7890       # Default proxy
+export NPM_REGISTRY=https://npm.company.com  # Default custom registry
+npm-skills package react                    # Uses env vars automatically
+
+npm-skills --help                           # Show all commands & flags
 ```
+
+### 4. 📡 MCP Server (for AI Agents)
+
+An MCP (Model Context Protocol) server that exposes NPM registry operations as tools for AI agents. Works with Claude Code, Cursor, and any MCP-compatible AI client.
+
+```bash
+# Build the MCP server
+go build -o ~/.local/bin/npm-mcp-server ./cmd/mcp-server/
+
+# Or use the install script (builds both CLI and MCP server)
+bash scripts/install.sh
+```
+
+**Claude Code integration:**
+```json
+{
+  "mcpServers": {
+    "npm-registry": {
+      "command": "npm-mcp-server",
+      "args": ["--mirror", "npm-mirror"]
+    }
+  }
+}
+```
+
+**Available MCP Tools (33 total):**
+
+*Read Tools:*
+
+| Tool | Description |
+|------|-------------|
+| `npm_registry_info` | Registry status and statistics |
+| `npm_mirrors` | List available mirror sources |
+| `npm_package` | Full package metadata (large response) |
+| `npm_package_summary` | Lightweight package metadata (recommended) |
+| `npm_search` | Search packages with pagination and weighting |
+| `npm_version` | Specific version metadata |
+| `npm_versions` | All published version numbers |
+| `npm_latest_version` | Latest version number |
+| `npm_dist_tags` | Distribution tags (latest, next, beta) |
+| `npm_download_stats` | Download count for a period |
+| `npm_download_range` | Daily download trend data |
+| `npm_whoami` | Check auth status |
+
+*Write Tools (require token):*
+
+| Tool | Description |
+|------|-------------|
+| `npm_dist_tag_set` | Set a dist-tag to a version |
+| `npm_dist_tag_delete` | Delete a dist-tag |
+| `npm_dist_tags_set` | Batch set multiple dist-tags |
+| `npm_star` | Star a package |
+| `npm_unstar` | Unstar a package |
+| `npm_stargazers` | Get users who starred a package |
+| `npm_starred_by_user` | Get packages starred by user |
+| `npm_access_get` | Get package access settings |
+| `npm_collaborators` | List package collaborators |
+| `npm_token_list` | List API tokens |
+| `npm_audit_quick` | Quick security audit |
+| `npm_audit_advisory` | Get security advisory by ID |
+| `npm_hook_list` | List webhooks |
+| `npm_hook_get` | Get webhook details |
+| `npm_org_get` | Get organization info |
+| `npm_org_members` | List org members |
+| `npm_org_packages` | List org packages |
+| `npm_team_list` | List teams in an org |
+| `npm_team_members` | List team members |
+| `npm_team_packages` | List team packages |
+| `npm_changes` | Get registry changes feed |
 
 ---
 
@@ -77,7 +187,7 @@ NPM Crawler is a high-performance NPM Registry client library written in Go, pro
 ## Installation
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 ## Quick Start
@@ -92,7 +202,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -143,7 +253,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {

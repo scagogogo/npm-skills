@@ -1,0 +1,41 @@
+{
+	"name": "npm-skills-test-package",
+	"versions": {
+		"1.0.0": {
+			"name": "npm-skills-test-package",
+			"version": "1.0.0",
+			"description": "Test",
+			"main": "index.js",
+			"_id": "npm-skills-test-package@1.0.0",
+			"_nodeVersion": "22.19.0",
+			"_npmVersion": "10.9.3",
+			"dist": {
+				"integrity": "sha512-faMmCXtUEDyvdwOzaQoyzjtV9tZFkwfHQgG48afy9UofVNnkb06i8o/+owtu/EvSV7EwUmHBpyLKEwyrqJgE9Q==",
+				"shasum": "fe3e717550c6517f32c3df3eae710e05b69967f0",
+				"tarball": "http://localhost:4873/npm-skills-test-package/-/npm-skills-test-package-1.0.0.tgz"
+			},
+			"contributors": [],
+			"deprecated": "Deprecated"
+		}
+	},
+	"time": {
+		"modified": "2026-06-13T05:42:24.841Z",
+		"created": "2026-06-13T05:42:09.881Z",
+		"1.0.0": "2026-06-13T05:42:09.881Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "1.0.0"
+	},
+	"_uplinks": {},
+	"_distfiles": {},
+	"_attachments": {
+		"npm-skills-test-package-1.0.0.tgz": {
+			"shasum": "fe3e717550c6517f32c3df3eae710e05b69967f0",
+			"version": "1.0.0"
+		}
+	},
+	"_rev": "6-8b14c771eda17302",
+	"_id": "npm-skills-test-package",
+	"readme": "ERROR: No README data found!"
+}

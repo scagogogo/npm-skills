@@ -103,7 +103,7 @@ Sets a custom User-Agent header for requests.
 **Example:**
 ```go
 options := registry.NewOptions().
-    SetUserAgent("MyApp/1.0 npm-crawler")
+    SetUserAgent("MyApp/1.0 npm-skills")
 ```
 
 ### SetTimeout
@@ -129,7 +129,7 @@ options := registry.NewOptions().
 package main
 
 import (
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -150,7 +150,7 @@ import (
     "net/http"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -185,7 +185,7 @@ import (
     "net/http"
     "net/url"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -217,7 +217,7 @@ package main
 import (
     "net/http"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // Custom transport for authentication
@@ -255,7 +255,7 @@ package main
 import (
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -278,7 +278,7 @@ When no options are provided, the following defaults are used:
 |--------|---------------|
 | Registry URL | `https://registry.npmjs.org` |
 | HTTP Client | `http.DefaultClient` |
-| User-Agent | `npm-crawler/1.0` |
+| User-Agent | `npm-skills/1.0` |
 | Timeout | `30 seconds` |
 | Proxy | None |
 
@@ -340,7 +340,7 @@ import (
     "net/http"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -369,7 +369,7 @@ import (
     "crypto/tls"
     "net/http"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -397,7 +397,7 @@ package main
 import (
     "net/http"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // Custom transport for adding headers
@@ -447,7 +447,7 @@ package main
 import (
     "os"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {

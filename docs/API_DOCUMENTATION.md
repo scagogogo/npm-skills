@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-crawler.svg)](https://pkg.go.dev/github.com/scagogogo/npm-crawler)
+[![Go Reference](https://pkg.go.dev/badge/github.com/scagogogo/npm-skills.svg)](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 _Complete API Reference and Usage Guide_
@@ -42,7 +42,7 @@ NPM Crawler provides a comprehensive Go client for interacting with NPM registri
 ## Installation
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 **Requirements:**
@@ -62,7 +62,7 @@ import (
     "log"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -96,7 +96,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -420,7 +420,7 @@ import (
     "sync"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -470,7 +470,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func monitorRegistry(client *registry.Registry, interval time.Duration) {
@@ -545,7 +545,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type RegistryPool struct {
@@ -864,7 +864,7 @@ import (
     "net/http"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type PackageInfo struct {
@@ -926,7 +926,7 @@ import (
     "fmt"
     "strings"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type DependencyNode struct {
@@ -1015,7 +1015,7 @@ import (
     "strings"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 type SecurityAudit struct {
@@ -1165,8 +1165,8 @@ We welcome contributions to improve this documentation! Please feel free to:
 - Add translations
 - Improve existing content
 
-For more information, see our [Contributing Guide](https://github.com/scagogogo/npm-crawler/blob/main/README.md#contribution-guide).
+For more information, see our [Contributing Guide](https://github.com/scagogogo/npm-skills/blob/main/README.md#contribution-guide).
 
 ## License
 
-This documentation is part of the NPM Crawler project and is licensed under the MIT License. See [LICENSE](https://github.com/scagogogo/npm-crawler/blob/main/LICENSE) for details.
+This documentation is part of the NPM Crawler project and is licensed under the MIT License. See [LICENSE](https://github.com/scagogogo/npm-skills/blob/main/LICENSE) for details.

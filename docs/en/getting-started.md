@@ -12,7 +12,7 @@ This guide will help you quickly get started with NPM Crawler.
 Install NPM Crawler using Go modules:
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 ## Basic Usage
@@ -23,7 +23,7 @@ go get github.com/scagogogo/npm-crawler
 package main
 
 import (
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -162,7 +162,7 @@ import (
     "log"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -200,7 +200,7 @@ import (
     "fmt"
     "sync"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -233,4 +233,4 @@ func main() {
 
 - Check the complete [API Documentation](/en/api/) to learn about all available features
 - Browse [example code](/en/examples/basic) to learn more usage patterns
-- Visit the [GitHub repository](https://github.com/scagogogo/npm-crawler) to view source code and contribution guidelines 
+- Visit the [GitHub repository](https://github.com/scagogogo/npm-skills) to view source code and contribution guidelines 

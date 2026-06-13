@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"errors"
 )
 
 // DownloadStats 表示 NPM 包的下载统计信息
@@ -16,11 +15,10 @@ import (
 //   - End: 统计结束日期
 //   - Package: 包名称
 type DownloadStats struct {
-	Downloads      int                   `json:"downloads"` // 下载次数
-	Start          string                `json:"start"`     // 统计开始日期 (YYYY-MM-DD)
-	End            string                `json:"end"`       // 统计结束日期 (YYYY-MM-DD)
-	Package        string                `json:"package"`   // 包名称
-	TestMarshalErr *testMarshalFailType `json:"testMarshalErr,omitempty"` // 测试专用：触发 json.Marshal 错误（仅测试用途）
+	Downloads int    `json:"downloads"` // 下载次数
+	Start     string `json:"start"`     // 统计开始日期 (YYYY-MM-DD)
+	End       string `json:"end"`       // 统计结束日期 (YYYY-MM-DD)
+	Package   string `json:"package"`   // 包名称
 }
 
 // ToJsonString 将 DownloadStats 对象转换为 JSON 字符串
@@ -54,11 +52,10 @@ func (ds *DownloadStats) ToJsonString() string {
 //   - Package: 包名称
 //   - Downloads: 每日下载统计列表
 type DownloadRangeStats struct {
-	Start          string                `json:"start"`     // 统计开始日期
-	End            string                `json:"end"`       // 统计结束日期
-	Package        string                `json:"package"`   // 包名称
-	Downloads      []DailyDownloads     `json:"downloads"` // 每日下载统计
-	TestMarshalErr *testMarshalFailType `json:"testMarshalErr,omitempty"` // 测试专用：触发 json.Marshal 错误（仅测试用途）
+	Start     string            `json:"start"`     // 统计开始日期
+	End       string            `json:"end"`       // 统计结束日期
+	Package   string            `json:"package"`   // 包名称
+	Downloads []DailyDownloads  `json:"downloads"` // 每日下载统计
 }
 
 // DailyDownloads 表示单日的下载统计
@@ -85,11 +82,4 @@ func (drs *DownloadRangeStats) ToJsonString() string {
 		return err.Error()
 	}
 	return string(bytes)
-}
-
-// testMarshalFailType 实现 json.Marshaler 接口，用于测试 error 分支
-type testMarshalFailType struct{}
-
-func (t *testMarshalFailType) MarshalJSON() ([]byte, error) {
-	return nil, errors.New("forced marshal error for testing")
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/scagogogo/npm-crawler/pkg/models"
+	"github.com/scagogogo/npm-skills/pkg/models"
 )
 
 // SearchOptions 定义 NPM 搜索的可选参数
@@ -94,7 +94,7 @@ func (x *Registry) SearchPackagesWithOptions(ctx context.Context, query string, 
 	targetUrl := fmt.Sprintf("%s/-/v1/search?%s", x.options.RegistryURL, params.Encode())
 	bytes, err := x.getBytes(ctx, targetUrl)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to search packages for '%s': %w", query, err)
 	}
 	return unmarshalJson[*models.SearchResult](bytes)
 }

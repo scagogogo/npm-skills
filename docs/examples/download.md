@@ -13,7 +13,7 @@ import (
     "log"
     "os"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -56,7 +56,7 @@ import (
     "log"
     "os"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -100,7 +100,7 @@ import (
     "log"
     "os"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -143,7 +143,7 @@ import (
     "path/filepath"
     "sync"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -192,7 +192,7 @@ func main() {
 
 ```bash
 go mod init tarball-example
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 go run main.go
 ```
 

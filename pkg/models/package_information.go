@@ -29,14 +29,22 @@ type Package struct {
 	ReadMe         string                 `json:"readme"`
 	ReadMeFilename string                 `json:"readmeFilename"`
 	Homepage       string                 `json:"homepage"`
-	Bugs           map[string]interface{} `json:"bugs"`
+	Bugs           *Bugs                  `json:"bugs"`
 	License        string                 `json:"license"`
 	Users          map[string]bool        `json:"users"`
 	Keywords       []string               `json:"keywords"`
 	Author         Author                 `json:"author"`
 	Contributors   []Contributor          `json:"contributors"`
-	Deprecated     string                 `json:"deprecated"`
-	Other          map[string]interface{} `json:"other"`
+	Deprecated     interface{}            `json:"deprecated"` // 弃用说明，可以是 string、bool 或 nil
+	Funding        interface{}            `json:"funding"`    // 资金赞助信息
+	Attachments    map[string]Attachment  `json:"_attachments"` // 发布时包含的附件（tarball 数据）
+}
+
+// Attachment represents a package attachment (tarball data) in the _attachments field.
+type Attachment struct {
+	ContentType string `json:"content_type"`
+	Data        string `json:"data"`   // Base64-encoded tarball data
+	Length      int    `json:"length"` // Size in bytes
 }
 
 // ToJsonString 将 Package 对象转换为 JSON 字符串
@@ -55,6 +63,41 @@ type Package struct {
 func (x *Package) ToJsonString() string {
 	bytes, _ := json.Marshal(x)
 	return string(bytes)
+}
+
+// IsDeprecated returns whether this package is deprecated.
+// Handles the fact that Deprecated can be a string, bool, or nil.
+func (x *Package) IsDeprecated() bool {
+	if x.Deprecated == nil {
+		return false
+	}
+	switch d := x.Deprecated.(type) {
+	case bool:
+		return d
+	case string:
+		return d != ""
+	default:
+		return false
+	}
+}
+
+// DeprecatedMessage returns the deprecation message if this package is deprecated.
+// Returns empty string if not deprecated.
+func (x *Package) DeprecatedMessage() string {
+	if x.Deprecated == nil {
+		return ""
+	}
+	switch d := x.Deprecated.(type) {
+	case bool:
+		if d {
+			return "this package has been deprecated"
+		}
+		return ""
+	case string:
+		return d
+	default:
+		return ""
+	}
 }
 
 // Maintainer 表示 NPM 包的维护者信息

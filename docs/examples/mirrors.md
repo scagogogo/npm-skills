@@ -25,7 +25,7 @@ import (
     "net"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 镜像配置
@@ -162,7 +162,7 @@ import (
     "net"
     "strings"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 地理位置检测器
@@ -271,7 +271,7 @@ import (
     "os"
     "strings"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 环境配置管理器
@@ -398,7 +398,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 镜像配置
@@ -509,7 +509,7 @@ import (
     "fmt"
     "net/url"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 // 企业配置管理器
@@ -670,13 +670,13 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: npm-crawler-app
+  name: npm-skills-app
 spec:
   template:
     spec:
       containers:
       - name: app
-        image: npm-crawler-app:latest
+        image: npm-skills-app:latest
         envFrom:
         - configMapRef:
             name: npm-config

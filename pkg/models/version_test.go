@@ -168,3 +168,97 @@ func TestVersionFromJson(t *testing.T) {
 	assert.Equal(t, "79c399428f79c93e50e9f2942e0d50c7763edfc7", version.Dist.Shasum)
 	assert.Equal(t, "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz", version.Dist.Tarball)
 }
+
+func TestVersionIsDeprecated(t *testing.T) {
+	tests := []struct {
+		name       string
+		deprecated interface{}
+		want       bool
+	}{
+		{"nil is not deprecated", nil, false},
+		{"true bool is deprecated", true, true},
+		{"false bool is not deprecated", false, false},
+		{"non-empty string is deprecated", "this version is deprecated", true},
+		{"empty string is not deprecated", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := &Version{Deprecated: tt.deprecated}
+			assert.Equal(t, tt.want, v.IsDeprecated())
+		})
+	}
+}
+
+func TestVersionDeprecatedMessage(t *testing.T) {
+	tests := []struct {
+		name       string
+		deprecated interface{}
+		want       string
+	}{
+		{"nil returns empty", nil, ""},
+		{"true bool returns default message", true, "this version has been deprecated"},
+		{"false bool returns empty", false, ""},
+		{"string returns the string", "use v2 instead", "use v2 instead"},
+		{"empty string returns empty", "", ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := &Version{Deprecated: tt.deprecated}
+			assert.Equal(t, tt.want, v.DeprecatedMessage())
+		})
+	}
+}
+
+func TestVersionWithPeerDependencies(t *testing.T) {
+	v := &Version{
+		Name:    "test-pkg",
+		Version: "1.0.0",
+		PeerDependencies: map[string]string{
+			"react": "^18.0.0",
+		},
+		Engines: map[string]string{
+			"node": ">=16",
+		},
+		OS:  []string{"linux", "darwin"},
+		CPU: []string{"x64", "arm64"},
+		Type: "module",
+	}
+
+	assert.Equal(t, "^18.0.0", v.PeerDependencies["react"])
+	assert.Equal(t, ">=16", v.Engines["node"])
+	assert.Equal(t, []string{"linux", "darwin"}, v.OS)
+	assert.Equal(t, []string{"x64", "arm64"}, v.CPU)
+	assert.Equal(t, "module", v.Type)
+}
+
+func TestPackageIsDeprecated(t *testing.T) {
+	tests := []struct {
+		name       string
+		deprecated interface{}
+		want       bool
+	}{
+		{"nil is not deprecated", nil, false},
+		{"true bool is deprecated", true, true},
+		{"false bool is not deprecated", false, false},
+		{"non-empty string is deprecated", "use other-package instead", true},
+		{"empty string is not deprecated", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			pkg := &Package{Deprecated: tt.deprecated}
+			assert.Equal(t, tt.want, pkg.IsDeprecated())
+		})
+	}
+}
+
+func TestRepositoryWithDirectory(t *testing.T) {
+	repo := Repository{
+		Type:      "git",
+		URL:       "https://github.com/angular/angular.git",
+		Directory: "packages/core",
+	}
+	assert.Equal(t, "packages/core", repo.Directory)
+}

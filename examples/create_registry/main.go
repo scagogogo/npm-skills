@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/scagogogo/npm-crawler/pkg/registry"
+	"github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {

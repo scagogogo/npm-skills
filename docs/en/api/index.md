@@ -9,7 +9,7 @@ NPM Crawler provides a simple yet powerful API for interacting with NPM Registry
 Registry is the core client of NPM Crawler, providing all functionality to access NPM Registry.
 
 ```go
-import "github.com/scagogogo/npm-crawler/pkg/registry"
+import "github.com/scagogogo/npm-skills/pkg/registry"
 
 // Create default client
 client := registry.NewRegistry()
@@ -283,4 +283,4 @@ if err != nil {
 
 - Check [Chinese detailed API documentation](/api/registry) or [English API documentation](/en/api/registry)
 - Browse [example code](/en/examples/basic) to learn specific usage
-- Visit [GitHub](https://github.com/scagogogo/npm-crawler) to view complete source code 
+- Visit [GitHub](https://github.com/scagogogo/npm-skills) to view complete source code 

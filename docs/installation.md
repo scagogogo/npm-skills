@@ -35,7 +35,7 @@ go mod init your-project-name
 ### 使用 go get（推荐）
 
 ```bash
-go get github.com/scagogogo/npm-crawler
+go get github.com/scagogogo/npm-skills
 ```
 
 ### 添加到 go.mod
@@ -48,7 +48,7 @@ module your-project
 go 1.20
 
 require (
-    github.com/scagogogo/npm-crawler latest
+    github.com/scagogogo/npm-skills latest
 )
 ```
 
@@ -63,10 +63,10 @@ go mod tidy
 
 ```bash
 # 安装特定版本
-go get github.com/scagogogo/npm-crawler@v1.0.0
+go get github.com/scagogogo/npm-skills@v1.0.0
 
 # 安装最新的预发布版本
-go get github.com/scagogogo/npm-crawler@latest
+go get github.com/scagogogo/npm-skills@latest
 ```
 
 ## 验证安装
@@ -82,7 +82,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/scagogogo/npm-crawler/pkg/registry"
+    "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
@@ -163,7 +163,7 @@ options := registry.NewOptions().
 
 ### 3. Go 版本不兼容
 
-**错误**: `package github.com/scagogogo/npm-crawler: module requires Go 1.20`
+**错误**: `package github.com/scagogogo/npm-skills: module requires Go 1.20`
 
 **解决方案**:
 - 升级 Go 到 1.20 或更高版本
@@ -171,7 +171,7 @@ options := registry.NewOptions().
 
 ### 4. 模块导入问题
 
-**错误**: `cannot find module providing package github.com/scagogogo/npm-crawler`
+**错误**: `cannot find module providing package github.com/scagogogo/npm-skills`
 
 **解决方案**:
 ```bash
@@ -313,6 +313,6 @@ log.Printf("获取包信息: %s, 错误: %v", "react", err)
 1. 查看 [快速开始指南](/getting-started) 学习基本用法
 2. 阅读 [API 文档](/api/) 了解所有功能
 3. 浏览 [示例代码](/examples/basic) 学习实际应用
-4. 参与 [GitHub 项目](https://github.com/scagogogo/npm-crawler) 贡献代码
+4. 参与 [GitHub 项目](https://github.com/scagogogo/npm-skills) 贡献代码
 
-如果遇到问题，请在 [GitHub Issues](https://github.com/scagogogo/npm-crawler/issues) 中报告。
+如果遇到问题，请在 [GitHub Issues](https://github.com/scagogogo/npm-skills/issues) 中报告。

@@ -52,8 +52,8 @@ func TestPackage(t *testing.T) {
 		Author: Author{
 			Name: "Test Author",
 		},
-		Bugs: map[string]interface{}{
-			"url": "https://github.com/example/test-package/issues",
+		Bugs: &Bugs{
+			URL: "https://github.com/example/test-package/issues",
 		},
 		ReadMeFilename: "README.md",
 		Users: map[string]bool{
@@ -63,10 +63,9 @@ func TestPackage(t *testing.T) {
 		Contributors: []Contributor{
 			{
 				Name: "contributor1",
-				URL:  "https://github.com/contributor1",
+				Url:   "https://github.com/contributor1",
 			},
 		},
-		Other: map[string]interface{}{},
 	}
 
 	// 基本属性测试

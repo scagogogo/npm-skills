@@ -1,0 +1,40 @@
+#
+# Verdaccio configuration for testing npm-skills SDK
+# This is a permissive config intended for local testing only.
+#
+
+# Path to a directory where packages are stored
+storage: /home/cc11001100/github/scagogogo/npm-skills/scripts/verdaccio-storage
+
+# Max body size for published packages
+max_body_size: 50mb
+
+web:
+  title: npm-skills Test Registry
+
+listen: 0.0.0.0:4873
+
+# Authentication – allow any user/password for publishing
+auth:
+  htpasswd:
+    file: /home/cc11001100/github/scagogogo/npm-skills/scripts/verdaccio-htpasswd
+    max_users: 100
+
+# Access control – wide open for testing
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+
+packages:
+  '**':
+    access: $all
+    publish: $authenticated
+    unpublish: $authenticated
+    proxy: npmjs
+
+# Logging
+log: { type: stdout, format: pretty, level: http }
+
+# Disable rate limiting for tests
+server:
+  keepAliveTimeout: 60

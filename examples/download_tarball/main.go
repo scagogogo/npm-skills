@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/scagogogo/npm-crawler/pkg/registry"
+	"github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
