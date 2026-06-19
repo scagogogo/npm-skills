@@ -224,6 +224,8 @@ func (x *Registry) DownloadTarball(ctx context.Context, packageName, version, de
 	}
 	if x.options.Token != "" {
 		req.Header.Set("Authorization", "Bearer "+x.options.Token)
+	} else if x.options.Username != "" && x.options.Password != "" {
+		req.SetBasicAuth(x.options.Username, x.options.Password)
 	}
 
 	resp, err := httpClient.Do(req)
@@ -308,9 +310,8 @@ func (x *Registry) getBytes(ctx context.Context, targetUrl string) ([]byte, erro
 	if x.options.Proxy != "" {
 		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
 	}
-	if x.options.Token != "" {
-		options.AppendRequestSetting(requestSettingHeader("Authorization", "Bearer "+x.options.Token))
-	}
+	// 设置认证（Token 优先，Basic Auth 其次）
+	applyAuthSettings(x, options)
 	if x.options.UserAgent != "" {
 		options.AppendRequestSetting(requestSettingHeader("User-Agent", x.options.UserAgent))
 	}

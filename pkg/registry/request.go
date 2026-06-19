@@ -19,6 +19,28 @@ func requestSettingHeader(key, value string) requests.RequestSetting {
 	}
 }
 
+// requestSettingBasicAuth 创建一个设置 HTTP Basic Auth 的 RequestSetting
+//
+// 适用于使用用户名密码认证的私有仓库（如 Verdaccio、Artifactory）。
+func requestSettingBasicAuth(username, password string) requests.RequestSetting {
+	return func(client *http.Client, httpRequest *http.Request) error {
+		httpRequest.SetBasicAuth(username, password)
+		return nil
+	}
+}
+
+// applyAuthSettings 向请求选项添加认证设置
+//
+// 认证优先级：Token > Basic Auth
+// Token 通常从 npm token create 获取，Basic Auth 使用用户名密码。
+func applyAuthSettings(x *Registry, options *requests.Options[any, []byte]) {
+	if x.options.Token != "" {
+		options.AppendRequestSetting(requestSettingHeader("Authorization", "Bearer "+x.options.Token))
+	} else if x.options.Username != "" && x.options.Password != "" {
+		options.AppendRequestSetting(requestSettingBasicAuth(x.options.Username, x.options.Password))
+	}
+}
+
 // sendRequest 发送HTTP请求到指定URL，支持自定义方法和请求体
 //
 // 这是所有写操作（PUT/POST/DELETE）的底层传输方法。
@@ -60,10 +82,8 @@ func (x *Registry) sendRequest(ctx context.Context, method, targetUrl string, bo
 		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
 	}
 
-	// 设置认证Token
-	if x.options.Token != "" {
-		options.AppendRequestSetting(requestSettingHeader("Authorization", "Bearer "+x.options.Token))
-	}
+	// 设置认证（Token 优先，Basic Auth 其次）
+	applyAuthSettings(x, options)
 
 	// 设置 User-Agent
 	if x.options.UserAgent != "" {
@@ -117,10 +137,8 @@ func (x *Registry) sendJSON(ctx context.Context, method, targetUrl string, paylo
 		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
 	}
 
-	// 设置认证Token
-	if x.options.Token != "" {
-		options.AppendRequestSetting(requestSettingHeader("Authorization", "Bearer "+x.options.Token))
-	}
+	// 设置认证（Token 优先，Basic Auth 其次）
+	applyAuthSettings(x, options)
 
 	// 设置 User-Agent
 	if x.options.UserAgent != "" {
@@ -130,10 +148,22 @@ func (x *Registry) sendJSON(ctx context.Context, method, targetUrl string, paylo
 	return requests.SendRequest[any, []byte](ctx, options)
 }
 
+// requireAuth 验证是否已配置认证信息（Token 或 Basic Auth）
+//
+// 所有写操作都需要认证。Token 优先级高于 Basic Auth。
+//
+// 返回值:
+//   - error: 如果未配置认证信息则返回错误
+func (x *Registry) requireAuth() error {
+	if !x.options.HasAuth() {
+		return fmt.Errorf("authentication required: configure with options.SetToken() or options.SetBasicAuth() before calling write operations")
+	}
+	return nil
+}
+
 // requireToken 验证Token是否已设置
 //
-// 所有写操作（发布、取消发布、设置dist-tag等）都需要认证Token。
-// 此方法在写操作开头调用，确保Token已配置。
+// 仅检查 Token，不检查 Basic Auth。适用于某些严格要求 Token 的操作。
 //
 // 返回值:
 //   - error: 如果Token未设置则返回错误
@@ -148,17 +178,7 @@ func (x *Registry) requireToken() error {
 //
 // NPM Registry 的 /-/package/ 端点要求对 scoped 包中的 "/" 进行编码。
 // 例如 @nestjs/core 需要编码为 @nestjs%2Fcore。
-// 对于直接的包路径（如 /<package>），NPM Registry 可以处理原始的 scoped 包名，
-// 但 /-/package/ 路径严格要求编码。
-//
-// 参数:
-//   - name: 包名称，如 "react" 或 "@nestjs/core"
-//
-// 返回值:
-//   - string: URL编码后的包名称
 func encodePackageName(name string) string {
-	// 对 scoped 包中的 "/" 进行 URL 编码
-	// 保留 "@" 符号（NPM Registry 接受 @ 作为路径的一部分）
 	if strings.Contains(name, "/") {
 		return strings.Replace(name, "/", "%2F", 1)
 	}
@@ -166,28 +186,11 @@ func encodePackageName(name string) string {
 }
 
 // encodePackageNameForPath 对包名进行完整路径编码
-//
-// 用于包名作为 URL 路径段的情况（如 /<package>/<version>）。
-// NPM Registry 接受 @ 符号作为路径的一部分，但 "/" 需要编码。
-//
-// 参数:
-//   - name: 包名称
-//
-// 返回值:
-//   - string: URL编码后的包名称
 func encodePackageNameForPath(name string) string {
 	return url.PathEscape(name)
 }
 
 // requirePackageName 验证包名是否为空
-//
-// 所有接受包名参数的方法都应调用此函数进行验证。
-//
-// 参数:
-//   - packageName: 包名称
-//
-// 返回值:
-//   - error: 如果包名为空则返回错误
 func requirePackageName(packageName string) error {
 	if packageName == "" {
 		return fmt.Errorf("package name is required and must not be empty")

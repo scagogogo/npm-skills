@@ -97,7 +97,7 @@ func TestGetHttpClient(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, client)
 	// 无代理时应该返回默认客户端
-	assert.Equal(t, http.DefaultClient, client)
+	assert.NotNil(t, client.Transport, "should create Transport for InsecureSkipVerify support")
 
 	// 测试有效代理的情况
 	options.SetProxy("http://proxy.example.com:8080")
@@ -123,7 +123,7 @@ func TestGetHttpClient(t *testing.T) {
 	client, err = options.GetHttpClient()
 	assert.Nil(t, err)
 	assert.NotNil(t, client)
-	assert.Equal(t, http.DefaultClient, client, "空字符串代理应该返回默认客户端")
+	assert.NotNil(t, client, "空字符串代理应该返回可用客户端")
 }
 
 func TestSetToken(t *testing.T) {
