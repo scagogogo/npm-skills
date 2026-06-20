@@ -1,4 +1,16 @@
+# IDE
 .idea
+.vscode
+
+# Build output
+/npm-skills
 /npm-crawler
+
+# Test coverage
 coverage.txt
 coverage.html
+coverage*.out
+
+# OS
+.DS_Store
+Thumbs.db
