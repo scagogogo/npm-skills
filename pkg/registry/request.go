@@ -41,6 +41,38 @@ func applyAuthSettings(x *Registry, options *requests.Options[any, []byte]) {
 	}
 }
 
+// applyRequestDefaults 向请求选项应用默认配置（代理、认证、User-Agent）
+//
+// 这是所有请求方法（getBytes、sendRequest、sendJSON）共享的配置逻辑。
+func (x *Registry) applyRequestDefaults(options *requests.Options[any, []byte]) {
+	if x.options.Proxy != "" {
+		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
+	}
+	applyAuthSettings(x, options)
+	if x.options.UserAgent != "" {
+		options.AppendRequestSetting(requestSettingHeader("User-Agent", x.options.UserAgent))
+	}
+}
+
+// applyTimeout 向上下文应用超时设置
+//
+// 如果 Options.Timeout > 0，返回带超时的新上下文和取消函数；
+// 否则返回原上下文。
+func (x *Registry) applyTimeout(ctx context.Context) (context.Context, context.CancelFunc) {
+	if x.options.Timeout > 0 {
+		return context.WithTimeout(ctx, x.options.Timeout)
+	}
+	return ctx, func() {}
+}
+
+// defaultAcceptStatusCodes 返回默认接受的 HTTP 状态码
+func defaultAcceptStatusCodes(codes []int) []int {
+	if len(codes) == 0 {
+		return []int{http.StatusOK, http.StatusCreated}
+	}
+	return codes
+}
+
 // sendRequest 发送HTTP请求到指定URL，支持自定义方法和请求体
 //
 // 这是所有写操作（PUT/POST/DELETE）的底层传输方法。
@@ -57,39 +89,17 @@ func applyAuthSettings(x *Registry, options *requests.Options[any, []byte]) {
 //   - []byte: 响应体字节数组
 //   - error: 如果请求失败则返回错误
 func (x *Registry) sendRequest(ctx context.Context, method, targetUrl string, body []byte, acceptStatusCodes ...int) ([]byte, error) {
-	// Apply timeout from options if set
-	if x.options.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, x.options.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := x.applyTimeout(ctx)
+	defer cancel()
 
-	// 默认接受 200 OK 和 201 Created
-	if len(acceptStatusCodes) == 0 {
-		acceptStatusCodes = []int{http.StatusOK, http.StatusCreated}
-	}
-
-	options := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler(acceptStatusCodes...))
+	options := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler(defaultAcceptStatusCodes(acceptStatusCodes)...))
 	options = options.WithMethod(method)
 
-	// 设置请求体
 	if body != nil {
 		options = options.WithBody(body)
 	}
 
-	// 设置代理
-	if x.options.Proxy != "" {
-		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
-	}
-
-	// 设置认证（Token 优先，Basic Auth 其次）
-	applyAuthSettings(x, options)
-
-	// 设置 User-Agent
-	if x.options.UserAgent != "" {
-		options.AppendRequestSetting(requestSettingHeader("User-Agent", x.options.UserAgent))
-	}
-
+	x.applyRequestDefaults(options)
 	return requests.SendRequest[any, []byte](ctx, options)
 }
 
@@ -108,43 +118,20 @@ func (x *Registry) sendRequest(ctx context.Context, method, targetUrl string, bo
 //   - []byte: 响应体字节数组
 //   - error: 如果请求失败则返回错误
 func (x *Registry) sendJSON(ctx context.Context, method, targetUrl string, payload interface{}, acceptStatusCodes ...int) ([]byte, error) {
-	// Apply timeout from options if set
-	if x.options.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, x.options.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := x.applyTimeout(ctx)
+	defer cancel()
 
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal JSON payload: %w", err)
 	}
 
-	// 默认接受 200 OK 和 201 Created
-	if len(acceptStatusCodes) == 0 {
-		acceptStatusCodes = []int{http.StatusOK, http.StatusCreated}
-	}
-
-	options := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler(acceptStatusCodes...))
+	options := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler(defaultAcceptStatusCodes(acceptStatusCodes)...))
 	options = options.WithMethod(method)
 	options = options.WithBody(body)
-
-	// 设置Content-Type
 	options.AppendRequestSetting(requestSettingHeader("Content-Type", "application/json"))
 
-	// 设置代理
-	if x.options.Proxy != "" {
-		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
-	}
-
-	// 设置认证（Token 优先，Basic Auth 其次）
-	applyAuthSettings(x, options)
-
-	// 设置 User-Agent
-	if x.options.UserAgent != "" {
-		options.AppendRequestSetting(requestSettingHeader("User-Agent", x.options.UserAgent))
-	}
-
+	x.applyRequestDefaults(options)
 	return requests.SendRequest[any, []byte](ctx, options)
 }
 
@@ -190,10 +177,59 @@ func encodePackageNameForPath(name string) string {
 	return url.PathEscape(name)
 }
 
-// requirePackageName 验证包名是否为空
+// requirePackageName 验证包名是否合法
+//
+// NPM 包名规则:
+//   - 不能为空
+//   - 长度不超过 214 字符
+//   - 只能包含小写字母、数字、连字符(-)、下划线(_)、点(.)
+//   - 不能以点(.)或下划线(_)开头
+//   - scoped 包格式为 @scope/name，scope 和 name 都遵循上述规则
 func requirePackageName(packageName string) error {
 	if packageName == "" {
 		return fmt.Errorf("package name is required and must not be empty")
 	}
+	if len(packageName) > 214 {
+		return fmt.Errorf("package name too long: %d characters (max 214)", len(packageName))
+	}
+
+	// Handle scoped packages: @scope/name
+	if strings.HasPrefix(packageName, "@") {
+		parts := strings.SplitN(packageName, "/", 2)
+		if len(parts) != 2 {
+			return fmt.Errorf("invalid scoped package name: %q (expected @scope/name)", packageName)
+		}
+		scope := strings.TrimPrefix(parts[0], "@")
+		name := parts[1]
+		if err := validateNamePart(scope, "scope"); err != nil {
+			return err
+		}
+		if err := validateNamePart(name, "name"); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return validateNamePart(packageName, "name")
+}
+
+// validateNamePart 验证包名的一部分（scope 或 name）
+func validateNamePart(part, label string) error {
+	if part == "" {
+		return fmt.Errorf("package %s must not be empty", label)
+	}
+	if part[0] == '.' || part[0] == '_' {
+		return fmt.Errorf("package %s %q must not start with '.' or '_'", label, part)
+	}
+	for _, c := range part {
+		if !isValidNameChar(c) {
+			return fmt.Errorf("package %s %q contains invalid character %q (allowed: lowercase letters, digits, '-', '_', '.')", label, part, c)
+		}
+	}
 	return nil
+}
+
+// isValidNameChar 检查字符是否为合法的包名字符
+func isValidNameChar(c rune) bool {
+	return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.'
 }

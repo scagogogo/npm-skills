@@ -204,3 +204,29 @@ func TestRegistryWithToken(t *testing.T) {
 	retrievedOpts := registry.GetOptions()
 	assert.Equal(t, "npm_test_token", retrievedOpts.Token)
 }
+
+func TestOptionsStringMasking(t *testing.T) {
+	// Test that String() masks sensitive fields
+	options := NewOptions().
+		SetRegistryURL("https://registry.npmjs.org").
+		SetToken("npm_abcdef123456").
+		SetBasicAuth("admin", "supersecret123")
+
+	s := options.String()
+	assert.Contains(t, s, "npm_****", "token should be masked showing first 4 chars")
+	assert.NotContains(t, s, "npm_abcdef123456", "full token should not appear")
+	assert.Contains(t, s, "supe****", "password should be masked showing first 4 chars")
+	assert.NotContains(t, s, "supersecret123", "full password should not appear")
+	assert.Contains(t, s, "admin", "username should not be masked")
+
+	// Test short token (<=4 chars)
+	options2 := NewOptions().SetToken("abc")
+	s2 := options2.String()
+	assert.Contains(t, s2, "****", "short token should be fully masked")
+	assert.NotContains(t, s2, "abc", "even short token should not appear in full")
+
+	// Test no auth
+	options3 := NewOptions()
+	s3 := options3.String()
+	assert.Contains(t, s3, "Token:****", "empty token should show ****")
+}

@@ -316,23 +316,11 @@ func (x *Registry) getBytes(ctx context.Context, targetUrl string) ([]byte, erro
 //   - []byte: 响应数据的字节数组
 //   - error: 如果请求失败则返回错误
 func (x *Registry) getBytesWithHeaders(ctx context.Context, targetUrl string, headers map[string]string) ([]byte, error) {
-	// Apply timeout from options if set
-	if x.options.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, x.options.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := x.applyTimeout(ctx)
+	defer cancel()
 
 	options := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler())
-	if x.options.Proxy != "" {
-		options.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
-	}
-	// 设置认证（Token 优先，Basic Auth 其次）
-	applyAuthSettings(x, options)
-	if x.options.UserAgent != "" {
-		options.AppendRequestSetting(requestSettingHeader("User-Agent", x.options.UserAgent))
-	}
-	// 应用自定义头
+	x.applyRequestDefaults(options)
 	for key, value := range headers {
 		options.AppendRequestSetting(requestSettingHeader(key, value))
 	}

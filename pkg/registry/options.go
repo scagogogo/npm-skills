@@ -205,6 +205,23 @@ func (o *Options) HasAuth() bool {
 	return o.Token != "" || (o.Username != "" && o.Password != "")
 }
 
+// String 返回 Options 的安全字符串表示，敏感字段会被脱敏处理
+//
+// Token 和 Password 不会被明文输出，仅显示前 4 个字符 + "****"。
+// 这避免了 fmt.Printf("%v", options) 或日志打印时泄露凭证。
+func (o *Options) String() string {
+	maskToken := "****"
+	if o.Token != "" && len(o.Token) > 4 {
+		maskToken = o.Token[:4] + "****"
+	}
+	maskPassword := "****"
+	if o.Password != "" && len(o.Password) > 4 {
+		maskPassword = o.Password[:4] + "****"
+	}
+	return fmt.Sprintf("Options{RegistryURL:%s, Proxy:%s, Token:%s, Username:%s, Password:%s, DownloadStatsURL:%s, Timeout:%s, UserAgent:%s, InsecureSkipVerify:%v}",
+		o.RegistryURL, o.Proxy, maskToken, o.Username, maskPassword, o.DownloadStatsURL, o.Timeout, o.UserAgent, o.InsecureSkipVerify)
+}
+
 // GetHttpClient 获取配置了代理和 TLS 的 HTTP 客户端
 //
 // 返回的客户端会被缓存并复用，以利用连接池和 Keep-Alive 提升性能。
