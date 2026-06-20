@@ -299,6 +299,23 @@ func unmarshalJson[T any](bytes []byte) (T, error) {
 //
 // 注意: 这是一个内部方法，支持代理设置和 Token 认证
 func (x *Registry) getBytes(ctx context.Context, targetUrl string) ([]byte, error) {
+	return x.getBytesWithHeaders(ctx, targetUrl, nil)
+}
+
+// getBytesWithHeaders 从指定 URL 获取响应数据的字节数组，支持自定义 HTTP 头
+//
+// 与 getBytes 相同，但允许额外设置自定义 HTTP 头（如 Accept 头）。
+// 所有标准配置（代理、认证、超时、User-Agent）仍然自动应用。
+//
+// 参数:
+//   - ctx: 上下文，可用于取消请求或设置超时
+//   - targetUrl: 请求的目标 URL
+//   - headers: 额外的 HTTP 头映射，键为头名称，值为头值
+//
+// 返回值:
+//   - []byte: 响应数据的字节数组
+//   - error: 如果请求失败则返回错误
+func (x *Registry) getBytesWithHeaders(ctx context.Context, targetUrl string, headers map[string]string) ([]byte, error) {
 	// Apply timeout from options if set
 	if x.options.Timeout > 0 {
 		var cancel context.CancelFunc
@@ -314,6 +331,10 @@ func (x *Registry) getBytes(ctx context.Context, targetUrl string) ([]byte, erro
 	applyAuthSettings(x, options)
 	if x.options.UserAgent != "" {
 		options.AppendRequestSetting(requestSettingHeader("User-Agent", x.options.UserAgent))
+	}
+	// 应用自定义头
+	for key, value := range headers {
+		options.AppendRequestSetting(requestSettingHeader(key, value))
 	}
 	return requests.SendRequest[any, []byte](ctx, options)
 }

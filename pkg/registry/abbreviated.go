@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/crawler-go-go-go/go-requests"
 	"github.com/scagogogo/npm-skills/pkg/models"
 )
-
-// requestSettingHeader 已移至 request.go 文件
 
 // GetAbbreviatedPackageInformation 获取指定包的精简元数据
 //
@@ -34,16 +31,13 @@ import (
 //	}
 //	fmt.Println("Latest:", pkg.DistTags["latest"])
 func (x *Registry) GetAbbreviatedPackageInformation(ctx context.Context, packageName string) (*models.Package, error) {
+	if err := requirePackageName(packageName); err != nil {
+		return nil, err
+	}
 	targetUrl := fmt.Sprintf("%s/%s", x.options.RegistryURL, url.PathEscape(packageName))
-	opts := requests.NewOptions[any, []byte](targetUrl, requests.BytesResponseHandler())
-	opts.AppendRequestSetting(requestSettingHeader("Accept", "application/vnd.npm.install-v1+json"))
-	if x.options.Proxy != "" {
-		opts.AppendRequestSetting(requests.RequestSettingProxy(x.options.Proxy))
-	}
-	if x.options.Token != "" {
-		opts.AppendRequestSetting(requestSettingHeader("Authorization", "Bearer "+x.options.Token))
-	}
-	bytes, err := requests.SendRequest[any, []byte](ctx, opts)
+	bytes, err := x.getBytesWithHeaders(ctx, targetUrl, map[string]string{
+		"Accept": "application/vnd.npm.install-v1+json",
+	})
 	if err != nil {
 		return nil, err
 	}

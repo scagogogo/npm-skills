@@ -274,3 +274,56 @@ func RegistryTest(t *testing.T, r *Registry) {
 	assert.NotNil(t, packageInformation)
 	assert.Equal(t, "axios", packageInformation.Name)
 }
+
+func TestGetBytesWithHeaders(t *testing.T) {
+	var receivedAccept string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedAccept = r.Header.Get("Accept")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"db_name":"registry","doc_count":0}`))
+	}))
+	defer server.Close()
+
+	registry := NewRegistry(NewOptions().SetRegistryURL(server.URL))
+
+	// Test with custom headers
+	bytes, err := registry.getBytesWithHeaders(context.Background(), server.URL, map[string]string{
+		"Accept": "application/vnd.npm.install-v1+json",
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, bytes)
+	assert.Equal(t, "application/vnd.npm.install-v1+json", receivedAccept)
+
+	// Test without custom headers (getBytes delegates to getBytesWithHeaders)
+	receivedAccept = ""
+	bytes, err = registry.getBytes(context.Background(), server.URL)
+	assert.Nil(t, err)
+	assert.NotNil(t, bytes)
+	assert.Empty(t, receivedAccept, "no custom Accept header should be set")
+}
+
+func TestGetBytesWithHeadersAuthAndUserAgent(t *testing.T) {
+	var receivedAuth, receivedUA string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedAuth = r.Header.Get("Authorization")
+		receivedUA = r.Header.Get("User-Agent")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"db_name":"registry","doc_count":0}`))
+	}))
+	defer server.Close()
+
+	// Test with Token auth
+	registry := NewRegistry(NewOptions().
+		SetRegistryURL(server.URL).
+		SetToken("npm_test_token").
+		SetUserAgent("test-agent/1.0"))
+
+	_, err := registry.getBytesWithHeaders(context.Background(), server.URL, map[string]string{
+		"Accept": "application/vnd.npm.install-v1+json",
+	})
+	assert.Nil(t, err)
+	assert.Equal(t, "Bearer npm_test_token", receivedAuth)
+	assert.Equal(t, "test-agent/1.0", receivedUA)
+}
