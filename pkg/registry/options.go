@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"sync"
 	"time"
 )
 
@@ -15,6 +16,9 @@ const DefaultRegistryURL = "https://registry.npmjs.org"
 //
 // 支持自定义仓库地址、代理、认证、超时等配置。
 // 所有字段均可通过链式 Setter 方法设置。
+//
+// HTTP 客户端通过 GetHttpClient() 获取时会自动缓存并复用，
+// 以便利用连接池和 Keep-Alive 提升性能。
 //
 // 示例:
 //
@@ -32,6 +36,10 @@ type Options struct {
 	Timeout            time.Duration // 请求超时时间，默认为 0（不超时），由调用方通过 context 控制
 	UserAgent          string        // HTTP User-Agent 头，默认为 "npm-skills-sdk"
 	InsecureSkipVerify bool          // 是否跳过 TLS 证书验证（内网自签名证书场景）
+
+	// 内部缓存字段，懒初始化
+	httpClient     *http.Client
+	httpClientOnce sync.Once
 }
 
 // NewOptions 创建默认的 Options 实例
@@ -80,6 +88,7 @@ func (o *Options) SetRegistryURL(registryURL string) *Options {
 //   - *Options: 更新后的选项对象 (支持链式调用)
 func (o *Options) SetProxy(proxy string) *Options {
 	o.Proxy = proxy
+	o.ResetHttpClient()
 	return o
 }
 
@@ -187,6 +196,7 @@ func (o *Options) SetUserAgent(userAgent string) *Options {
 //   - *Options: 更新后的选项对象 (支持链式调用)
 func (o *Options) SetInsecureSkipVerify(skip bool) *Options {
 	o.InsecureSkipVerify = skip
+	o.ResetHttpClient()
 	return o
 }
 
@@ -197,28 +207,48 @@ func (o *Options) HasAuth() bool {
 
 // GetHttpClient 获取配置了代理和 TLS 的 HTTP 客户端
 //
-// 根据配置自动设置代理、TLS 选项等。
-// 返回的客户端可以安全地在多个请求之间复用。
+// 返回的客户端会被缓存并复用，以利用连接池和 Keep-Alive 提升性能。
+// 如果修改了 Proxy 或 InsecureSkipVerify 等影响传输层的配置，
+// 需要调用 ResetHttpClient() 使缓存失效。
 func (o *Options) GetHttpClient() (*http.Client, error) {
-	transport := &http.Transport{}
+	var initErr error
+	o.httpClientOnce.Do(func() {
+		transport := &http.Transport{}
 
-	// 配置代理
-	if o.Proxy != "" {
-		proxyURL, err := url.Parse(o.Proxy)
-		if err != nil {
-			return nil, fmt.Errorf("invalid proxy URL: %w", err)
+		// 配置代理
+		if o.Proxy != "" {
+			proxyURL, err := url.Parse(o.Proxy)
+			if err != nil {
+				initErr = fmt.Errorf("invalid proxy URL: %w", err)
+				return
+			}
+			transport.Proxy = http.ProxyURL(proxyURL)
 		}
-		transport.Proxy = http.ProxyURL(proxyURL)
-	}
 
-	// 配置 TLS
-	if o.InsecureSkipVerify {
-		transport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: true,
+		// 配置 TLS
+		if o.InsecureSkipVerify {
+			transport.TLSClientConfig = &tls.Config{
+				InsecureSkipVerify: true,
+			}
 		}
-	}
 
-	return &http.Client{
-		Transport: transport,
-	}, nil
+		o.httpClient = &http.Client{
+			Transport: transport,
+		}
+	})
+	if initErr != nil {
+		// 重置 sync.Once 以便下次重试
+		o.httpClientOnce = sync.Once{}
+		return nil, initErr
+	}
+	return o.httpClient, nil
+}
+
+// ResetHttpClient 重置缓存的 HTTP 客户端
+//
+// 当修改了 Proxy、InsecureSkipVerify 等影响传输层的配置后，
+// 需要调用此方法使缓存失效，下次 GetHttpClient() 将创建新的客户端。
+func (o *Options) ResetHttpClient() {
+	o.httpClientOnce = sync.Once{}
+	o.httpClient = nil
 }

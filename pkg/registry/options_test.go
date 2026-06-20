@@ -99,7 +99,13 @@ func TestGetHttpClient(t *testing.T) {
 	// 无代理时应该返回默认客户端
 	assert.NotNil(t, client.Transport, "should create Transport for InsecureSkipVerify support")
 
-	// 测试有效代理的情况
+	// 测试缓存：再次调用应该返回同一个客户端实例
+	client2, err := options.GetHttpClient()
+	assert.Nil(t, err)
+	assert.Same(t, client, client2, "should return cached client instance")
+
+	// 测试有效代理的情况 — 新 Options 实例，因为代理变更会 ResetHttpClient
+	options = NewOptions()
 	options.SetProxy("http://proxy.example.com:8080")
 	client, err = options.GetHttpClient()
 	assert.Nil(t, err)
@@ -107,23 +113,65 @@ func TestGetHttpClient(t *testing.T) {
 	assert.NotEqual(t, http.DefaultClient, client, "使用代理时不应该返回默认客户端")
 
 	// 测试无效代理URL的情况（使用包含无效字符的URL）
+	options = NewOptions()
 	options.SetProxy("http://proxy with spaces.com:8080")
 	client, err = options.GetHttpClient()
 	assert.NotNil(t, err, "包含空格的代理URL应该返回错误")
 	assert.Nil(t, client, "无效代理URL时客户端应该为nil")
 
+	// 错误后重试应该能重新初始化（sync.Once 被重置）
+	options.SetProxy("http://proxy.example.com:8080")
+	client, err = options.GetHttpClient()
+	assert.Nil(t, err, "重置后应该能创建新客户端")
+	assert.NotNil(t, client)
+
 	// 测试代理URL格式错误的情况（使用无效的URL格式）
+	options = NewOptions()
 	options.SetProxy("://invalid-url")
 	client, err = options.GetHttpClient()
 	assert.NotNil(t, err, "格式错误的代理URL应该返回错误")
 	assert.Nil(t, client, "格式错误的代理URL时客户端应该为nil")
 
 	// 测试空字符串代理（应该等同于无代理）
+	options = NewOptions()
 	options.SetProxy("")
 	client, err = options.GetHttpClient()
 	assert.Nil(t, err)
 	assert.NotNil(t, client)
 	assert.NotNil(t, client, "空字符串代理应该返回可用客户端")
+}
+
+func TestResetHttpClient(t *testing.T) {
+	options := NewOptions()
+
+	// 获取初始客户端
+	client1, err := options.GetHttpClient()
+	assert.Nil(t, err)
+	assert.NotNil(t, client1)
+
+	// 未修改配置，应该返回同一实例
+	client2, err := options.GetHttpClient()
+	assert.Nil(t, err)
+	assert.Same(t, client1, client2, "should return same cached instance")
+
+	// 修改代理设置会自动触发 ResetHttpClient
+	options.SetProxy("http://proxy.example.com:8080")
+	client3, err := options.GetHttpClient()
+	assert.Nil(t, err)
+	assert.NotSame(t, client1, client3, "should return new instance after proxy change")
+
+	// 手动重置
+	options.ResetHttpClient()
+	client4, err := options.GetHttpClient()
+	assert.Nil(t, err)
+	assert.NotSame(t, client3, client4, "should return new instance after manual reset")
+
+	// 修改 InsecureSkipVerify 也会自动重置
+	options2 := NewOptions()
+	client5, _ := options2.GetHttpClient()
+	options2.SetInsecureSkipVerify(true)
+	client6, _ := options2.GetHttpClient()
+	assert.NotSame(t, client5, client6, "should return new instance after InsecureSkipVerify change")
 }
 
 func TestSetToken(t *testing.T) {
