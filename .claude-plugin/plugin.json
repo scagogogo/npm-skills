@@ -1,0 +1,31 @@
+{
+  "name": "npm",
+  "version": "1.0.0",
+  "description": "NPM Registry client — query and manage packages, versions, dist-tags, downloads, access, stars, tokens, webhooks, orgs, and audit. Supports publish, unpublish, deprecate, custom registry, 8 mirrors, proxy, and auth token.",
+  "author": {
+    "name": "scagogogo",
+    "url": "https://github.com/scagogogo"
+  },
+  "homepage": "https://github.com/scagogogo/npm-skills",
+  "repository": "https://github.com/scagogogo/npm-skills",
+  "license": "MIT",
+  "keywords": [
+    "npm",
+    "registry",
+    "package",
+    "publish",
+    "download",
+    "search",
+    "audit",
+    "mirror",
+    "proxy",
+    "dist-tags",
+    "versions",
+    "token",
+    "webhook",
+    "org",
+    "team",
+    "access",
+    "star"
+  ]
+}

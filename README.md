@@ -19,15 +19,26 @@
 
 ---
 
-## ⚡ One-Click Skill Install
+## ⚡ One-Click Plugin Install
 
-Copy and paste this into your terminal with Claude Code running:
+Install as a Claude Code plugin — AI agents will automatically discover and use it:
 
+```bash
+# Step 1: Add the marketplace
+claude plugin marketplace add scagogogo/npm-skills
+
+# Step 2: Install the plugin
+claude plugin install npm@npm-skills
 ```
-claude skill add github.com/scagogogo/npm-skills
-```
 
-That's it! Claude Code will now automatically use NPM Skills when you ask about packages, versions, downloads, publishing, or anything NPM-related.
+After installation, just ask Claude Code naturally:
+- *"Find info about the axios NPM package"*
+- *"Download the react tarball"*
+- *"Search for HTTP client libraries on NPM"*
+- *"Get download stats for vue last month"*
+- *"Check NPM registry using the China mirror"*
+- *"Publish my package to a private registry"*
+- *"Audit my dependencies for vulnerabilities"*
 
 ---
 
@@ -37,11 +48,12 @@ NPM Skills is designed **AI-native first**, offering four complementary ways to 
 
 ### 1. 🤖 Skill (for AI Agents) — Primary
 
-This repository is a **Claude Code Skill** — install it and AI agents will automatically discover and use it. No shell invocation needed.
+This repository is a **Claude Code Plugin** — install it and AI agents will automatically discover and use it. No shell invocation needed.
 
 **Install:**
 ```bash
-claude skill add github.com/scagogogo/npm-skills
+claude plugin marketplace add scagogogo/npm-skills
+claude plugin install npm@npm-skills
 ```
 
 After installation, just ask Claude Code naturally:

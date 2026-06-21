@@ -1,0 +1,40 @@
+{
+  "name": "npm-skills",
+  "description": "NPM Registry client for AI agents — query packages, manage dist-tags, publish, audit, and more. 8 mirrors, proxy, and private registry support.",
+  "owner": {
+    "name": "scagogogo",
+    "url": "https://github.com/scagogogo"
+  },
+  "plugins": [
+    {
+      "name": "npm",
+      "version": "1.0.0",
+      "description": "NPM Registry client — query and manage packages, versions, dist-tags, downloads, access, stars, tokens, webhooks, orgs, and audit. Supports publish, unpublish, deprecate, custom registry, 8 mirrors, proxy, and auth token. 70+ SDK methods, 33 MCP tools, 26 CLI commands.",
+      "source": "./",
+      "author": {
+        "name": "scagogogo",
+        "url": "https://github.com/scagogogo"
+      },
+      "keywords": [
+        "npm",
+        "registry",
+        "package",
+        "publish",
+        "download",
+        "search",
+        "audit",
+        "mirror",
+        "proxy",
+        "dist-tags",
+        "versions",
+        "token",
+        "webhook",
+        "org",
+        "team",
+        "access",
+        "star"
+      ],
+      "category": "development"
+    }
+  ]
+}

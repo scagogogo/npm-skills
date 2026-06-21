@@ -1,5 +1,5 @@
 ---
-name: npm-skills
+name: npm
 description: NPM Registry client — query and manage packages, versions, dist-tags, downloads, access, stars, tokens, webhooks, orgs, and audit. Supports publish, unpublish, deprecate, custom registry, 8 mirrors, proxy, and auth token. Trigger phrases: "npm package", "npm publish", "npm registry", "search npm", "npm stats", "npm mirror", "npm 版本", "npm 包", "npm 镜像", "npm 发布", "npm 审计".
 version: 1.0.0
 ---
@@ -10,7 +10,14 @@ Complete NPM Registry client — query packages, manage dist-tags, publish/unpub
 
 ## Installation
 
-### Option 1: Download from GitHub Release (Recommended)
+### Option 1: Claude Code Plugin (Recommended for AI agents)
+
+```bash
+claude plugin marketplace add scagogogo/npm-skills
+claude plugin install npm@npm-skills
+```
+
+### Option 2: Download from GitHub Release
 
 Pre-built binaries are available for all major platforms from the [GitHub Releases page](https://github.com/scagogogo/npm-skills/releases).
 
@@ -34,7 +41,7 @@ Expand-Archive npm-skills.zip
 
 **Supported platforms:** Linux (amd64, arm64, 386, arm, mips*, ppc64*, riscv64, s390x, loong64), macOS (amd64, arm64), Windows (amd64, 386), FreeBSD, OpenBSD, NetBSD, Illumos, Solaris.
 
-### Option 2: Build from Source
+### Option 3: Build from Source
 
 On first use or for development, build the CLI tool:
 
@@ -44,7 +51,7 @@ cd {{SKILL_DIR}} && bash scripts/install.sh
 
 This compiles `npm-skills` and `npm-mcp-server` to `~/.local/bin/`.
 
-### Option 3: Go Install
+### Option 4: Go Install
 
 ```bash
 go install github.com/scagogogo/npm-skills/cmd/npm-skills@latest
