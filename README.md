@@ -13,9 +13,24 @@
 
 **NPM Registry client for AI agents and developers** — query packages, manage dist-tags, publish, audit, and more.
 
-[4 Ways to Integrate](#-four-ways-to-integrate) · [Download](https://github.com/scagogogo/npm-skills/releases/latest) · [Documentation](https://pkg.go.dev/github.com/scagogogo/npm-skills)
+[4 Ways to Integrate](#-four-ways-to-integrate) · [Download](https://github.com/scagogogo/npm-skills/releases/latest) · [Website](https://scagogogo.github.io/npm-skills/) · [Go Docs](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 
 </div>
+
+> [!NOTE]
+> **AI-First design.** This repo is a Claude Code plugin. After `claude plugin install npm@npm-skills`, AI agents auto-discover and invoke NPM operations via the `/npm` skill — no shell needed. All CLI commands emit JSON to stdout for easy parsing.
+
+| | |
+|---|---|
+| **Package** | `github.com/scagogogo/npm-skills` (Go module) |
+| **Binaries** | 34 platform combinations via GoReleaser (CGO-free, static) |
+| **SDK methods** | 70+ in `pkg/registry` |
+| **MCP tools** | 33 via `npm-mcp-server` |
+| **CLI commands** | 26 via `npm-skills` |
+| **Mirrors** | 8 built-in (official, Taobao, Huawei, Tencent, CNPM, Yarn, …) |
+| **License** | MIT |
+
+![Architecture](https://scagogogo.github.io/npm-skills/architecture.svg)
 
 ---
 

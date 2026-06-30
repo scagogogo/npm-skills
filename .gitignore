@@ -6,6 +6,11 @@
 /npm-skills
 /npm-crawler
 
+# Website (VitePress)
+website/node_modules/
+website/.vitepress/dist/
+website/.vitepress/cache/
+
 # Test coverage
 coverage.txt
 coverage.html
@@ -14,3 +19,4 @@ coverage*.out
 # OS
 .DS_Store
 Thumbs.db
+scripts/verdaccio-storage/

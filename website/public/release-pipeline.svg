@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="880" height="420" fill="#fff" rx="14"/>
+  <text x="440" y="36" font-size="22" font-weight="bold" fill="#0f172a" text-anchor="middle">Release Pipeline — 34 Platform Binaries</text>
+
+  <!-- git tag trigger -->
+  <rect x="30" y="170" width="130" height="60" rx="10" fill="#1f2937"/>
+  <text x="95" y="198" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">git tag v*</text>
+  <text x="95" y="218" font-size="11" fill="#9ca3af" text-anchor="middle">GitHub Action</text>
+
+  <!-- goreleaser -->
+  <rect x="220" y="150" width="160" height="100" rx="10" fill="#cb3837"/>
+  <text x="300" y="185" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">GoReleaser</text>
+  <text x="300" y="208" font-size="11" fill="#fecaca" text-anchor="middle">CGO_ENABLED=0</text>
+  <text x="300" y="226" font-size="11" fill="#fecaca" text-anchor="middle">-trimpath -s -w</text>
+  <text x="300" y="244" font-size="11" fill="#fecaca" text-anchor="middle">version/commit/date</text>
+
+  <!-- arrow -->
+  <line x1="160" y1="200" x2="218" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- platforms grid -->
+  <text x="640" y="80" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">8 OS × 13 arch (filtered)</text>
+
+  <!-- OS columns -->
+  <g font-size="12" fill="#0f172a" text-anchor="middle">
+    <rect x="430" y="100" width="80" height="28" rx="6" fill="#dbeafe"/><text x="470" y="119">linux</text>
+    <rect x="515" y="100" width="80" height="28" rx="6" fill="#dbeafe"/><text x="555" y="119">darwin</text>
+    <rect x="600" y="100" width="80" height="28" rx="6" fill="#dbeafe"/><text x="640" y="119">windows</text>
+    <rect x="685" y="100" width="80" height="28" rx="6" fill="#dbeafe"/><text x="725" y="119">freebsd</text>
+    <rect x="770" y="100" width="80" height="28" rx="6" fill="#dbeafe"/><text x="810" y="119">openbsd</text>
+
+    <rect x="430" y="135" width="80" height="28" rx="6" fill="#dbeafe"/><text x="470" y="154">netbsd</text>
+    <rect x="515" y="135" width="80" height="28" rx="6" fill="#dbeafe"/><text x="555" y="154">illumos</text>
+    <rect x="600" y="135" width="80" height="28" rx="6" fill="#dbeafe"/><text x="640" y="154">solaris</text>
+  </g>
+
+  <!-- arch chips -->
+  <g font-size="11" fill="#166534">
+    <rect x="430" y="185" width="60" height="22" rx="11" fill="#dcfce7"/><text x="460" y="200">386</text>
+    <rect x="495" y="185" width="60" height="22" rx="11" fill="#dcfce7"/><text x="525" y="200">amd64</text>
+    <rect x="560" y="185" width="55" height="22" rx="11" fill="#dcfce7"/><text x="587" y="200">arm</text>
+    <rect x="620" y="185" width="60" height="22" rx="11" fill="#dcfce7"/><text x="650" y="200">arm64</text>
+    <rect x="685" y="185" width="65" height="22" rx="11" fill="#dcfce7"/><text x="717" y="200">loong64</text>
+    <rect x="755" y="185" width="55" height="22" rx="11" fill="#dcfce7"/><text x="782" y="200">mips</text>
+    <rect x="815" y="185" width="55" height="22" rx="11" fill="#dcfce7"/><text x="842" y="200">mips64</text>
+
+    <rect x="430" y="213" width="65" height="22" rx="11" fill="#dcfce7"/><text x="462" y="228">mips64le</text>
+    <rect x="500" y="213" width="60" height="22" rx="11" fill="#dcfce7"/><text x="530" y="228">mipsle</text>
+    <rect x="565" y="213" width="60" height="22" rx="11" fill="#dcfce7"/><text x="595" y="228">ppc64</text>
+    <rect x="630" y="213" width="65" height="22" rx="11" fill="#dcfce7"/><text x="662" y="228">ppc64le</text>
+    <rect x="700" y="213" width="65" height="22" rx="11" fill="#dcfce7"/><text x="732" y="228">riscv64</text>
+    <rect x="770" y="213" width="55" height="22" rx="11" fill="#dcfce7"/><text x="797" y="228">s390x</text>
+  </g>
+
+  <!-- arrow goreleaser to platforms -->
+  <line x1="380" y1="200" x2="428" y2="180" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- outputs -->
+  <rect x="430" y="270" width="190" height="56" rx="10" fill="#16a34a"/>
+  <text x="525" y="294" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">GitHub Release</text>
+  <text x="525" y="314" font-size="11" fill="#dcfce7" text-anchor="middle">.tar.gz / .zip + checksums</text>
+
+  <rect x="640" y="270" width="190" height="56" rx="10" fill="#0891b2"/>
+  <text x="735" y="294" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">Source Archives</text>
+  <text x="735" y="314" font-size="11" fill="#cffafe" text-anchor="middle">.tar.gz / .zip (git archive)</text>
+
+  <line x1="600" y1="240" x2="525" y2="268" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="700" y1="240" x2="735" y2="268" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <text x="440" y="380" font-size="12" fill="#64748b" text-anchor="middle">AI agents download prebuilt binaries · or build from source via `go install` / `bash scripts/install.sh`</text>
+</svg>

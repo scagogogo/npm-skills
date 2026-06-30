@@ -13,9 +13,24 @@
 
 **面向 AI 智能体和开发者的 NPM Registry 客户端** — 查询包信息、管理 dist-tags、发布、审计等。
 
-[四种接入方式](#-四种接入方式) · [下载](https://github.com/scagogogo/npm-skills/releases/latest) · [文档](https://pkg.go.dev/github.com/scagogogo/npm-skills)
+[四种接入方式](#-四种接入方式) · [下载](https://github.com/scagogogo/npm-skills/releases/latest) · [官网](https://scagogogo.github.io/npm-skills/) · [Go 文档](https://pkg.go.dev/github.com/scagogogo/npm-skills)
 
 </div>
+
+> [!NOTE]
+> **AI 优先设计。** 本仓库是一个 Claude Code 插件。执行 `claude plugin install npm@npm-skills` 后，AI 智能体通过 `/npm` skill 自动发现并调用 NPM 操作 —— 无需手动 Shell。所有 CLI 命令输出 JSON 到 stdout，便于 AI 解析。
+
+| | |
+|---|---|
+| **包路径** | `github.com/scagogogo/npm-skills` (Go module) |
+| **二进制** | GoReleaser 构建 34 个平台组合（纯静态，无 CGO） |
+| **SDK 方法** | `pkg/registry` 下 70+ 个 |
+| **MCP 工具** | `npm-mcp-server` 提供 33 个 |
+| **CLI 命令** | `npm-skills` 提供 26 个 |
+| **镜像源** | 内置 8 个（官方、淘宝、华为、腾讯、CNPM、Yarn…） |
+| **许可证** | MIT |
+
+![架构图](https://scagogogo.github.io/npm-skills/architecture.svg)
 
 ---
 

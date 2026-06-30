@@ -1,0 +1,15 @@
+{
+  "name": "npm-skills-website",
+  "version": "1.0.0",
+  "description": "NPM Skills Documentation — VitePress site",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.5.0"
+  },
+  "license": "MIT"
+}

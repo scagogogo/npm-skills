@@ -1,0 +1,20 @@
+:root {
+  --vp-brand-1: #cb3837;
+  --vp-brand-2: #e1504e;
+  --vp-c-brand-1: var(--vp-brand-1);
+  --vp-c-brand-2: var(--vp-brand-2);
+  --vp-c-brand-3: #a02d2c;
+  --vp-button-brand-bg: var(--vp-brand-1);
+  --vp-button-brand-hover-bg: var(--vp-brand-2);
+}
+
+.VPHero .VPImage {
+  max-width: 760px;
+  width: 100%;
+}
+
+.dark {
+  --vp-c-brand-1: #e1504e;
+  --vp-c-brand-2: #ef6b69;
+  --vp-c-brand-3: #cb3837;
+}

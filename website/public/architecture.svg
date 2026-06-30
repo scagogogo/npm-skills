@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 460" width="880" height="460" font-family="Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff5f5"/>
+      <stop offset="100%" stop-color="#fff"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="880" height="460" fill="url(#bgGrad)" rx="14"/>
+
+  <!-- Title -->
+  <text x="440" y="36" font-size="22" font-weight="bold" fill="#0f172a" text-anchor="middle">NPM Skills — Architecture</text>
+
+  <!-- AI Agent / User layer -->
+  <rect x="30" y="70" width="180" height="70" rx="10" fill="#3b82f6"/>
+  <text x="120" y="100" font-size="15" font-weight="bold" fill="#fff" text-anchor="middle">AI Agent</text>
+  <text x="120" y="122" font-size="12" fill="#dbeafe" text-anchor="middle">Claude Code / Cursor</text>
+
+  <rect x="30" y="170" width="180" height="70" rx="10" fill="#8b5cf6"/>
+  <text x="120" y="200" font-size="15" font-weight="bold" fill="#fff" text-anchor="middle">Developer</text>
+  <text x="120" y="222" font-size="12" fill="#ede9fe" text-anchor="middle">Go program / Shell</text>
+
+  <!-- Four integration ways -->
+  <g>
+    <rect x="280" y="60" width="170" height="56" rx="8" fill="#fff" stroke="#cb3837" stroke-width="2"/>
+    <text x="365" y="84" font-size="13" font-weight="bold" fill="#cb3837" text-anchor="middle">1. Skill / Plugin</text>
+    <text x="365" y="104" font-size="11" fill="#475569" text-anchor="middle">SKILL.md + slash command</text>
+  </g>
+  <g>
+    <rect x="280" y="130" width="170" height="56" rx="8" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+    <text x="365" y="154" font-size="13" font-weight="bold" fill="#0891b2" text-anchor="middle">2. CLI Tool</text>
+    <text x="365" y="174" font-size="11" fill="#475569" text-anchor="middle">npm-skills (26 cmds)</text>
+  </g>
+  <g>
+    <rect x="280" y="200" width="170" height="56" rx="8" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+    <text x="365" y="224" font-size="13" font-weight="bold" fill="#16a34a" text-anchor="middle">3. Go SDK</text>
+    <text x="365" y="244" font-size="11" fill="#475569" text-anchor="middle">pkg/registry (70+ methods)</text>
+  </g>
+  <g>
+    <rect x="280" y="270" width="170" height="56" rx="8" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+    <text x="365" y="294" font-size="13" font-weight="bold" fill="#ca8a04" text-anchor="middle">4. MCP Server</text>
+    <text x="365" y="314" font-size="11" fill="#475569" text-anchor="middle">npm-mcp-server (33 tools)</text>
+  </g>
+
+  <!-- Core SDK layer -->
+  <rect x="510" y="120" width="180" height="150" rx="12" fill="#0f172a"/>
+  <text x="600" y="150" font-size="15" font-weight="bold" fill="#fff" text-anchor="middle">pkg/registry</text>
+  <text x="600" y="175" font-size="11" fill="#94a3b8" text-anchor="middle">HTTP client (cached)</text>
+  <text x="600" y="195" font-size="11" fill="#94a3b8" text-anchor="middle">Auth / Proxy / Timeout</text>
+  <text x="600" y="215" font-size="11" fill="#94a3b8" text-anchor="middle">8 Mirrors</text>
+  <text x="600" y="235" font-size="11" fill="#94a3b8" text-anchor="middle">Typed errors</text>
+  <text x="600" y="255" font-size="11" fill="#94a3b8" text-anchor="middle">Input validation</text>
+
+  <!-- NPM Registry -->
+  <rect x="740" y="150" width="110" height="90" rx="12" fill="#cb3837"/>
+  <text x="795" y="185" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">NPM</text>
+  <text x="795" y="207" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">Registry</text>
+  <text x="795" y="228" font-size="10" fill="#fecaca" text-anchor="middle">registry.npmjs.org</text>
+
+  <!-- Arrows from consumers to integrations -->
+  <line x1="210" y1="105" x2="278" y2="88" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="210" y1="105" x2="278" y2="158" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="210" y1="205" x2="278" y2="228" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="210" y1="205" x2="278" y2="158" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Arrows from integrations to core -->
+  <line x1="450" y1="88" x2="508" y2="150" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="158" x2="508" y2="180" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="228" x2="508" y2="210" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="298" x2="508" y2="240" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Arrow core to registry -->
+  <line x1="690" y1="195" x2="738" y2="195" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Legend / build -->
+  <text x="440" y="430" font-size="12" fill="#64748b" text-anchor="middle">Built with Go · GoReleaser 34-platform binaries · CGO_ENABLED=0 · MIT License</text>
+</svg>
