@@ -270,6 +270,45 @@ func main() {
 }
 ```
 
+Each `SetXxx` method returns `*Options` itself, forming a fluent builder pipeline handed to `NewRegistry` to produce an immutable client:
+
+```mermaid
+flowchart LR
+    N["NewOptions()<br/>defaults"] --> A["SetRegistryURL(url)"]
+    A --> B["SetTimeout(d)"]
+    B --> C["SetProxy(proxyUrl)"]
+    C --> R["NewRegistry(options)"]
+    R --> Client["Registry instance"]
+
+    N -. "each returns *Options" .-> A
+    A -. "each returns *Options" .-> B
+
+    classDef ret fill:#f3e8fd,stroke:#a142f4,color:#4a148c;
+    class N,A,B,C ret;
+```
+
+Whether a proxy is set decides how the underlying `http.Transport` is wired (the client is cached via `sync.Once`):
+
+```mermaid
+flowchart TD
+    Call["build http.Client"] --> Once{"sync.Once<br/>already built?"}
+    Once -->|yes| Cached["return cached *http.Client"]
+    Once -->|no| Build["first build"]
+    Build --> HasProxy{"Proxy set?"}
+    HasProxy -->|no| Direct["Transport: direct"]
+    HasProxy -->|yes| Parse{"url.Parse(proxy)<br/>ok?"}
+    Parse -->|yes| Prox["Transport.Proxy = ProxyURL"]
+    Parse -->|no| PErr["return error<br/>invalid proxy URL"]
+    Direct --> Store["store in cache"]
+    Prox --> Store
+    Store --> Cached
+
+    classDef cache fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Cached,Store cache;
+    class PErr err;
+```
+
 ## Default Values
 
 When no options are provided, the following defaults are used:

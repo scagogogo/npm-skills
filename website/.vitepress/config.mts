@@ -1,8 +1,9 @@
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 const REPO = 'https://github.com/scagogogo/npm-skills'
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   base: '/npm-skills/',
   lastUpdated: true,
   cleanUrls: true,
@@ -184,5 +185,9 @@ export default defineConfig({
   markdown: {
     theme: { light: 'github-light', dark: 'github-dark' },
     lineNumbers: true
+  },
+
+  mermaid: {
+    theme: 'default'
   }
-})
+}))

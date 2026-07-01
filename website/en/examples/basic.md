@@ -2,6 +2,24 @@
 
 This page contains basic usage examples of NPM Skills to help you get started quickly.
 
+## Typical Usage Flow
+
+Almost every programmatic use follows three steps: "create client → call with context → handle result/error":
+
+```mermaid
+flowchart LR
+    A["registry.NewRegistry(opts...)"] --> B["context.WithTimeout(...)"]
+    B --> C["client.GetXxx(ctx, ...)"]
+    C --> D{"err == nil?"}
+    D -->|yes| E["use *models.* result"]
+    D -->|no| F["branch with errors.Is"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class E ok;
+    class F err;
+```
+
 ## Example 1: Get Package Information
 
 ```go

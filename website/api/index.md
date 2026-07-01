@@ -2,6 +2,24 @@
 
 NPM Skills 提供了一套简洁而强大的 API，用于与 NPM Registry 进行交互。本文档涵盖了所有可用的 API 方法、参数和返回值。
 
+## API 全景
+
+SDK 方法按功能域划分，全部挂在 `Registry` 客户端之上，输入 `context.Context`，输出强类型 `models.*` 结构：
+
+```mermaid
+flowchart TB
+    Reg["Registry 客户端"]
+    Reg --> G1["包与版本<br/>GetPackageInformation<br/>GetPackageVersion<br/>GetPackageSummary"]
+    Reg --> G2["搜索<br/>SearchPackages"]
+    Reg --> G3["下载与统计<br/>DownloadTarball<br/>GetDownloadStats<br/>GetDownloadRange"]
+    Reg --> G4["分发标签<br/>GetDistTags<br/>SetDistTag / DeleteDistTag"]
+    Reg --> G5["写操作（需 token）<br/>Publish · Deprecate<br/>Star · Access · Hook"]
+    Reg --> G6["运维与元信息<br/>GetRegistryInformation<br/>Whoami · Audit · Org/Team"]
+
+    classDef core fill:#cb3837,stroke:#8b1a1a,color:#fff;
+    class Reg core;
+```
+
 ## 核心 API
 
 ### Registry 客户端
@@ -246,7 +264,23 @@ type DownloadStats struct {
 
 ## 错误处理
 
-所有 API 方法都返回 error 类型，建议在生产环境中进行适当的错误处理：
+所有 API 方法都返回 error 类型，SDK 提供类型化哨兵错误，可用 `errors.Is()` 精确分支处理：
+
+```mermaid
+flowchart TD
+    Err["方法返回 err ≠ nil"] --> C1{"errors.Is<br/>context.DeadlineExceeded ?"}
+    C1 -->|是| A1["超时：缩小请求 / 换镜像 / 重试"]
+    C1 -->|否| C2{"errors.Is<br/>ErrNotFound ?"}
+    C2 -->|是| A2["包/资源不存在：提示用户"]
+    C2 -->|否| C3{"errors.Is<br/>ErrUnauthorized ?"}
+    C3 -->|是| A3["缺 token / 无权限：补充凭证"]
+    C3 -->|否| C4{"errors.Is<br/>ErrRateLimited ?"}
+    C4 -->|是| A4["被限流：指数退避后重试"]
+    C4 -->|否| A5["其他：记录日志并上报"]
+
+    classDef warn fill:#fff4e5,stroke:#f9a825,color:#5c4400;
+    class A1,A2,A3,A4,A5 warn;
+```
 
 ```go
 import (

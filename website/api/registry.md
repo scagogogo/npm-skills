@@ -2,6 +2,55 @@
 
 Registry 客户端是 NPM Skills 的核心组件，提供与 NPM 注册表交互的所有功能。
 
+## 组件架构
+
+`Registry` 持有一份 `Options`，`Options` 内部用 `sync.Once` 惰性构建并缓存 `*http.Client`，从而在多次请求间复用底层 TCP 连接池：
+
+```mermaid
+flowchart TB
+    App["你的 Go 代码"] --> Reg["Registry<br/>NewRegistry(options...)"]
+    Reg --> Opt["Options<br/>RegistryURL · Proxy · Timeout"]
+    Opt -->|"sync.Once 缓存"| HC["*http.Client<br/>连接池复用"]
+    HC --> TR["http.Transport<br/>代理 / TLS 配置"]
+    TR --> Net["NPM Registry / 镜像 / 私有仓库"]
+
+    Reg --> Methods["71 个方法<br/>包 / 版本 / dist-tags / 下载 / 审计 ..."]
+    Methods --> Opt
+
+    classDef cache fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class HC cache;
+```
+
+## 请求生命周期
+
+以 `GetPackageInformation` 为例，一次调用经历如下阶段——`context` 贯穿始终，可随时取消或超时：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as 调用方
+    participant Reg as Registry
+    participant O as Options
+    participant HC as http.Client
+    participant N as Registry/镜像
+
+    App->>Reg: GetPackageInformation(ctx, "lodash")
+    Reg->>O: 拼接 URL + 读取代理/超时
+    O->>HC: GetHttpClient() （sync.Once 首次构建）
+    HC-->>O: 复用连接池的客户端
+    Reg->>HC: http.NewRequestWithContext(ctx, GET, url)
+    HC->>N: GET /lodash
+    alt 命中
+        N-->>HC: 200 + JSON
+        HC-->>Reg: 响应体
+        Reg->>Reg: json.Unmarshal → *models.Package
+        Reg-->>App: (*Package, nil)
+    else 未找到 / 限流
+        N-->>HC: 404 / 429
+        Reg-->>App: nil, ErrNotFound / ErrRateLimited
+    end
+```
+
 ## 创建客户端
 
 ### `NewRegistry(options ...*Options) *Registry`
@@ -288,6 +337,29 @@ if err != nil {
 ```
 
 ### 并发访问
+
+由于 `*http.Client` 被缓存且并发安全，多个 goroutine 可共享同一个 `Registry` 实例并发请求，底层连接池自动复用：
+
+```mermaid
+flowchart TB
+    Main["主 goroutine"] --> Fork{"fan-out"}
+    Fork --> G1["goroutine: react"]
+    Fork --> G2["goroutine: vue"]
+    Fork --> G3["goroutine: angular"]
+
+    G1 --> Pool["共享 http.Client 连接池"]
+    G2 --> Pool
+    G3 --> Pool
+    Pool --> N["NPM Registry / 镜像"]
+
+    G1 --> Ch["results chan *Package"]
+    G2 --> Ch
+    G3 --> Ch
+    Ch --> Collect["主 goroutine 收集<br/>fan-in"]
+
+    classDef pool fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class Pool pool;
+```
 
 ```go
 // 使用 goroutine 并发获取多个包信息

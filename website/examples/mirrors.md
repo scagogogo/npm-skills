@@ -2,6 +2,24 @@
 
 本页面展示如何在不同环境和地区中配置最佳的 NPM 镜像源。
 
+## 如何选择镜像源
+
+按网络环境快速决策：
+
+```mermaid
+flowchart TD
+    Start(["选择镜像源"]) --> Q1{"在中国大陆?"}
+    Q1 -->|否| Off["官方源 official<br/>registry.npmjs.org"]
+    Q1 -->|是| Q2{"能直连公网?"}
+    Q2 -->|能| Cn["npm-mirror<br/>registry.npmmirror.com"]
+    Q2 -->|需代理| Q3{"有企业私有仓库?"}
+    Q3 -->|有| Pv["--registry 私有仓库<br/>+ --token"]
+    Q3 -->|无| Prox["官方源 + --proxy"]
+
+    classDef pick fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    class Off,Cn,Pv,Prox pick;
+```
+
 ## 镜像源对比
 
 | 镜像源 | URL | 地区 | 特点 | 推荐场景 |

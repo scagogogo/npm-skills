@@ -2,6 +2,85 @@
 
 NPM Skills 定义了完整的 Go 数据结构来表示 NPM 包的各种元数据信息。
 
+## 模型关系总览
+
+`Package` 是聚合根：它按版本号映射到多个 `Version`，每个 `Version` 又持有 `Dist`（分发/校验）与依赖表。搜索、下载统计、注册表信息则是独立的顶层模型：
+
+```mermaid
+classDiagram
+    class Package {
+        +string Name
+        +string Description
+        +map~string,string~ DistTags
+        +map~string,Version~ Versions
+        +[]Maintainer Maintainers
+        +Author Author
+        +Repository Repository
+    }
+    class Version {
+        +string Version
+        +string Main
+        +map~string,string~ Dependencies
+        +map~string,string~ DevDependencies
+        +Dist Dist
+    }
+    class Dist {
+        +string Tarball
+        +string Shasum
+        +string Integrity
+        +int FileCount
+        +int64 UnpackedSize
+    }
+    class Author {
+        +string Name
+        +string Email
+        +string URL
+    }
+    class Maintainer {
+        +string Name
+        +string Email
+    }
+    class Repository {
+        +string Type
+        +string URL
+    }
+
+    Package "1" o-- "*" Version : versions
+    Package "1" o-- "*" Maintainer : maintainers
+    Package "1" --> "1" Author : author
+    Package "1" --> "1" Repository : repository
+    Version "1" --> "1" Dist : dist
+    Version "1" --> "1" Repository : repository
+```
+
+搜索与统计相关模型的组合关系：
+
+```mermaid
+classDiagram
+    class SearchResult {
+        +[]SearchObject Objects
+        +int Total
+        +string Time
+    }
+    class SearchObject {
+        +SearchPackage Package
+        +Score Score
+        +float64 SearchScore
+    }
+    class Score {
+        +float64 Final
+        +Detail Detail
+    }
+    class Detail {
+        +float64 Quality
+        +float64 Popularity
+        +float64 Maintenance
+    }
+    SearchResult "1" o-- "*" SearchObject
+    SearchObject "1" --> "1" Score
+    Score "1" --> "1" Detail
+```
+
 ## Package 模型
 
 表示 NPM 包的完整信息：
@@ -212,6 +291,19 @@ type Detail struct {
     Popularity  float64 `json:"popularity"`  // 流行度得分
     Maintenance float64 `json:"maintenance"` // 维护得分
 }
+```
+
+`Score.Final` 由三个子维度加权合成，搜索时可通过 `--quality / --popularity / --maintenance` 调整各维度权重：
+
+```mermaid
+flowchart LR
+    Q["质量 Quality<br/>测试 · 文档 · 类型"] --> F(("Final<br/>最终得分"))
+    P["流行度 Popularity<br/>下载量 · 依赖者 · star"] --> F
+    M["维护 Maintenance<br/>提交频率 · issue 处理"] --> F
+    F --> Rank["搜索结果排序"]
+
+    classDef metric fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class Q,P,M metric;
 ```
 
 ### 使用示例

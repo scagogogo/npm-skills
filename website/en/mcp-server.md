@@ -2,6 +2,56 @@
 
 NPM Skills ships an MCP (Model Context Protocol) server that exposes NPM Registry operations as 33 tools, callable from any MCP-compatible AI client — Claude Code, Cursor, Windsurf, and more.
 
+## Architecture
+
+The client and server talk over JSON-RPC (stdio transport); the server translates each tool call into a Registry SDK method call:
+
+```mermaid
+flowchart LR
+    subgraph Client["MCP Client (AI)"]
+        LLM["Large Language Model"]
+    end
+    subgraph Server["npm-mcp-server"]
+        RPC["JSON-RPC endpoint<br/>stdio"]
+        Tools["33 tools<br/>schema + handler"]
+        SDK["Registry SDK"]
+    end
+    N["NPM Registry / mirror"]
+
+    LLM <-->|"JSON-RPC over stdio"| RPC
+    RPC --> Tools
+    Tools --> SDK
+    SDK -->|HTTP| N
+
+    classDef srv fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class RPC,Tools,SDK srv;
+```
+
+Full sequence of a single tool call (querying a package summary):
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant LLM as LLM
+    participant C as MCP Client
+    participant S as npm-mcp-server
+    participant R as Registry SDK
+    participant N as NPM mirror
+
+    Note over LLM,C: handshake on start → list tools
+    C->>S: initialize / tools/list
+    S-->>C: return 33 tools with JSON Schema
+    LLM->>C: decide to call npm_package_summary("react")
+    C->>S: tools/call { name, arguments }
+    S->>S: validate arguments (JSON Schema)
+    S->>R: GetPackageSummary(ctx, "react")
+    R->>N: HTTP GET (apply mirror/proxy/timeout)
+    N-->>R: JSON
+    R-->>S: structured result
+    S-->>C: tools/call result (content)
+    C-->>LLM: inject into context
+```
+
 ## Install
 
 ```bash
@@ -51,6 +101,47 @@ go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 | `--timeout` | `120` | Timeout in seconds |
 
 ## Tools (33)
+
+The 33 tools group into read and write classes across several domains. Write tools require a valid token:
+
+```mermaid
+mindmap
+  root((33 MCP tools))
+    Read (no token)
+      Package metadata
+        npm_package
+        npm_package_summary
+        npm_version / npm_versions
+        npm_latest_version
+      Discovery
+        npm_search
+        npm_dist_tags
+      Stats
+        npm_download_stats
+        npm_download_range
+      Registry
+        npm_registry_info
+        npm_mirrors
+        npm_whoami
+    Write (token)
+      dist-tags
+        npm_dist_tag_set / delete
+        npm_dist_tags_set
+      stars / access
+        npm_star / unstar
+        npm_access_get
+        npm_collaborators
+      Security audit
+        npm_audit_quick
+        npm_audit_advisory
+      Org / team
+        npm_org_get / members / packages
+        npm_team_list / members / packages
+      Ops
+        npm_token_list
+        npm_hook_list / get
+        npm_changes
+```
 
 ### Read Tools
 

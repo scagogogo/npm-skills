@@ -2,6 +2,29 @@
 
 This page demonstrates how to use the `DownloadTarball` method to download NPM package tarballs to local files.
 
+## Download Flow
+
+`DownloadTarball` first resolves the version (querying dist-tags when you pass `latest`), then streams `dist.tarball` into the target file — avoiding loading the whole package into memory:
+
+```mermaid
+flowchart TD
+    Start["DownloadTarball(ctx, name, version, dest)"] --> V{"version == latest<br/>or a tag?"}
+    V -->|yes| Resolve["fetch package metadata<br/>resolve dist-tags → concrete version"]
+    V -->|no| Direct["use version as-is"]
+    Resolve --> URL["read version.dist.tarball URL"]
+    Direct --> URL
+    URL --> Req["HTTP GET tarball (apply mirror/proxy)"]
+    Req --> Stream["io.Copy stream to dest<br/>low memory footprint"]
+    Stream --> Done["return nil / file written"]
+
+    Req -.failure.-> Err["return error<br/>network / 404 / permission"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Done,Stream ok;
+    class Err err;
+```
+
 ## Example 1: Download Specific Version
 
 ```go

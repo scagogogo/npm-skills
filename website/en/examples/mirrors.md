@@ -2,6 +2,24 @@
 
 This guide explains how to configure and use different NPM registry mirrors to optimize network access and improve download speeds.
 
+## How to Pick a Mirror
+
+Quick decision by network environment:
+
+```mermaid
+flowchart TD
+    Start(["Pick a mirror"]) --> Q1{"In mainland China?"}
+    Q1 -->|no| Off["official<br/>registry.npmjs.org"]
+    Q1 -->|yes| Q2{"Direct internet access?"}
+    Q2 -->|yes| Cn["npm-mirror<br/>registry.npmmirror.com"]
+    Q2 -->|via proxy| Q3{"Enterprise private registry?"}
+    Q3 -->|yes| Pv["--registry private<br/>+ --token"]
+    Q3 -->|no| Prox["official + --proxy"]
+
+    classDef pick fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    class Off,Cn,Pv,Prox pick;
+```
+
 ## Available Mirrors
 
 NPM Skills supports multiple registry mirrors out of the box:

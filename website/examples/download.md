@@ -2,6 +2,29 @@
 
 本页面展示如何使用 `DownloadTarball` 方法下载 NPM 包的 tarball 文件到本地。
 
+## 下载流程
+
+`DownloadTarball` 会先解析版本（若传 `latest` 则查询 dist-tags），再从 `dist.tarball` 流式写入目标文件，避免整包载入内存：
+
+```mermaid
+flowchart TD
+    Start["DownloadTarball(ctx, name, version, dest)"] --> V{"version == latest<br/>或标签?"}
+    V -->|是| Resolve["查询包元数据<br/>解析 dist-tags → 具体版本"]
+    V -->|否| Direct["直接使用版本号"]
+    Resolve --> URL["取 version.dist.tarball URL"]
+    Direct --> URL
+    URL --> Req["HTTP GET tarball（应用镜像/代理）"]
+    Req --> Stream["io.Copy 流式写入 dest<br/>不占用大内存"]
+    Stream --> Done["返回 nil / 文件落盘"]
+
+    Req -.失败.-> Err["返回 error<br/>网络 / 404 / 权限"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Done,Stream ok;
+    class Err err;
+```
+
 ## 示例 1: 下载指定版本
 
 ```go

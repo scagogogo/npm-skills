@@ -2,6 +2,24 @@
 
 本页面包含了 NPM Skills 的基本使用示例，帮助您快速上手。
 
+## 典型使用流程
+
+绝大多数程序化用法都遵循「创建客户端 → 带 context 调用 → 处理结果/错误」三步：
+
+```mermaid
+flowchart LR
+    A["registry.NewRegistry(opts...)"] --> B["context.WithTimeout(...)"]
+    B --> C["client.GetXxx(ctx, ...)"]
+    C --> D{"err == nil?"}
+    D -->|是| E["使用 *models.* 结果"]
+    D -->|否| F["errors.Is 分支处理"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class E ok;
+    class F err;
+```
+
 ## 示例 1: 获取包信息
 
 ```go

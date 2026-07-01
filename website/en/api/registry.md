@@ -2,6 +2,55 @@
 
 The Registry client is the main interface for interacting with NPM registries. This document provides comprehensive API reference for all available methods.
 
+## Component Architecture
+
+A `Registry` holds an `Options`, which lazily builds and caches an `*http.Client` via `sync.Once`, reusing the underlying TCP connection pool across requests:
+
+```mermaid
+flowchart TB
+    App["Your Go code"] --> Reg["Registry<br/>NewRegistry(options...)"]
+    Reg --> Opt["Options<br/>RegistryURL · Proxy · Timeout"]
+    Opt -->|"cached via sync.Once"| HC["*http.Client<br/>connection pool reuse"]
+    HC --> TR["http.Transport<br/>proxy / TLS config"]
+    TR --> Net["NPM Registry / mirror / private"]
+
+    Reg --> Methods["71 methods<br/>package / version / dist-tags / downloads / audit ..."]
+    Methods --> Opt
+
+    classDef cache fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class HC cache;
+```
+
+## Request Lifecycle
+
+Taking `GetPackageInformation` as an example — `context` flows through the whole call and can cancel or time out at any point:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Caller
+    participant Reg as Registry
+    participant O as Options
+    participant HC as http.Client
+    participant N as Registry/mirror
+
+    App->>Reg: GetPackageInformation(ctx, "lodash")
+    Reg->>O: build URL + read proxy/timeout
+    O->>HC: GetHttpClient() (built once via sync.Once)
+    HC-->>O: client reusing connection pool
+    Reg->>HC: http.NewRequestWithContext(ctx, GET, url)
+    HC->>N: GET /lodash
+    alt hit
+        N-->>HC: 200 + JSON
+        HC-->>Reg: response body
+        Reg->>Reg: json.Unmarshal → *models.Package
+        Reg-->>App: (*Package, nil)
+    else not found / rate limited
+        N-->>HC: 404 / 429
+        Reg-->>App: nil, ErrNotFound / ErrRateLimited
+    end
+```
+
 ## Registry Creation
 
 ### NewRegistry
@@ -248,7 +297,23 @@ fmt.Printf("Data size: %d MB\n", info.DataSize/(1024*1024))
 
 ## Error Handling
 
-All methods return errors that can be handled using standard Go error handling patterns:
+All methods return errors that can be handled using standard Go error handling patterns. The SDK exposes typed sentinel errors you can branch on with `errors.Is()`:
+
+```mermaid
+flowchart TD
+    Err["method returns err ≠ nil"] --> C1{"errors.Is<br/>context.DeadlineExceeded ?"}
+    C1 -->|yes| A1["timeout: narrow request / switch mirror / retry"]
+    C1 -->|no| C2{"errors.Is<br/>ErrNotFound ?"}
+    C2 -->|yes| A2["package/resource missing: inform user"]
+    C2 -->|no| C3{"errors.Is<br/>ErrUnauthorized ?"}
+    C3 -->|yes| A3["missing token / no permission: add credentials"]
+    C3 -->|no| C4{"errors.Is<br/>ErrRateLimited ?"}
+    C4 -->|yes| A4["rate limited: retry with backoff"]
+    C4 -->|no| A5["other: log and report"]
+
+    classDef warn fill:#fff4e5,stroke:#f9a825,color:#5c4400;
+    class A1,A2,A3,A4,A5 warn;
+```
 
 ```go
 pkg, err := client.GetPackageInformation(ctx, "nonexistent-package")

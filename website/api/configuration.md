@@ -73,6 +73,23 @@ options := registry.NewOptions().
 client := registry.NewRegistry(options)
 ```
 
+每个 `SetXxx` 方法都返回 `*Options` 自身，从而串成流式构建管线，最后交给 `NewRegistry` 生成不可变客户端：
+
+```mermaid
+flowchart LR
+    N["NewOptions()<br/>默认值"] --> A["SetRegistryURL(url)"]
+    A --> B["SetProxy(proxyUrl)"]
+    B --> C["...（可继续链式）"]
+    C --> R["NewRegistry(options)"]
+    R --> Client["Registry 实例"]
+
+    N -. "每步返回 *Options" .-> A
+    A -. "每步返回 *Options" .-> B
+
+    classDef ret fill:#f3e8fd,stroke:#a142f4,color:#4a148c;
+    class N,A,B,C ret;
+```
+
 ## HTTP 客户端
 
 ### `GetHttpClient() (*http.Client, error)`
@@ -95,6 +112,28 @@ if err != nil {
 
 // 使用自定义 HTTP 客户端
 transport := httpClient.Transport
+```
+
+`GetHttpClient()` 内部借助 `sync.Once` 保证客户端只构建一次；是否配置代理决定了 `Transport` 的走向：
+
+```mermaid
+flowchart TD
+    Call["GetHttpClient()"] --> Once{"sync.Once<br/>已构建?"}
+    Once -->|是| Cached["返回缓存的 *http.Client"]
+    Once -->|否| Build["首次构建"]
+    Build --> HasProxy{"设置了 Proxy?"}
+    HasProxy -->|否| Direct["Transport: 直连"]
+    HasProxy -->|是| Parse{"url.Parse(proxy)<br/>成功?"}
+    Parse -->|是| Prox["Transport.Proxy = ProxyURL"]
+    Parse -->|否| PErr["返回 error<br/>无效代理 URL"]
+    Direct --> Store["存入缓存"]
+    Prox --> Store
+    Store --> Cached
+
+    classDef cache fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Cached,Store cache;
+    class PErr err;
 ```
 
 ## 预定义配置

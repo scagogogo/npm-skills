@@ -4,6 +4,28 @@
 
 ## 示例 1: 缓存实现
 
+带 TTL 的读穿透（read-through）缓存工作机制：命中且未过期直接返回，否则回源并写回缓存。
+
+```mermaid
+flowchart TD
+    Req["Get(name)"] --> Lock["RLock 读缓存"]
+    Lock --> Hit{"命中?"}
+    Hit -->|否| Miss["回源 client.GetPackageInformation"]
+    Hit -->|是| TTL{"未过期?"}
+    TTL -->|是| Ret["直接返回缓存"]
+    TTL -->|否| Miss
+    Miss --> Fetch{"请求成功?"}
+    Fetch -->|是| Store["Lock 写入缓存 + 时间戳"]
+    Fetch -->|否| Err["返回 error"]
+    Store --> Ret2["返回新数据"]
+
+    classDef hit fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Ret,Ret2,Store hit;
+    class Err err;
+```
+
+
 ```go
 package main
 
@@ -115,6 +137,22 @@ func main() {
 ```
 
 ## 示例 2: 重试机制
+
+指数退避重试的状态流转：可重试错误（超时/限流/5xx）才退避重试，不可重试错误（404/鉴权）立即失败。
+
+```mermaid
+stateDiagram-v2
+    [*] --> 请求
+    请求 --> 成功: 返回 200
+    请求 --> 判定: 返回错误
+    判定 --> 立即失败: 不可重试<br/>404 / 鉴权
+    判定 --> 退避: 可重试<br/>超时 / 429 / 5xx
+    退避 --> 达到上限: 次数用尽
+    退避 --> 请求: sleep 2^n · 抖动后重试
+    成功 --> [*]
+    立即失败 --> [*]
+    达到上限 --> [*]
+```
 
 ```go
 package main

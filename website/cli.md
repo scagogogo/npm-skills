@@ -2,6 +2,25 @@
 
 `npm-skills` CLI 共 26 个命令，所有命令输出 JSON 到 stdout（便于 AI 解析），状态信息走 stderr。
 
+这种「数据走 stdout、日志走 stderr」的分离，让 CLI 既能被人阅读，也能被脚本与 AI 用 `jq` 等工具直接管道处理：
+
+```mermaid
+flowchart LR
+    A["命令行参数<br/>+ 环境变量"] --> B["npm-skills<br/>参数解析 / 校验"]
+    B --> C["Registry SDK<br/>发起请求"]
+    C --> D["NPM Registry / 镜像"]
+    D --> C
+    C --> E{"成功?"}
+    E -->|是| F["JSON 结果 → stdout"]
+    E -->|否| G["错误信息 → stderr<br/>退出码 ≠ 0"]
+    F --> H["jq / AI / 管道消费"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class F,H ok;
+    class G err;
+```
+
 ## 全局参数
 
 | 参数 | 简写 | 默认值 | 说明 |
@@ -13,6 +32,37 @@
 | `--timeout` | | `120` | 请求超时秒数 |
 
 **优先级**：CLI 参数 > 环境变量 > 默认值
+
+```mermaid
+flowchart TD
+    subgraph 来源["配置来源（自上而下优先级递减）"]
+        direction TB
+        P1["① CLI 参数<br/>--mirror / --proxy / --token"]
+        P2["② 环境变量<br/>NPM_MIRROR / NPM_PROXY / NPM_TOKEN"]
+        P3["③ 内置默认值<br/>mirror=official · timeout=120s"]
+    end
+    P1 -.覆盖.-> P2 -.覆盖.-> P3
+    P1 --> M["合并为最终 Options"]
+    P2 --> M
+    P3 --> M
+    M --> R["构造 Registry 客户端"]
+```
+
+CLI 命令按是否需要认证分为两类：读取操作可匿名调用，写入操作必须提供 `--token`：
+
+```mermaid
+flowchart TD
+    Cmd["npm-skills &lt;command&gt;"] --> T{"属于写入操作?<br/>publish / dist-tags set / access / hook ..."}
+    T -->|否 · 读取| Read["直接请求<br/>package · search · versions · download-stats"]
+    T -->|是 · 写入| Auth{"提供了 token?<br/>--token 或 NPM_TOKEN"}
+    Auth -->|是| Write["带 Authorization 头写入"]
+    Auth -->|否| Err["拒绝执行<br/>ErrUnauthorized → stderr"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Read,Write ok;
+    class Err err;
+```
 
 ## 读取操作
 
@@ -164,3 +214,34 @@ npm-skills hook delete <id> -t <token>
 | `https://skimdb.npmjs.com` | `npmjscom` | 全球 |
 
 可直接传 URL：`--mirror https://your-registry.com`
+
+镜像源与请求路由关系如下 —— 包元数据/下载走所选镜像，而**下载统计始终固定走 `api.npmjs.org`**（镜像不提供该接口）：
+
+```mermaid
+flowchart LR
+    CLI["npm-skills"] --> Sel{"-m / --mirror"}
+
+    Sel -->|official| G1["registry.npmjs.org"]
+    Sel -->|yarn / npmjscom| G2["registry.yarnpkg.com<br/>skimdb.npmjs.com"]
+    Sel -->|npm-mirror / taobao| C1["registry.npmmirror.com"]
+    Sel -->|huawei / tencent / cnpm| C2["华为 / 腾讯 / CNPM 镜像"]
+    Sel -->|自定义 URL / --registry| PV["私有仓库"]
+
+    subgraph 全球["🌍 全球"]
+        G1
+        G2
+    end
+    subgraph 中国["🇨🇳 中国大陆（低延迟）"]
+        C1
+        C2
+    end
+
+    CLI -.下载统计固定走.-> STAT["api.npmjs.org<br/>/downloads/*"]
+
+    classDef stat fill:#fff4e5,stroke:#f9a825,color:#5c4400;
+    class STAT stat;
+```
+
+::: tip 选型建议
+中国大陆用户优先 `npm-mirror`（`registry.npmmirror.com`），无需代理即可获得最快速度；受限网络叠加 `--proxy` 使用官方源；企业内网用 `--registry` 指向私有仓库。
+:::

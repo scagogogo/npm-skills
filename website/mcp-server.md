@@ -2,6 +2,56 @@
 
 NPM Skills 提供一个 MCP (Model Context Protocol) 服务器，将 NPM Registry 操作暴露为 33 个工具，供任意 MCP 兼容的 AI 客户端调用 —— Claude Code、Cursor、Windsurf 等。
 
+## 架构
+
+MCP 客户端与服务器之间通过 JSON-RPC（stdio 传输）通信；服务器把每个工具调用翻译成对 Registry SDK 的方法调用：
+
+```mermaid
+flowchart LR
+    subgraph 客户端["MCP 客户端（AI）"]
+        LLM["大语言模型"]
+    end
+    subgraph 服务器["npm-mcp-server"]
+        RPC["JSON-RPC 端点<br/>stdio"]
+        Tools["33 个工具<br/>schema + handler"]
+        SDK["Registry SDK"]
+    end
+    N["NPM Registry / 镜像"]
+
+    LLM <-->|"JSON-RPC over stdio"| RPC
+    RPC --> Tools
+    Tools --> SDK
+    SDK -->|HTTP| N
+
+    classDef srv fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class RPC,Tools,SDK srv;
+```
+
+一次工具调用的完整时序（以查询包摘要为例）：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant LLM as 大语言模型
+    participant C as MCP 客户端
+    participant S as npm-mcp-server
+    participant R as Registry SDK
+    participant N as NPM 镜像
+
+    Note over LLM,C: 启动时握手 → 列出可用工具
+    C->>S: initialize / tools/list
+    S-->>C: 返回 33 个工具及其 JSON Schema
+    LLM->>C: 决定调用 npm_package_summary("react")
+    C->>S: tools/call { name, arguments }
+    S->>S: 校验参数（JSON Schema）
+    S->>R: GetPackageSummary(ctx, "react")
+    R->>N: HTTP GET（应用镜像/代理/超时）
+    N-->>R: JSON
+    R-->>S: 结构化结果
+    S-->>C: tools/call 结果（content）
+    C-->>LLM: 注入上下文
+```
+
 ## 安装
 
 ```bash
@@ -51,6 +101,47 @@ go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 | `--timeout` | `120` | 超时秒数 |
 
 ## 工具清单（33 个）
+
+33 个工具按领域可归为读取与写入两大类、若干子域。写入类需要有效 token：
+
+```mermaid
+mindmap
+  root((33 个 MCP 工具))
+    读取（免 token）
+      包元数据
+        npm_package
+        npm_package_summary
+        npm_version / npm_versions
+        npm_latest_version
+      发现
+        npm_search
+        npm_dist_tags
+      统计
+        npm_download_stats
+        npm_download_range
+      仓库
+        npm_registry_info
+        npm_mirrors
+        npm_whoami
+    写入（需 token）
+      dist-tags
+        npm_dist_tag_set / delete
+        npm_dist_tags_set
+      stars / 访问
+        npm_star / unstar
+        npm_access_get
+        npm_collaborators
+      安全审计
+        npm_audit_quick
+        npm_audit_advisory
+      组织 / 团队
+        npm_org_get / members / packages
+        npm_team_list / members / packages
+      运维
+        npm_token_list
+        npm_hook_list / get
+        npm_changes
+```
 
 ### 读取工具
 

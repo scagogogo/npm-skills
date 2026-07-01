@@ -2,6 +2,25 @@
 
 The `npm-skills` CLI has 26 commands. All output JSON to stdout (easy for AI to parse); status messages go to stderr.
 
+This "data on stdout, logs on stderr" split lets the CLI be both human-readable and pipeable by scripts and AI via tools like `jq`:
+
+```mermaid
+flowchart LR
+    A["CLI flags<br/>+ env vars"] --> B["npm-skills<br/>parse / validate"]
+    B --> C["Registry SDK<br/>issue request"]
+    C --> D["NPM Registry / mirror"]
+    D --> C
+    C --> E{"success?"}
+    E -->|yes| F["JSON result → stdout"]
+    E -->|no| G["error message → stderr<br/>exit code ≠ 0"]
+    F --> H["jq / AI / pipeline"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class F,H ok;
+    class G err;
+```
+
 ## Global Flags
 
 | Flag | Short | Default | Description |
@@ -13,6 +32,37 @@ The `npm-skills` CLI has 26 commands. All output JSON to stdout (easy for AI to 
 | `--timeout` | | `120` | Request timeout in seconds |
 
 **Priority**: CLI flag > Environment variable > Default
+
+```mermaid
+flowchart TD
+    subgraph Sources["Config sources (precedence, top = highest)"]
+        direction TB
+        P1["① CLI flags<br/>--mirror / --proxy / --token"]
+        P2["② Env vars<br/>NPM_MIRROR / NPM_PROXY / NPM_TOKEN"]
+        P3["③ Built-in defaults<br/>mirror=official · timeout=120s"]
+    end
+    P1 -.overrides.-> P2 -.overrides.-> P3
+    P1 --> M["merge into final Options"]
+    P2 --> M
+    P3 --> M
+    M --> R["build Registry client"]
+```
+
+Commands split into two classes by whether auth is required — reads are anonymous, writes require `--token`:
+
+```mermaid
+flowchart TD
+    Cmd["npm-skills &lt;command&gt;"] --> T{"write op?<br/>publish / dist-tags set / access / hook ..."}
+    T -->|no · read| Read["request directly<br/>package · search · versions · download-stats"]
+    T -->|yes · write| Auth{"token provided?<br/>--token or NPM_TOKEN"}
+    Auth -->|yes| Write["write with Authorization header"]
+    Auth -->|no| Err["reject<br/>ErrUnauthorized → stderr"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Read,Write ok;
+    class Err err;
+```
 
 ## Read Operations
 
@@ -163,3 +213,34 @@ npm-skills hook delete <id> -t <token>
 | `https://skimdb.npmjs.com` | `npmjscom` | Global |
 
 Pass any URL directly: `--mirror https://your-registry.com`
+
+Mirror selection routes package metadata/downloads to the chosen mirror, while **download stats always go to `api.npmjs.org`** (mirrors don't serve that endpoint):
+
+```mermaid
+flowchart LR
+    CLI["npm-skills"] --> Sel{"-m / --mirror"}
+
+    Sel -->|official| G1["registry.npmjs.org"]
+    Sel -->|yarn / npmjscom| G2["registry.yarnpkg.com<br/>skimdb.npmjs.com"]
+    Sel -->|npm-mirror / taobao| C1["registry.npmmirror.com"]
+    Sel -->|huawei / tencent / cnpm| C2["Huawei / Tencent / CNPM"]
+    Sel -->|custom URL / --registry| PV["private registry"]
+
+    subgraph Global["🌍 Global"]
+        G1
+        G2
+    end
+    subgraph China["🇨🇳 China (low latency)"]
+        C1
+        C2
+    end
+
+    CLI -.stats always go to.-> STAT["api.npmjs.org<br/>/downloads/*"]
+
+    classDef stat fill:#fff4e5,stroke:#f9a825,color:#5c4400;
+    class STAT stat;
+```
+
+::: tip Recommendation
+China users: prefer `npm-mirror` (`registry.npmmirror.com`) for the fastest speed without a proxy. On restricted networks, use the official source with `--proxy`. For enterprise intranets, point `--registry` at your private registry.
+:::

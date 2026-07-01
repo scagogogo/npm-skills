@@ -2,6 +2,79 @@
 
 This document describes all data structures returned by the NPM Skills API.
 
+## Model Overview
+
+`Package` is the aggregate root: it maps version numbers to many `Version` objects, each holding a `Dist` (distribution/checksums) and dependency tables. Search, stats and registry info are independent top-level models:
+
+```mermaid
+classDiagram
+    class Package {
+        +string Name
+        +string Description
+        +map~string,string~ DistTags
+        +map~string,Version~ Versions
+        +[]Maintainer Maintainers
+        +Author Author
+        +Repository Repository
+    }
+    class Version {
+        +string Version
+        +string Main
+        +map~string,string~ Dependencies
+        +map~string,string~ DevDependencies
+        +Dist Dist
+    }
+    class Dist {
+        +string Tarball
+        +string Shasum
+        +string Integrity
+        +int FileCount
+        +int64 UnpackedSize
+    }
+    class Author {
+        +string Name
+        +string Email
+        +string URL
+    }
+    class Repository {
+        +string Type
+        +string URL
+    }
+
+    Package "1" o-- "*" Version : versions
+    Package "1" --> "1" Author : author
+    Package "1" --> "1" Repository : repository
+    Version "1" --> "1" Dist : dist
+```
+
+Search and scoring model composition:
+
+```mermaid
+classDiagram
+    class SearchResult {
+        +[]SearchObject Objects
+        +int Total
+        +string Time
+    }
+    class SearchObject {
+        +SearchPackage Package
+        +SearchScore Score
+        +float64 SearchScore
+    }
+    class SearchScore {
+        +float64 Final
+        +ScoreDetail Detail
+    }
+    class ScoreDetail {
+        +float64 Quality
+        +float64 Popularity
+        +float64 Maintenance
+    }
+    SearchResult "1" o-- "*" SearchObject
+    SearchObject "1" --> "1" SearchScore
+    SearchScore "1" --> "1" ScoreDetail
+```
+
 ## Package Information
 
 ### PackageInformation
@@ -195,6 +268,19 @@ type ScoreDetail struct {
     Popularity  float64 `json:"popularity"`
     Maintenance float64 `json:"maintenance"`
 }
+```
+
+`Final` is a weighted composite of three sub-dimensions; at search time you can tune each weight via `--quality / --popularity / --maintenance`:
+
+```mermaid
+flowchart LR
+    Q["Quality<br/>tests · docs · types"] --> F(("Final<br/>score"))
+    P["Popularity<br/>downloads · dependents · stars"] --> F
+    M["Maintenance<br/>commit cadence · issue handling"] --> F
+    F --> Rank["search result ranking"]
+
+    classDef metric fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class Q,P,M metric;
 ```
 
 ### SearchLinks

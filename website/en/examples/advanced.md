@@ -123,6 +123,27 @@ func main() {
 
 ## Registry Health Check
 
+A health check probes each registry with a lightweight request and drives failover — pick the first healthy mirror, fall back down the list on failure:
+
+```mermaid
+flowchart TD
+    Start(["health check"]) --> P1["probe official"]
+    P1 --> H1{"healthy?"}
+    H1 -->|yes| Use1["route to official"]
+    H1 -->|no| P2["probe npm-mirror"]
+    P2 --> H2{"healthy?"}
+    H2 -->|yes| Use2["route to npm-mirror"]
+    H2 -->|no| P3["probe next mirror ..."]
+    P3 --> H3{"any healthy?"}
+    H3 -->|yes| Use3["route to it"]
+    H3 -->|no| Fail["all down: return error / alert"]
+
+    classDef ok fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    classDef err fill:#fce8e6,stroke:#ea4335,color:#5c1d16;
+    class Use1,Use2,Use3 ok;
+    class Fail err;
+```
+
 ```go
 package main
 

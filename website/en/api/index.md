@@ -2,6 +2,24 @@
 
 NPM Skills provides a simple yet powerful API for interacting with NPM Registry. This documentation covers all available API methods, parameters, and return values.
 
+## API Landscape
+
+SDK methods are organized by domain, all hanging off the `Registry` client, taking a `context.Context` and returning strongly-typed `models.*` structs:
+
+```mermaid
+flowchart TB
+    Reg["Registry client"]
+    Reg --> G1["Package & version<br/>GetPackageInformation<br/>GetPackageVersion<br/>GetPackageSummary"]
+    Reg --> G2["Search<br/>SearchPackages"]
+    Reg --> G3["Download & stats<br/>DownloadTarball<br/>GetDownloadStats<br/>GetDownloadRange"]
+    Reg --> G4["Dist-tags<br/>GetDistTags<br/>SetDistTag / DeleteDistTag"]
+    Reg --> G5["Writes (token)<br/>Publish · Deprecate<br/>Star · Access · Hook"]
+    Reg --> G6["Ops & meta<br/>GetRegistryInformation<br/>Whoami · Audit · Org/Team"]
+
+    classDef core fill:#cb3837,stroke:#8b1a1a,color:#fff;
+    class Reg core;
+```
+
 ## Core API
 
 ### Registry Client
@@ -246,7 +264,23 @@ type DownloadStats struct {
 
 ## Error Handling
 
-All API methods return error type, proper error handling is recommended for production environments:
+All API methods return error type. The SDK provides typed sentinel errors you can branch on precisely with `errors.Is()`:
+
+```mermaid
+flowchart TD
+    Err["method returns err ≠ nil"] --> C1{"errors.Is<br/>context.DeadlineExceeded ?"}
+    C1 -->|yes| A1["timeout: narrow request / switch mirror / retry"]
+    C1 -->|no| C2{"errors.Is<br/>ErrNotFound ?"}
+    C2 -->|yes| A2["package/resource missing: inform user"]
+    C2 -->|no| C3{"errors.Is<br/>ErrUnauthorized ?"}
+    C3 -->|yes| A3["missing token / no permission: add credentials"]
+    C3 -->|no| C4{"errors.Is<br/>ErrRateLimited ?"}
+    C4 -->|yes| A4["rate limited: retry with backoff"]
+    C4 -->|no| A5["other: log and report"]
+
+    classDef warn fill:#fff4e5,stroke:#f9a825,color:#5c4400;
+    class A1,A2,A3,A4,A5 warn;
+```
 
 ```go
 import (
