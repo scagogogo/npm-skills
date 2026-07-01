@@ -334,4 +334,4 @@ client := registry.NewRegistry(options)
 
 - 查阅 [Registry 客户端](registry.md) 了解各方法文档
 - 参考 [数据模型](models.md) 了解响应结构
-- 浏览 [示例](../examples/) 学习实战用法 
+- 浏览 [示例](../examples/) 学习实战用法

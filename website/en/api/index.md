@@ -317,4 +317,4 @@ if err != nil {
 
 - Check [Chinese detailed API documentation](/api/registry) or [English API documentation](/en/api/registry)
 - Browse [example code](/en/examples/basic) to learn specific usage
-- Visit [GitHub](https://github.com/scagogogo/npm-skills) to view complete source code 
+- Visit [GitHub](https://github.com/scagogogo/npm-skills) to view complete source code

@@ -391,4 +391,4 @@ for i := 0; i < len(packages); i++ {
 
 - 参考 [数据模型](models.md) 了解详细结构信息
 - 查阅 [配置选项](configuration.md) 了解客户端自定义
-- 浏览 [示例](../examples/) 学习实战用法 
+- 浏览 [示例](../examples/) 学习实战用法

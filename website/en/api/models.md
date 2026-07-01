@@ -495,4 +495,4 @@ if len(version.DevDependencies) > 0 {
 
 - Review [Registry API](registry.md) for method documentation
 - Check [Configuration Options](configuration.md) for client setup
-- Explore [Examples](../examples/) for practical usage patterns 
+- Explore [Examples](../examples/) for practical usage patterns

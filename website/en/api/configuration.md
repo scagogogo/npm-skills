@@ -546,6 +546,6 @@ if proxyURL != "" {
 
 ## Next Steps
 
-- Review [Registry API](registry.md) for method documentation  
+- Review [Registry API](registry.md) for method documentation
 - Check [Data Models](models.md) for response structures
-- Explore [Examples](../examples/) for practical usage patterns 
+- Explore [Examples](../examples/) for practical usage patterns

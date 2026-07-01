@@ -416,4 +416,4 @@ defer cancel()
 
 - Review [Data Models](models.md) for detailed structure information
 - Check [Configuration Options](configuration.md) for client customization
-- Explore [Examples](../examples/) for practical usage patterns 
+- Explore [Examples](../examples/) for practical usage patterns

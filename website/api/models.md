@@ -539,4 +539,4 @@ func getSortedVersions(pkg *models.Package) []string {
 
 - 查阅 [Registry 客户端](registry.md) 了解各方法文档
 - 参考 [配置选项](configuration.md) 了解客户端设置
-- 浏览 [示例](../examples/) 学习实战用法 
+- 浏览 [示例](../examples/) 学习实战用法
