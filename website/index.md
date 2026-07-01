@@ -80,10 +80,10 @@ flowchart TB
 
 ```bash [CLI]
 # 查询包信息
-npm-skills info react
+npm-skills package-summary react
 
-# 搜索并按下载量排序
-npm-skills search "web framework" --size 10
+# 搜索并限制结果数
+npm-skills search "web framework" --limit 10
 
 # 通过淘宝镜像下载 tarball（国内免代理）
 npm-skills download lodash 4.17.21 ./ --registry https://registry.npmmirror.com

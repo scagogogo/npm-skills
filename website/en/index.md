@@ -80,10 +80,10 @@ flowchart TB
 
 ```bash [CLI]
 # Query package info
-npm-skills info react
+npm-skills package-summary react
 
-# Search and sort by relevance
-npm-skills search "web framework" --size 10
+# Search and limit results
+npm-skills search "web framework" --limit 10
 
 # Download a tarball via a mirror
 npm-skills download lodash 4.17.21 ./ --registry https://registry.npmmirror.com
