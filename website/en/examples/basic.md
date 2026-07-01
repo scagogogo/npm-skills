@@ -9,7 +9,7 @@ Almost every programmatic use follows three steps: "create client → call with 
 ```mermaid
 flowchart LR
     A["registry.NewRegistry(opts...)"] --> B["context.WithTimeout(...)"]
-    B --> C["client.GetXxx(ctx, ...)"]
+    B --> C["client.GetPackageInformation(ctx, name)"]
     C --> D{"err == nil?"}
     D -->|yes| E["use *models.* result"]
     D -->|no| F["branch with errors.Is"]

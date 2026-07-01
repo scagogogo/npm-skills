@@ -9,7 +9,7 @@
 ```mermaid
 flowchart LR
     A["registry.NewRegistry(opts...)"] --> B["context.WithTimeout(...)"]
-    B --> C["client.GetXxx(ctx, ...)"]
+    B --> C["client.GetPackageInformation(ctx, name)"]
     C --> D{"err == nil?"}
     D -->|是| E["使用 *models.* 结果"]
     D -->|否| F["errors.Is 分支处理"]
