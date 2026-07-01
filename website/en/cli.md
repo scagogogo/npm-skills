@@ -131,9 +131,13 @@ All write operations need auth. Use `--token` or set `NPM_TOKEN`.
 ```bash
 npm-skills publish ./pkg.tgz --name my-pkg --version 1.0.0 -t <token>
 npm-skills deprecate my-pkg 1.0.0 -M "Use v2.0.0" -t <token>
-npm-skills unpublish my-pkg --version 1.0.0 -t <token>
-npm-skills unpublish my-pkg --force -t <token>
+npm-skills unpublish my-pkg --version 1.0.0 -t <token>   # dangerous
+npm-skills unpublish my-pkg --force -t <token>           # very dangerous
 ```
+
+::: danger unpublish is irreversible
+`unpublish` permanently removes a published version from the registry, which can break the builds of every project that depends on it. npm enforces [strict time and eligibility limits](https://docs.npmjs.com/policies/unpublish) on unpublish (generally only within 72 hours of publishing). `--force` skips the interactive confirmation, so double-check the package name and version first. In most cases prefer `deprecate` to flag a version rather than deleting it.
+:::
 
 ### Dist-Tags Management
 

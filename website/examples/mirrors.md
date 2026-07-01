@@ -718,7 +718,7 @@ go run mirror-benchmark.go
 ```
 
 示例输出：
-```
+```text
 镜像源性能测试结果:
 ✅ NPM Mirror: 平均延迟 150ms, 成功率 100%
 ✅ 淘宝镜像: 平均延迟 200ms, 成功率 100%

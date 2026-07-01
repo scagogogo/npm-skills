@@ -135,6 +135,10 @@ npm-skills unpublish my-pkg --version 1.0.0 -t <token>   # 危险
 npm-skills unpublish my-pkg --force -t <token>           # 极危险
 ```
 
+::: danger unpublish 是不可逆操作
+`unpublish` 会从 registry 永久移除已发布的版本，可能导致所有依赖它的项目构建失败。npm 官方对 unpublish 有[严格的时间与条件限制](https://docs.npmjs.com/policies/unpublish)（一般仅允许发布后 72 小时内撤回）。`--force` 会跳过交互确认，请务必先确认包名与版本无误。多数场景应改用 `deprecate` 标记弃用，而非删除。
+:::
+
 ### Dist-Tags 管理
 
 ```bash

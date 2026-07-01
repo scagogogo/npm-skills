@@ -45,3 +45,70 @@ features:
     title: 34-Platform Binaries
     details: GoReleaser covers Linux/macOS/Windows/FreeBSD/OpenBSD/NetBSD/Illumos/Solaris × 13 architectures, ready to run.
 ---
+
+## Four entry points, one core
+
+NPM Skills exposes the same Registry capabilities through four entry points — pick whichever fits your scenario. They all share a single connection-pooled Go client underneath:
+
+```mermaid
+flowchart TB
+    subgraph Entry["Entry points"]
+        AI["🤖 Claude Code plugin<br/>SKILL.md progressive disclosure"]
+        MCP["📡 MCP Server<br/>33 tools · JSON-RPC"]
+        CLI["⌨️ CLI<br/>26 commands"]
+        SDK["📦 Go SDK<br/>70+ methods"]
+    end
+
+    Core["pkg/registry<br/>Registry client"]
+    HTTP["http.Client<br/>sync.Once pooled reuse"]
+    NPM["NPM Registry / 8 mirrors"]
+
+    AI --> MCP
+    MCP --> Core
+    CLI --> Core
+    SDK --> Core
+    Core --> HTTP
+    HTTP --> NPM
+
+    classDef core fill:#cb3837,stroke:#8b0000,color:#fff;
+    class Core core;
+```
+
+## 30-second start
+
+::: code-group
+
+```bash [CLI]
+# Query package info
+npm-skills info react
+
+# Search and sort by relevance
+npm-skills search "web framework" --size 10
+
+# Download a tarball via a mirror
+npm-skills download lodash 4.17.21 ./ --registry https://registry.npmmirror.com
+```
+
+```go [Go SDK]
+package main
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/scagogogo/npm-skills/pkg/registry"
+)
+
+func main() {
+    client := registry.NewRegistry()
+    pkg, err := client.GetPackageInformation(context.Background(), "react")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println("Latest version:", pkg.DistTags["latest"])
+}
+```
+
+:::
+
+Ready to go deeper? Head to [Getting Started](/en/getting-started) for the full setup of all four entry points, or jump straight to the [API docs](/en/api/) and [CLI reference](/en/cli).
