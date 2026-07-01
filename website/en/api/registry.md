@@ -14,7 +14,7 @@ flowchart TB
     HC --> TR["http.Transport<br/>proxy / TLS config"]
     TR --> Net["NPM Registry / mirror / private"]
 
-    Reg --> Methods["71 methods<br/>package / version / dist-tags / downloads / audit ..."]
+    Reg --> Methods["76 methods<br/>package / version / dist-tags / downloads / audit ..."]
     Methods --> Opt
 
     classDef cache fill:#e8f0fe,stroke:#4285f4,color:#174ea6;

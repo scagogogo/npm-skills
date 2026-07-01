@@ -4,7 +4,7 @@ layout: home
 hero:
   name: NPM Skills
   text: NPM Registry client for AI agents
-  tagline: Query, publish, audit, mirrors, proxy in one · 70+ SDK methods · 33 MCP tools · 26 CLI commands
+  tagline: Query, publish, audit, mirrors, proxy in one · 70+ SDK methods · 31 MCP tools · 26 CLI commands
   image:
     src: /architecture.svg
     alt: NPM Skills architecture
@@ -40,7 +40,7 @@ features:
     details: ErrNotFound / ErrUnauthorized / ErrRateLimited with errors.Is() support; sensitive fields masked in String().
   - icon: 📡
     title: MCP Protocol
-    details: 33 MCP tools for any MCP-compatible client — Claude Code, Cursor, Windsurf.
+    details: 31 MCP tools for any MCP-compatible client — Claude Code, Cursor, Windsurf.
   - icon: 🏗️
     title: 34-Platform Binaries
     details: GoReleaser covers Linux/macOS/Windows/FreeBSD/OpenBSD/NetBSD/Illumos/Solaris × 13 architectures, ready to run.
@@ -54,7 +54,7 @@ NPM Skills exposes the same Registry capabilities through four entry points — 
 flowchart TB
     subgraph Entry["Entry points"]
         AI["🤖 Claude Code plugin<br/>SKILL.md progressive disclosure"]
-        MCP["📡 MCP Server<br/>33 tools · JSON-RPC"]
+        MCP["📡 MCP Server<br/>31 tools · JSON-RPC"]
         CLI["⌨️ CLI<br/>26 commands"]
         SDK["📦 Go SDK<br/>70+ methods"]
     end

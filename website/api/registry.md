@@ -14,7 +14,7 @@ flowchart TB
     HC --> TR["http.Transport<br/>代理 / TLS 配置"]
     TR --> Net["NPM Registry / 镜像 / 私有仓库"]
 
-    Reg --> Methods["71 个方法<br/>包 / 版本 / dist-tags / 下载 / 审计 ..."]
+    Reg --> Methods["76 个方法<br/>包 / 版本 / dist-tags / 下载 / 审计 ..."]
     Methods --> Opt
 
     classDef cache fill:#e8f0fe,stroke:#4285f4,color:#174ea6;

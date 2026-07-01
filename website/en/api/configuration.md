@@ -331,28 +331,23 @@ When no options are provided, the following defaults are used:
 
 ## Predefined Configurations
 
-The library provides constructors for popular registries:
+The library provides constructors for popular registries — each is a thin wrapper around `SetRegistryURL`:
 
-### Official NPM Registry
 ```go
-// Equivalent to SetRegistryURL("https://registry.npmjs.org")
-client := registry.NewRegistry()
+// Official
+client := registry.NewRegistry()            // https://registry.npmjs.org
+client := registry.NewYarnRegistry()        // Yarn registry
+
+// China mirrors
+client := registry.NewTaoBaoRegistry()      // Taobao (npmmirror)
+client := registry.NewNpmMirrorRegistry()   // NPM Mirror
+client := registry.NewHuaWeiCloudRegistry() // Huawei Cloud
+client := registry.NewTencentRegistry()     // Tencent Cloud
+client := registry.NewCnpmRegistry()        // CNPM
+client := registry.NewNpmjsComRegistry()    // NPM CouchDB
 ```
 
-### Taobao Mirror
-```go
-client := registry.NewTaoBaoRegistry()
-```
-
-### NPM Mirror
-```go
-client := registry.NewNpmMirrorRegistry()
-```
-
-### Huawei Cloud Mirror
-```go
-client := registry.NewHuaWeiCloudRegistry()
-```
+For any other host, use `NewCustomRegistry(url)` or `NewOptions().SetRegistryURL(url)`.
 
 ## Environment Variable Support
 

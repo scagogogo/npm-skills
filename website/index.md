@@ -4,7 +4,7 @@ layout: home
 hero:
   name: NPM Skills
   text: 面向 AI 智能体的 NPM 客户端
-  tagline: 查询、发布、审计、镜像、代理一体化 · 70+ SDK 方法 · 33 MCP 工具 · 26 CLI 命令
+  tagline: 查询、发布、审计、镜像、代理一体化 · 70+ SDK 方法 · 31 MCP 工具 · 26 CLI 命令
   image:
     src: /architecture.svg
     alt: NPM Skills 架构图
@@ -40,7 +40,7 @@ features:
     details: ErrNotFound / ErrUnauthorized / ErrRateLimited 等，支持 errors.Is() 程序化处理，敏感字段脱敏。
   - icon: 📡
     title: MCP 协议
-    details: 33 个 MCP 工具，供 Claude Code、Cursor、Windsurf 等任意 MCP 客户端调用。
+    details: 31 个 MCP 工具，供 Claude Code、Cursor、Windsurf 等任意 MCP 客户端调用。
   - icon: 🏗️
     title: 34 平台预编译
     details: GoReleaser 覆盖 Linux/macOS/Windows/FreeBSD/OpenBSD/NetBSD/Illumos/Solaris × 13 架构，开箱即用。
@@ -54,7 +54,7 @@ NPM Skills 把同一份 Registry 能力暴露为四种入口，按你的场景�
 flowchart TB
     subgraph Entry["接入方式"]
         AI["🤖 Claude Code 插件<br/>SKILL.md 渐进披露"]
-        MCP["📡 MCP Server<br/>33 工具 · JSON-RPC"]
+        MCP["📡 MCP Server<br/>31 工具 · JSON-RPC"]
         CLI["⌨️ CLI<br/>26 命令"]
         SDK["📦 Go SDK<br/>70+ 方法"]
     end

@@ -1,6 +1,6 @@
 # MCP 服务器
 
-NPM Skills 提供一个 MCP (Model Context Protocol) 服务器，将 NPM Registry 操作暴露为 33 个工具，供任意 MCP 兼容的 AI 客户端调用 —— Claude Code、Cursor、Windsurf 等。
+NPM Skills 提供一个 MCP (Model Context Protocol) 服务器，将 NPM Registry 操作暴露为 31 个工具，供任意 MCP 兼容的 AI 客户端调用 —— Claude Code、Cursor、Windsurf 等。
 
 ## 架构
 
@@ -13,7 +13,7 @@ flowchart LR
     end
     subgraph 服务器["npm-mcp-server"]
         RPC["JSON-RPC 端点<br/>stdio"]
-        Tools["33 个工具<br/>schema + handler"]
+        Tools["31 个工具<br/>schema + handler"]
         SDK["Registry SDK"]
     end
     N["NPM Registry / 镜像"]
@@ -40,7 +40,7 @@ sequenceDiagram
 
     Note over LLM,C: 启动时握手 → 列出可用工具
     C->>S: initialize / tools/list
-    S-->>C: 返回 33 个工具及其 JSON Schema
+    S-->>C: 返回 31 个工具及其 JSON Schema
     LLM->>C: 决定调用 npm_package_summary("react")
     C->>S: tools/call { name, arguments }
     S->>S: 校验参数（JSON Schema）
@@ -100,14 +100,14 @@ go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 | `--proxy` | | HTTP 代理（env: `NPM_PROXY`） |
 | `--timeout` | `120` | 超时秒数 |
 
-## 工具清单（33 个）
+## 工具清单（31 个）
 
-33 个工具按领域可归为读取与写入两大类、若干子域。写入类需要有效 token：
+31 个工具按是否需要 token 分为两类：17 个只读工具无需认证，14 个需要在服务端配置有效 token（`--token` 或 `NPM_TOKEN`）：
 
 ```mermaid
 mindmap
-  root((33 个 MCP 工具))
-    读取（免 token）
+  root((31 个 MCP 工具))
+    只读（免 token · 17）
       包元数据
         npm_package
         npm_package_summary
@@ -115,76 +115,77 @@ mindmap
         npm_latest_version
       发现
         npm_search
-        npm_dist_tags
+        npm_dist_tags / npm_dist_tag_get
       统计
         npm_download_stats
         npm_download_range
+      审计
+        npm_audit
+        npm_audit_advisory
+      stars
+        npm_starred_by_package
+        npm_starred_by_user
       仓库
         npm_registry_info
         npm_mirrors
+        npm_changes
+    需 token（14）
+      dist-tags 写入
+        npm_dist_tag_set
+        npm_dist_tag_delete
+      访问 / 身份
+        npm_package_access
+        npm_package_collaborators
+        npm_user_get
         npm_whoami
-    写入（需 token）
-      dist-tags
-        npm_dist_tag_set / delete
-        npm_dist_tags_set
-      stars / 访问
-        npm_star / unstar
-        npm_access_get
-        npm_collaborators
-      安全审计
-        npm_audit_quick
-        npm_audit_advisory
+        npm_token_list
       组织 / 团队
         npm_org_get / members / packages
-        npm_team_list / members / packages
-      运维
-        npm_token_list
+        npm_team_list / members
+      webhooks
         npm_hook_list / get
-        npm_changes
 ```
 
-### 读取工具
+### 只读工具（无需 token）
 
 | 工具 | 说明 |
 |------|------|
-| `npm_registry_info` | 仓库状态与统计 |
-| `npm_mirrors` | 镜像源列表 |
-| `npm_package` | 完整包元数据（大） |
-| `npm_package_summary` | 轻量包元数据（推荐） |
-| `npm_search` | 搜索包（分页、加权） |
-| `npm_version` | 特定版本元数据 |
-| `npm_versions` | 所有版本号 |
-| `npm_latest_version` | 最新版本号 |
-| `npm_dist_tags` | dist-tags |
-| `npm_download_stats` | 区间下载量 |
-| `npm_download_range` | 每日下载趋势 |
-| `npm_whoami` | 认证状态 |
+| `npm_registry_info` | 注册表状态与统计（包总数、磁盘占用等） |
+| `npm_mirrors` | 列出所有镜像源及其 URL、地区、说明 |
+| `npm_package` | 完整包元数据（可能很大，10MB+；建议优先用 summary） |
+| `npm_package_summary` | 轻量包元数据（名称、描述、dist-tags、版本列表，推荐） |
+| `npm_search` | 按关键字搜索包（分页、评分加权） |
+| `npm_version` | 特定版本的元数据（依赖、脚本、分发信息） |
+| `npm_versions` | 所有已发布版本号（升序） |
+| `npm_latest_version` | 最新版本号（仅查 dist-tags，轻量快速） |
+| `npm_dist_tags` | 全部 dist-tags（latest / next / beta 等） |
+| `npm_dist_tag_get` | 单个 dist-tag 指向的版本号 |
+| `npm_download_stats` | 区间下载总量（始终查询 api.npmjs.org） |
+| `npm_download_range` | 每日下载趋势数组（始终查询 api.npmjs.org） |
+| `npm_audit` | 快速安全审计（提交「包名→版本」映射，返回按严重度的漏洞计数） |
+| `npm_audit_advisory` | 按 ID 查询单条安全公告 |
+| `npm_starred_by_package` | star 了指定包的用户列表 |
+| `npm_starred_by_user` | 指定用户 star 的包列表 |
+| `npm_changes` | 注册表变更 feed（用于镜像 / 增量同步） |
 
-### 写入工具（需要 token）
+### 需要 token 的工具
 
 | 工具 | 说明 |
 |------|------|
-| `npm_dist_tag_set` | 设置 dist-tag |
-| `npm_dist_tag_delete` | 删除 dist-tag |
-| `npm_dist_tags_set` | 批量设置 dist-tags |
-| `npm_star` | star 包 |
-| `npm_unstar` | unstar 包 |
-| `npm_stargazers` | 包的 stargazers |
-| `npm_starred_by_user` | 用户 star 的包 |
-| `npm_access_get` | 包访问设置 |
-| `npm_collaborators` | 包协作者 |
-| `npm_token_list` | API token 列表 |
-| `npm_audit_quick` | 快速安全审计 |
-| `npm_audit_advisory` | 按 ID 查询安全公告 |
-| `npm_hook_list` | webhook 列表 |
-| `npm_hook_get` | webhook 详情 |
-| `npm_org_get` | 组织信息 |
+| `npm_dist_tag_set` | 设置 / 更新 dist-tag 指向某版本 |
+| `npm_dist_tag_delete` | 删除 dist-tag（删除 `latest` 有风险） |
+| `npm_package_access` | 包的访问 / 权限设置 |
+| `npm_package_collaborators` | 包协作者列表 |
+| `npm_user_get` | 用户资料信息 |
+| `npm_whoami` | 当前认证状态（返回用户名） |
+| `npm_token_list` | 当前用户的 API token 列表 |
+| `npm_org_get` | 组织详情 |
 | `npm_org_members` | 组织成员 |
-| `npm_org_packages` | 组织包 |
-| `npm_team_list` | 团队列表 |
+| `npm_org_packages` | 组织拥有的包 |
+| `npm_team_list` | 组织内团队列表 |
 | `npm_team_members` | 团队成员 |
-| `npm_team_packages` | 团队包 |
-| `npm_changes` | 注册表变更 feed |
+| `npm_hook_list` | 当前用户的 webhook 列表 |
+| `npm_hook_get` | 单个 webhook 详情 |
 
 ## 下一步
 
