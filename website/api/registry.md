@@ -271,6 +271,161 @@ fmt.Println("下载成功！")
 **返回值:**
 - `*Options` - 当前配置选项
 
+## 方法索引（76 个）
+
+下面按功能域列出全部 76 个方法。`ctx` 均为 `context.Context`；标注 🔒 的写操作需要服务端配置有效 token（`Options.Token`）。
+
+### 包元数据（只读）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetPackageInformation` | `(ctx, name) → *models.Package, error` | 完整包元数据（可能很大，10MB+） |
+| `GetPackageInformationSummary` | `(ctx, name) → *models.Package, error` | 轻量摘要（推荐） |
+| `GetAbbreviatedPackageInformation` | `(ctx, name) → *models.Package, error` | 缩写元数据 |
+| `GetPackageVersion` | `(ctx, name, version) → *models.Version, error` | 特定版本元数据 |
+| `GetPackageVersions` | `(ctx, name) → []string, error` | 所有版本号 |
+| `GetPackageVersionCount` | `(ctx, name) → int, error` | 版本总数 |
+| `GetPackageLatestVersion` | `(ctx, name) → string, error` | 最新版本号（仅查 dist-tags） |
+
+### dist-tags
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetDistTags` | `(ctx, name) → map[string]string, error` | 全部 dist-tags |
+| `GetDistTagsAbbreviated` | `(ctx, name) → map[string]string, error` | 缩写形式 dist-tags |
+| `GetDistTag` | `(ctx, name, tag) → string, error` | 单个 tag 指向的版本 |
+| `SetDistTag` 🔒 | `(ctx, name, tag, version) → error` | 设置单个 dist-tag |
+| `SetDistTags` 🔒 | `(ctx, name, tags) → error` | 批量设置 dist-tags |
+| `DeleteDistTag` 🔒 | `(ctx, name, tag) → error` | 删除 dist-tag |
+
+### 搜索
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `SearchPackages` | `(ctx, query, limit) → *models.SearchResult, error` | 关键字搜索（分页） |
+| `SearchPackagesWithOptions` | `(ctx, query, opts SearchOptions) → *models.SearchResult, error` | 加权 / 偏移等高级搜索 |
+
+### 下载统计（始终查 `api.npmjs.org`）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetDownloadStats` | `(ctx, name, period) → *models.DownloadStats, error` | 区间下载总量 |
+| `GetDownloadStatsByDateRange` | `(ctx, name, start, end) → *models.DownloadStats, error` | 自定义日期区间 |
+| `GetDownloadRangeStats` | `(ctx, name, period) → *models.DownloadRangeStats, error` | 每日下载趋势 |
+| `GetDownloadRangeStatsByDateRange` | `(ctx, name, start, end) → *models.DownloadRangeStats, error` | 自定义区间每日趋势 |
+| `GetBulkDownloadStats` | `(ctx, names []string, period) → map[string]*models.DownloadStats, error` | 批量包下载总量 |
+| `GetBulkDownloadStatsByDateRange` | `(ctx, names, start, end) → map[string]*models.DownloadStats, error` | 批量自定义区间 |
+| `GetBulkDownloadRangeStats` | `(ctx, names, period) → map[string]*models.DownloadRangeStats, error` | 批量每日趋势 |
+| `GetBulkDownloadRangeStatsByDateRange` | `(ctx, names, start, end) → map[string]*models.DownloadRangeStats, error` | 批量自定义区间每日趋势 |
+
+### 下载 tarball
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `DownloadTarball` | `(ctx, name, version, destPath) → error` | 下载 tarball 到本地路径 |
+
+### 安全审计（只读）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `QuickAudit` | `(ctx, payload *models.QuickAuditRequest) → *models.QuickAuditResult, error` | 快速审计（name→version） |
+| `BulkAudit` | `(ctx, advisories map[string][]string) → map[string][]models.Advisory, error` | 批量审计 |
+| `GetAdvisory` | `(ctx, advisoryID int) → *models.Advisory, error` | 按 ID 查公告 |
+| `ListAdvisories` | `(ctx, opts models.AdvisoryListOptions) → []models.Advisory, error` | 公告列表 |
+
+### Stars（只读）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetStarredByPackage` | `(ctx, name) → []string, error` | star 了某包的用户 |
+| `GetStarredByUser` | `(ctx, username) → []string, error` | 某用户 star 的包 |
+| `StarPackage` 🔒 | `(ctx, name) → error` | star 包 |
+| `UnstarPackage` 🔒 | `(ctx, name) → error` | unstar 包 |
+
+### 访问控制与协作者
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetPackageAccess` 🔒 | `(ctx, name) → *models.PackageAccess, error` | 包访问设置 |
+| `SetPackageAccess` 🔒 | `(ctx, name, access *models.PackageAccessUpdate) → error` | 更新包访问设置 |
+| `GrantAccess` 🔒 | `(ctx, name, user, permission) → error` | 授予协作者权限 |
+| `RevokeAccess` 🔒 | `(ctx, name, user) → error` | 移除协作者 |
+| `ListCollaborators` 🔒 | `(ctx, name) → []models.Collaborator, error` | 协作者列表 |
+
+### 发布与弃用
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `PublishPackage` 🔒 | `(ctx, pkg *models.Package) → error` | 发布包 |
+| `PublishPackageFromTarball` 🔒 | `(ctx, name, version string, tarball []byte, meta *models.PublishMetadata) → error` | 从 tarball 发布 |
+| `DeprecateVersion` 🔒 | `(ctx, name, version, message) → error` | 弃用某版本 |
+| `UnpublishPackage` 🔒 | `(ctx, name) → error` | 取消发布整个包（危险） |
+| `UnpublishPackageVersion` 🔒 | `(ctx, name, version) → error` | 取消发布某版本 |
+
+### Token 管理（需 token）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `ListTokens` | `(ctx) → []models.Token, error` | token 列表 |
+| `GetToken` | `(ctx, tokenID) → *models.Token, error` | 单个 token 详情 |
+| `CreateToken` 🔒 | `(ctx, opts *models.TokenCreation) → *models.Token, error` | 创建 token |
+| `DeleteToken` 🔒 | `(ctx, tokenID) → error` | 删除 token |
+
+### 用户与认证
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `WhoAmI` | `(ctx) → string, error` | 当前认证用户名 |
+| `GetUser` 🔒 | `(ctx, name) → *models.UserProfile, error` | 用户资料 |
+| `Login` | `(ctx, name, password) → *models.LoginResult, error` | 登录 |
+| `CreateUser` | `(ctx, user *models.UserCreation) → *models.LoginResult, error` | 注册 |
+
+### 组织与团队（需 token）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetOrg` | `(ctx, orgName) → *models.Organization, error` | 组织详情 |
+| `ListOrgMembers` | `(ctx, orgName) → []string, error` | 组织成员 |
+| `ListOrgPackages` | `(ctx, orgName) → []string, error` | 组织包 |
+| `CreateOrg` 🔒 | `(ctx, orgName) → *models.Organization, error` | 创建组织 |
+| `DeleteOrg` 🔒 | `(ctx, orgName) → error` | 删除组织 |
+| `AddOrgMember` 🔒 | `(ctx, orgName, username) → error` | 添加组织成员 |
+| `RemoveOrgMember` 🔒 | `(ctx, orgName, username) → error` | 移除组织成员 |
+| `ListTeams` | `(ctx, orgName) → []models.Team, error` | 团队列表 |
+| `ListTeamMembers` | `(ctx, orgName, teamName) → []string, error` | 团队成员 |
+| `ListTeamPackages` | `(ctx, orgName, teamName) → []string, error` | 团队包 |
+| `CreateTeam` 🔒 | `(ctx, orgName, teamName) → *models.Team, error` | 创建团队 |
+| `DeleteTeam` 🔒 | `(ctx, orgName, teamName) → error` | 删除团队 |
+| `AddTeamMember` 🔒 | `(ctx, orgName, teamName, username) → error` | 添加团队成员 |
+| `RemoveTeamMember` 🔒 | `(ctx, orgName, teamName, username) → error` | 移除团队成员 |
+
+### Webhooks（需 token）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `ListHooks` | `(ctx, opts models.HookListOptions) → []models.Hook, error` | webhook 列表 |
+| `GetHook` | `(ctx, hookID) → *models.Hook, error` | webhook 详情 |
+| `CreateHook` 🔒 | `(ctx, hook *models.HookCreation) → *models.Hook, error` | 创建 webhook |
+| `UpdateHook` 🔒 | `(ctx, hookID, hook *models.HookUpdate) → *models.Hook, error` | 更新 webhook |
+| `DeleteHook` 🔒 | `(ctx, hookID) → error` | 删除 webhook |
+
+### CouchDB 视图与变更流（高级，用于镜像 / 增量同步）
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetRegistryInformation` | `(ctx) → *models.RegistryInformation, error` | 注册表状态与统计 |
+| `RegistryHealthCheck` | `(ctx) → bool, error` | 注册表健康检查 |
+| `IsPrivateRegistry` | `() → bool` | 是否私有注册表 |
+| `GetChanges` | `(ctx, opts models.ChangesOptions) → *models.ChangesResult, error` | 变更 feed |
+| `GetAllDocs` | `(ctx, opts models.AllDocsOptions) → *models.AllDocsResult, error` | 全量文档 |
+| `GetView` | `(ctx, viewName, opts models.ViewOptions) → *models.ViewResult, error` | 视图查询 |
+
+### 配置
+
+| 方法 | 签名 | 说明 |
+|------|------|------|
+| `GetOptions` | `() → *Options` | 当前配置选项 |
+
 ## 镜像源
 
 NPM Skills 内置支持多种镜像源，特别适合中国大陆用户：
