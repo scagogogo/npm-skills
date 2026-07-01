@@ -95,7 +95,7 @@ go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 | 参数 | 默认 | 说明 |
 |------|------|------|
 | `--mirror` | `official` | 镜像源名 |
-| `--registry` | | 自定义仓库 URL |
+| `--registry` | | 自定义注册表 URL |
 | `--token` | | 认证 token（env: `NPM_TOKEN`） |
 | `--proxy` | | HTTP 代理（env: `NPM_PROXY`） |
 | `--timeout` | `120` | 超时秒数 |

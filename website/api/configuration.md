@@ -6,7 +6,7 @@ NPM Skills 提供灵活的配置选项，允许您自定义注册表 URL、代�
 
 ```go
 type Options struct {
-    RegistryURL string  // NPM 仓库服务器的 URL 地址
+    RegistryURL string  // NPM 注册表服务器的 URL 地址
     Proxy       string  // HTTP 代理服务器的 URL
 }
 ```
@@ -31,10 +31,10 @@ fmt.Printf("默认注册表: %s\n", options.RegistryURL)
 
 ### `SetRegistryURL(url string) *Options`
 
-设置 NPM 仓库服务器的 URL 地址。
+设置 NPM 注册表服务器的 URL 地址。
 
 **参数:**
-- `url` - NPM 仓库 URL 地址
+- `url` - NPM 注册表 URL 地址
 
 **返回值:**
 - `*Options` - 更新后的选项对象（支持链式调用）
@@ -135,6 +135,18 @@ flowchart TD
     class Cached,Store cache;
     class PErr err;
 ```
+
+## 默认值
+
+未显式配置时，`NewOptions()` 返回的选项使用以下默认值：
+
+| 选项 | 默认值 |
+|------|--------|
+| Registry URL | `https://registry.npmjs.org` |
+| HTTP 客户端 | `http.DefaultClient` |
+| User-Agent | `npm-skills/1.0` |
+| 超时时间 | `30 秒` |
+| 代理 | 无 |
 
 ## 预定义配置
 
@@ -316,4 +328,10 @@ if err := validateOptions(options); err != nil {
 }
 
 client := registry.NewRegistry(options)
-``` 
+```
+
+## 下一步
+
+- 查阅 [Registry 客户端](registry.md) 了解各方法文档
+- 参考 [数据模型](models.md) 了解响应结构
+- 浏览 [示例](../examples/) 学习实战用法 

@@ -176,7 +176,7 @@ err := client.DownloadTarball(ctx, "react", "18.2.0", "./react.tgz")
 
 ```go
 type Options struct {
-    RegistryURL string  // NPM 仓库 URL
+    RegistryURL string  // NPM 注册表 URL
     Proxy       string  // HTTP 代理 URL
 }
 ```
