@@ -26,7 +26,7 @@ flowchart LR
 | 参数 | 简写 | 默认值 | 说明 |
 |------|------|--------|------|
 | `--mirror` | `-m` | `official` | 镜像源名 |
-| `--registry` | | | 自定义注册表 URL（覆盖 --mirror） |
+| `--registry` | | | 自定义注册表 URL（覆盖 --mirror，env: `NPM_REGISTRY`） |
 | `--token` | `-t` | | NPM 认证 token（写操作必需，env: `NPM_TOKEN`） |
 | `--proxy` | | | HTTP 代理 URL（env: `NPM_PROXY`） |
 | `--timeout` | | `120` | 请求超时秒数 |

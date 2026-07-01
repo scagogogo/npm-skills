@@ -26,7 +26,7 @@ flowchart LR
 | Flag | Short | Default | Description |
 |------|-------|---------|-------------|
 | `--mirror` | `-m` | `official` | Mirror source name |
-| `--registry` | | | Custom registry URL (overrides --mirror) |
+| `--registry` | | | Custom registry URL (overrides --mirror, env: `NPM_REGISTRY`) |
 | `--token` | `-t` | | NPM auth token (write ops, env: `NPM_TOKEN`) |
 | `--proxy` | | | HTTP proxy URL (env: `NPM_PROXY`) |
 | `--timeout` | | `120` | Request timeout in seconds |
