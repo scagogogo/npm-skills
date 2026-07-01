@@ -31,6 +31,7 @@ flowchart TD
 | 腾讯云 | http://mirrors.cloud.tencent.com/npm | 中国 | 腾讯云优化 | 腾讯云用户 |
 | CNPM | http://r.cnpmjs.org | 中国 | 社区维护 | 开发测试环境 |
 | Yarn | https://registry.yarnpkg.com | 全球 | Yarn 生态集成 | Yarn 用户 |
+| NPM CouchDB | https://skimdb.npmjs.com | 全球 | CouchDB _changes 视图 | 增量同步 / 镜像构建 |
 
 ## 示例 1: 自动镜像选择
 

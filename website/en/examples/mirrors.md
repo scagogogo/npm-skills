@@ -33,13 +33,13 @@ client := registry.NewRegistry()
 ### Taobao Mirror (China)
 ```go
 client := registry.NewTaoBaoRegistry()
-// Uses: https://registry.npmmirror.com
+// Uses: https://registry.npm.taobao.org
 ```
 
 ### NPM Mirror
 ```go
 client := registry.NewNpmMirrorRegistry()
-// Uses: https://skimdb.npmjs.com/registry
+// Uses: https://registry.npmmirror.com
 ```
 
 ### Huawei Cloud Mirror (China)
