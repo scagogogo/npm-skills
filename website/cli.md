@@ -119,7 +119,13 @@ npm-skills registry-info                 # 仓库健康信息
 npm-skills mirrors                       # 镜像源列表
 npm-skills config                        # 当前配置
 npm-skills whoami --token <token>        # 认证状态
+npm-skills user get <username> --token <token>  # 用户资料（别名 user info）
 npm-skills download <name> <ver> <dest>  # 下载 tarball
+
+# CouchDB 视图与变更流（高级，用于镜像构建 / 增量同步）
+npm-skills couchdb changes --since <seq> --limit 100 --include-docs
+npm-skills couchdb all-docs --start-key a --end-key b --limit 50
+npm-skills couchdb view <view-name> --key <k> --group
 ```
 
 ## 写入操作（需要 --token）
@@ -172,6 +178,13 @@ npm-skills token list -t <token>
 npm-skills token get <id> -t <token>
 npm-skills token create --password <pass> -t <token>
 npm-skills token delete <id> -t <token>
+```
+
+### 用户账户
+
+```bash
+npm-skills user login --username <user> --password <pass>   # 登录获取 token
+npm-skills user signup --username <user> --password <pass> --email <mail>  # 注册
 ```
 
 ### 安全审计

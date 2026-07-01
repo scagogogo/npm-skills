@@ -119,7 +119,13 @@ npm-skills registry-info
 npm-skills mirrors
 npm-skills config
 npm-skills whoami --token <token>
+npm-skills user get <username> --token <token>  # user profile (alias: user info)
 npm-skills download <name> <ver> <dest>
+
+# CouchDB views and changes feed (advanced — for mirroring / incremental sync)
+npm-skills couchdb changes --since <seq> --limit 100 --include-docs
+npm-skills couchdb all-docs --start-key a --end-key b --limit 50
+npm-skills couchdb view <view-name> --key <k> --group
 ```
 
 ## Write Operations (require --token)
@@ -172,6 +178,13 @@ npm-skills token list -t <token>
 npm-skills token get <id> -t <token>
 npm-skills token create --password <pass> -t <token>
 npm-skills token delete <id> -t <token>
+```
+
+### User Accounts
+
+```bash
+npm-skills user login --username <user> --password <pass>   # log in to get a token
+npm-skills user signup --username <user> --password <pass> --email <mail>  # sign up
 ```
 
 ### Security Audit
