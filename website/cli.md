@@ -247,5 +247,11 @@ flowchart LR
 ```
 
 ::: tip 选型建议
-中国大陆用户优先 `npm-mirror`（`registry.npmmirror.com`），无需代理即可获得最快速度；受限网络叠加 `--proxy` 使用官方源；企业内网用 `--registry` 指向私有仓库。
+中国大陆用户优先 `npm-mirror`（`registry.npmmirror.com`），无需代理即可获得最快速度；受限网络叠加 `--proxy` 使用官方源；企业内网用 `--registry` 指向私有注册表。
 :::
+
+## 下一步
+
+- 阅读 [快速开始](/getting-started) 了解四种接入方式
+- 查阅 [MCP 服务器](/mcp-server) 将命令暴露为 AI 工具
+- 浏览 [API 文档](/api/) 了解底层 SDK 方法

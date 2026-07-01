@@ -248,3 +248,9 @@ flowchart LR
 ::: tip Recommendation
 China users: prefer `npm-mirror` (`registry.npmmirror.com`) for the fastest speed without a proxy. On restricted networks, use the official source with `--proxy`. For enterprise intranets, point `--registry` at your private registry.
 :::
+
+## Next Steps
+
+- Read [Getting Started](/en/getting-started) for the four entry points
+- Check [MCP Server](/en/mcp-server) to expose commands as AI tools
+- Browse [API docs](/en/api/) for the underlying SDK methods

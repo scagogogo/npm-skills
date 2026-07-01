@@ -67,3 +67,9 @@ go get github.com/scagogogo/npm-skills
 npm-skills --version
 npm-skills mirrors
 ```
+
+## Next Steps
+
+- Read [Getting Started](/en/getting-started) for the four entry points
+- Check the [CLI Reference](/en/cli) for all 26 commands
+- Browse [API docs](/en/api/) for the underlying SDK methods

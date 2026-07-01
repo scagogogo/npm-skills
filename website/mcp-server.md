@@ -184,4 +184,10 @@ mindmap
 | `npm_team_list` | 团队列表 |
 | `npm_team_members` | 团队成员 |
 | `npm_team_packages` | 团队包 |
-| `npm_changes` | 仓库变更 feed |
+| `npm_changes` | 注册表变更 feed |
+
+## 下一步
+
+- 阅读 [快速开始](/getting-started) 完成安装与配置
+- 查阅 [CLI 命令手册](/cli) 了解等价的命令行用法
+- 浏览 [API 文档](/api/) 了解底层 SDK 方法

@@ -185,3 +185,9 @@ mindmap
 | `npm_team_members` | Team members |
 | `npm_team_packages` | Team packages |
 | `npm_changes` | Registry changes feed |
+
+## Next Steps
+
+- Read [Getting Started](/en/getting-started) to install and configure
+- Check the [CLI Reference](/en/cli) for equivalent command-line usage
+- Browse [API docs](/en/api/) for the underlying SDK methods

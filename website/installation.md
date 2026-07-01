@@ -67,3 +67,9 @@ go get github.com/scagogogo/npm-skills
 npm-skills --version
 npm-skills mirrors
 ```
+
+## 下一步
+
+- 阅读 [快速开始](/getting-started) 了解四种接入方式
+- 查阅 [CLI 命令手册](/cli) 掌握全部 26 个命令
+- 浏览 [API 文档](/api/) 了解底层 SDK 方法
