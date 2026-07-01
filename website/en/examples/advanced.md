@@ -2,48 +2,41 @@
 
 This page demonstrates advanced usage patterns and features of NPM Skills.
 
-## Custom HTTP Client Configuration
+## Advanced Client Configuration
+
+The SDK builds and caches its `*http.Client` internally, so you tune behavior
+through options rather than injecting a client: `SetTimeout`, `SetProxy`,
+`SetInsecureSkipVerify`, `SetUserAgent`, and authentication via `SetToken` /
+`SetBasicAuth`.
 
 ```go
 package main
 
 import (
     "context"
-    "crypto/tls"
     "fmt"
-    "net/http"
     "time"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
-    // Create custom HTTP client with advanced configuration
-    httpClient := &http.Client{
-        Timeout: 30 * time.Second,
-        Transport: &http.Transport{
-            MaxIdleConns:        100,
-            MaxIdleConnsPerHost: 10,
-            IdleConnTimeout:     90 * time.Second,
-            TLSClientConfig: &tls.Config{
-                InsecureSkipVerify: false,
-            },
-        },
-    }
-    
     options := registry.NewOptions().
-        SetHTTPClient(httpClient).
-        SetRegistryURL("https://registry.npmjs.org")
-    
+        SetRegistryURL("https://registry.npmjs.org").
+        SetTimeout(30 * time.Second).
+        SetUserAgent("MyApp/1.0 (contact@example.com)")
+    // For internal hosts with self-signed certs only:
+    //   .SetInsecureSkipVerify(true)
+
     client := registry.NewRegistry(options)
     ctx := context.Background()
-    
+
     pkg, err := client.GetPackageInformation(ctx, "react")
     if err != nil {
         fmt.Printf("Error: %v\n", err)
         return
     }
-    
+
     fmt.Printf("Package: %s, Version: %s\n", pkg.Name, pkg.DistTags["latest"])
 }
 ```

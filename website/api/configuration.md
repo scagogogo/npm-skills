@@ -4,12 +4,23 @@ NPM Skills 提供灵活的配置选项，允许您自定义注册表 URL、代�
 
 ## Options 结构
 
+所有字段均为导出字段，但推荐通过链式的 `SetXxx` 方法设置：
+
 ```go
 type Options struct {
-    RegistryURL string  // NPM 注册表服务器的 URL 地址
-    Proxy       string  // HTTP 代理服务器的 URL
+    RegistryURL      string        // NPM 注册表服务器的 URL 地址
+    Proxy            string        // HTTP/HTTPS 代理服务器的 URL
+    Token            string        // Bearer 认证令牌
+    Username         string        // Basic 认证用户名
+    Password         string        // Basic 认证密码
+    DownloadStatsURL string        // 下载统计 API 的基础 URL
+    Timeout          time.Duration // 单次请求超时（0 表示不设截止时间）
+    UserAgent        string        // 请求携带的 User-Agent 头
+    InsecureSkipVerify bool        // 是否跳过 TLS 证书校验
 }
 ```
+
+底层 `*http.Client` **不是**直接设置的字段——它在首次调用 `GetHttpClient()` 时根据以上选项懒构建，并用 `sync.Once` 缓存。
 
 ## 创建配置
 
@@ -59,6 +70,88 @@ options := registry.NewOptions().
 ```go
 options := registry.NewOptions().
     SetProxy("http://proxy.corp.com:8080")
+```
+
+### `SetToken(token string) *Options`
+
+设置 Bearer 认证令牌，以 `Authorization: Bearer <token>` 头发送。适用于使用 npm token 认证的私有注册表。
+
+**参数:**
+- `token` - 认证令牌
+
+**示例:**
+```go
+options := registry.NewOptions().
+    SetRegistryURL("https://npm.pkg.github.com").
+    SetToken("ghp_xxxxxxxxxxxx")
+```
+
+### `SetBasicAuth(username, password string) *Options`
+
+设置 HTTP Basic 认证的用户名与密码。
+
+**参数:**
+- `username` - Basic 认证用户名
+- `password` - Basic 认证密码
+
+**示例:**
+```go
+options := registry.NewOptions().
+    SetRegistryURL("https://private-registry.example.com").
+    SetBasicAuth("alice", "s3cret")
+```
+
+### `SetTimeout(timeout time.Duration) *Options`
+
+设置底层 HTTP 客户端的单次请求超时。默认值为 `0`，即不设客户端级截止时间——推荐改用 `context` 控制取消与超时。
+
+**参数:**
+- `timeout` - 请求超时时长
+
+**示例:**
+```go
+options := registry.NewOptions().
+    SetTimeout(30 * time.Second)
+```
+
+### `SetUserAgent(userAgent string) *Options`
+
+设置请求携带的自定义 User-Agent 头。
+
+**参数:**
+- `userAgent` - User-Agent 字符串
+
+**示例:**
+```go
+options := registry.NewOptions().
+    SetUserAgent("MyApp/1.0 (contact@example.com)")
+```
+
+### `SetInsecureSkipVerify(skip bool) *Options`
+
+控制是否跳过 TLS 证书校验。默认 `false`（开启校验）。仅在面向使用自签名证书的可信内部注册表时启用，切勿在公网生产环境中开启。
+
+**参数:**
+- `skip` - `true` 表示跳过 TLS 校验
+
+**示例:**
+```go
+options := registry.NewOptions().
+    SetRegistryURL("https://internal-registry.local").
+    SetInsecureSkipVerify(true) // 内部主机的自签名证书
+```
+
+### `SetDownloadStatsURL(url string) *Options`
+
+覆盖下载统计查询使用的基础 URL（默认 `https://api.npmjs.org`）。当镜像在不同主机上提供统计接口时有用。
+
+**参数:**
+- `url` - 下载统计 API 的基础 URL
+
+**示例:**
+```go
+options := registry.NewOptions().
+    SetDownloadStatsURL("https://api.npmjs.org")
 ```
 
 ### 链式配置
@@ -136,6 +229,10 @@ flowchart TD
     class PErr err;
 ```
 
+::: tip 关于底层传输的精细控制
+SDK 在内部构建 `http.Transport`，因此诸如 `MaxIdleConns`、自定义 `RoundTripper`、指定 TLS `MinVersion` 等设置**不会**作为选项暴露。可调项包括：代理（`SetProxy`）、单次请求超时（`SetTimeout`）、TLS 校验（`SetInsecureSkipVerify`）以及认证（`SetToken` / `SetBasicAuth`）。若需超出这些范围，请复用同一个 `Registry` 实例，以便缓存的客户端连接池在多次请求间得到复用。
+:::
+
 ## 默认值
 
 未显式配置时，`NewOptions()` 返回的选项使用以下默认值：
@@ -143,10 +240,11 @@ flowchart TD
 | 选项 | 默认值 |
 |------|--------|
 | Registry URL | `https://registry.npmjs.org` |
-| HTTP 客户端 | `http.DefaultClient` |
-| User-Agent | `npm-skills/1.0` |
-| 超时时间 | `30 秒` |
+| User-Agent | `npm-skills-sdk` |
+| 超时时间 | `0`（不超时，由调用方通过 `context` 控制） |
 | 代理 | 无 |
+| HTTP 客户端 | 内部懒构建（首次 `GetHttpClient()` 时按代理/TLS 配置生成并用 `sync.Once` 缓存） |
+| TLS 校验 | 开启（`InsecureSkipVerify=false`） |
 
 ## 预定义配置
 

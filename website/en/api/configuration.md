@@ -5,17 +5,24 @@ This document describes all configuration options available for customizing the 
 ## Options Structure
 
 ### Options
-The main configuration structure for customizing client behavior.
+
+The main configuration structure for customizing client behavior. All fields are exported, but the recommended way to set them is through the fluent `SetXxx` methods.
 
 ```go
 type Options struct {
-    registryURL string
-    httpClient  *http.Client
-    proxy       string
-    userAgent   string
-    timeout     time.Duration
+    RegistryURL      string        // NPM registry base URL
+    Proxy            string        // HTTP/HTTPS proxy URL
+    Token            string        // Bearer token for authentication
+    Username         string        // Basic-auth username
+    Password         string        // Basic-auth password
+    DownloadStatsURL string        // Base URL for the download-stats API
+    Timeout          time.Duration // Per-request timeout (0 = no deadline)
+    UserAgent        string        // User-Agent header sent with requests
+    InsecureSkipVerify bool        // Skip TLS certificate verification
 }
 ```
+
+The underlying `*http.Client` is **not** a field you set directly — it is built lazily from these options on the first call to `GetHttpClient()` and cached with `sync.Once`.
 
 ## Creating Options
 
@@ -54,32 +61,12 @@ options := registry.NewOptions().
     SetRegistryURL("https://registry.npmjs.org")
 ```
 
-### SetHTTPClient
-```go
-func (o *Options) SetHTTPClient(client *http.Client) *Options
-```
-
-Sets a custom HTTP client for all requests.
-
-**Parameters:**
-- `client` - Custom HTTP client instance
-
-**Example:**
-```go
-httpClient := &http.Client{
-    Timeout: 30 * time.Second,
-}
-
-options := registry.NewOptions().
-    SetHTTPClient(httpClient)
-```
-
 ### SetProxy
 ```go
 func (o *Options) SetProxy(proxyURL string) *Options
 ```
 
-Sets a proxy server for all requests.
+Sets a proxy server for all requests. Changing the proxy resets the cached HTTP client so the new setting takes effect.
 
 **Parameters:**
 - `proxyURL` - Proxy server URL (e.g., "http://proxy.example.com:8080")
@@ -88,6 +75,41 @@ Sets a proxy server for all requests.
 ```go
 options := registry.NewOptions().
     SetProxy("http://proxy.example.com:8080")
+```
+
+### SetToken
+```go
+func (o *Options) SetToken(token string) *Options
+```
+
+Sets a Bearer token, sent as the `Authorization: Bearer <token>` header. Use this for private registries that authenticate with npm tokens.
+
+**Parameters:**
+- `token` - Authentication token
+
+**Example:**
+```go
+options := registry.NewOptions().
+    SetRegistryURL("https://npm.pkg.github.com").
+    SetToken("ghp_xxxxxxxxxxxx")
+```
+
+### SetBasicAuth
+```go
+func (o *Options) SetBasicAuth(username, password string) *Options
+```
+
+Sets HTTP Basic authentication credentials.
+
+**Parameters:**
+- `username` - Basic-auth username
+- `password` - Basic-auth password
+
+**Example:**
+```go
+options := registry.NewOptions().
+    SetRegistryURL("https://private-registry.example.com").
+    SetBasicAuth("alice", "s3cret")
 ```
 
 ### SetUserAgent
@@ -103,7 +125,7 @@ Sets a custom User-Agent header for requests.
 **Example:**
 ```go
 options := registry.NewOptions().
-    SetUserAgent("MyApp/1.0 npm-skills")
+    SetUserAgent("MyApp/1.0 (contact@example.com)")
 ```
 
 ### SetTimeout
@@ -111,7 +133,7 @@ options := registry.NewOptions().
 func (o *Options) SetTimeout(timeout time.Duration) *Options
 ```
 
-Sets the default timeout for all requests.
+Sets the per-request timeout applied to the underlying HTTP client. The default is `0`, which means no client-level deadline — control cancellation with a `context` instead.
 
 **Parameters:**
 - `timeout` - Request timeout duration
@@ -122,6 +144,62 @@ options := registry.NewOptions().
     SetTimeout(30 * time.Second)
 ```
 
+### SetInsecureSkipVerify
+```go
+func (o *Options) SetInsecureSkipVerify(skip bool) *Options
+```
+
+Controls whether TLS certificate verification is skipped. Defaults to `false` (verification enabled). Only enable this for trusted internal registries with self-signed certificates — never in production against public networks.
+
+**Parameters:**
+- `skip` - `true` to skip TLS verification
+
+**Example:**
+```go
+options := registry.NewOptions().
+    SetRegistryURL("https://internal-registry.local").
+    SetInsecureSkipVerify(true) // self-signed cert on an internal host
+```
+
+### SetDownloadStatsURL
+```go
+func (o *Options) SetDownloadStatsURL(url string) *Options
+```
+
+Overrides the base URL used for download-statistics queries (default `https://api.npmjs.org`). Useful when a mirror exposes stats at a different host.
+
+**Parameters:**
+- `url` - Download-stats API base URL
+
+**Example:**
+```go
+options := registry.NewOptions().
+    SetDownloadStatsURL("https://api.npmjs.org")
+```
+
+### GetHttpClient
+```go
+func (o *Options) GetHttpClient() (*http.Client, error)
+```
+
+Builds (on first call) and returns the configured `*http.Client`, wiring in proxy, timeout and TLS settings. The client is cached with `sync.Once`, so subsequent calls reuse the same instance — and therefore the same connection pool.
+
+**Returns:**
+- `*http.Client` - The configured HTTP client
+- `error` - Non-nil if the proxy URL fails to parse
+
+**Example:**
+```go
+options := registry.NewOptions().
+    SetProxy("http://proxy.example.com:8080")
+
+httpClient, err := options.GetHttpClient()
+if err != nil {
+    log.Fatalf("failed to build HTTP client: %v", err)
+}
+_ = httpClient
+```
+
 ## Configuration Examples
 
 ### Basic Configuration
@@ -129,6 +207,8 @@ options := registry.NewOptions().
 package main
 
 import (
+    "time"
+
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
@@ -136,116 +216,37 @@ func main() {
     options := registry.NewOptions().
         SetRegistryURL("https://registry.npmjs.org").
         SetTimeout(30 * time.Second)
-    
+
     client := registry.NewRegistry(options)
-}
-```
-
-### Advanced HTTP Client Configuration
-```go
-package main
-
-import (
-    "crypto/tls"
-    "net/http"
-    "time"
-
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
-
-func main() {
-    // Create custom HTTP client
-    httpClient := &http.Client{
-        Timeout: 60 * time.Second,
-        Transport: &http.Transport{
-            MaxIdleConns:        100,
-            MaxIdleConnsPerHost: 10,
-            IdleConnTimeout:     90 * time.Second,
-            TLSHandshakeTimeout: 10 * time.Second,
-            TLSClientConfig: &tls.Config{
-                InsecureSkipVerify: false,
-                MinVersion:         tls.VersionTLS12,
-            },
-        },
-    }
-    
-    options := registry.NewOptions().
-        SetHTTPClient(httpClient).
-        SetUserAgent("MyApp/1.0")
-    
-    client := registry.NewRegistry(options)
+    _ = client
 }
 ```
 
 ### Proxy Configuration
 ```go
-package main
+options := registry.NewOptions().
+    SetRegistryURL("https://registry.npmjs.org").
+    SetProxy("http://proxy.example.com:8080")
 
-import (
-    "net/http"
-    "net/url"
-
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
-
-func main() {
-    // Method 1: Using SetProxy
-    options1 := registry.NewOptions().
-        SetProxy("http://proxy.example.com:8080")
-    
-    client1 := registry.NewRegistry(options1)
-    
-    // Method 2: Custom HTTP client with proxy
-    proxyURL, _ := url.Parse("http://proxy.example.com:8080")
-    httpClient := &http.Client{
-        Transport: &http.Transport{
-            Proxy: http.ProxyURL(proxyURL),
-        },
-    }
-    
-    options2 := registry.NewOptions().
-        SetHTTPClient(httpClient)
-    
-    client2 := registry.NewRegistry(options2)
-}
+client := registry.NewRegistry(options)
 ```
 
-### Authentication Configuration
+### Authentication (Bearer token)
 ```go
-package main
+options := registry.NewOptions().
+    SetRegistryURL("https://npm.pkg.github.com").
+    SetToken("ghp_xxxxxxxxxxxx")
 
-import (
-    "net/http"
+client := registry.NewRegistry(options)
+```
 
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
+### Authentication (Basic auth)
+```go
+options := registry.NewOptions().
+    SetRegistryURL("https://private-registry.example.com").
+    SetBasicAuth("alice", "s3cret")
 
-// Custom transport for authentication
-type authTransport struct {
-    token string
-    base  http.RoundTripper
-}
-
-func (t *authTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-    req.Header.Set("Authorization", "Bearer "+t.token)
-    return t.base.RoundTrip(req)
-}
-
-func main() {
-    // Create HTTP client with authentication
-    httpClient := &http.Client{
-        Transport: &authTransport{
-            token: "your-auth-token",
-            base:  http.DefaultTransport,
-        },
-    }
-    
-    options := registry.NewOptions().
-        SetRegistryURL("https://private-registry.com").
-        SetHTTPClient(httpClient)
-    
-    client := registry.NewRegistry(options)
-}
+client := registry.NewRegistry(options)
 ```
 
 ### Method Chaining
@@ -267,10 +268,11 @@ func main() {
             SetUserAgent("MyApp/1.0").
             SetProxy("http://proxy.example.com:8080"),
     )
+    _ = client
 }
 ```
 
-Each `SetXxx` method returns `*Options` itself, forming a fluent builder pipeline handed to `NewRegistry` to produce an immutable client:
+Each `SetXxx` method returns `*Options` itself, forming a fluent builder pipeline handed to `NewRegistry` to produce a client:
 
 ```mermaid
 flowchart LR
@@ -291,7 +293,7 @@ Whether a proxy is set decides how the underlying `http.Transport` is wired (the
 
 ```mermaid
 flowchart TD
-    Call["build http.Client"] --> Once{"sync.Once<br/>already built?"}
+    Call["GetHttpClient()"] --> Once{"sync.Once<br/>already built?"}
     Once -->|yes| Cached["return cached *http.Client"]
     Once -->|no| Build["first build"]
     Build --> HasProxy{"Proxy set?"}
@@ -309,6 +311,10 @@ flowchart TD
     class PErr err;
 ```
 
+::: tip Fine-grained transport control
+The SDK builds the `http.Transport` internally, so settings such as `MaxIdleConns`, custom `RoundTripper`s, or a specific TLS `MinVersion` are **not** exposed as options. What you can tune is: the proxy (`SetProxy`), the per-request timeout (`SetTimeout`), TLS verification (`SetInsecureSkipVerify`), and authentication (`SetToken` / `SetBasicAuth`). For anything beyond that, share a single `Registry` instance so the cached client's connection pool is reused across requests.
+:::
+
 ## Default Values
 
 When no options are provided, the following defaults are used:
@@ -316,168 +322,45 @@ When no options are provided, the following defaults are used:
 | Option | Default Value |
 |--------|---------------|
 | Registry URL | `https://registry.npmjs.org` |
-| HTTP Client | `http.DefaultClient` |
-| User-Agent | `npm-skills/1.0` |
-| Timeout | `30 seconds` |
+| User-Agent | `npm-skills-sdk` |
+| Timeout | `0` (no deadline; controlled by the caller via `context`) |
 | Proxy | None |
+| Authentication | None |
+| HTTP Client | Built lazily on first `GetHttpClient()` from proxy/TLS settings and cached via `sync.Once` |
+| TLS Verification | Enabled (`InsecureSkipVerify=false`) |
 
 ## Predefined Configurations
 
-The library provides predefined configurations for popular registries:
+The library provides constructors for popular registries:
 
 ### Official NPM Registry
 ```go
-// Equivalent to:
-options := registry.NewOptions().
-    SetRegistryURL("https://registry.npmjs.org")
-
-client := registry.NewRegistry(options)
-// Or simply:
+// Equivalent to SetRegistryURL("https://registry.npmjs.org")
 client := registry.NewRegistry()
 ```
 
 ### Taobao Mirror
 ```go
-// Equivalent to:
-options := registry.NewOptions().
-    SetRegistryURL("https://registry.npmmirror.com")
-
-client := registry.NewRegistry(options)
-// Or simply:
 client := registry.NewTaoBaoRegistry()
 ```
 
 ### NPM Mirror
 ```go
-// Equivalent to:
-options := registry.NewOptions().
-    SetRegistryURL("https://skimdb.npmjs.com/registry")
-
-client := registry.NewRegistry(options)
-// Or simply:
 client := registry.NewNpmMirrorRegistry()
 ```
 
 ### Huawei Cloud Mirror
 ```go
-// Equivalent to:
-options := registry.NewOptions().
-    SetRegistryURL("https://mirrors.huaweicloud.com/repository/npm")
-
-client := registry.NewRegistry(options)
-// Or simply:
 client := registry.NewHuaWeiCloudRegistry()
-```
-
-## Advanced Configurations
-
-### Connection Pooling
-```go
-package main
-
-import (
-    "net/http"
-    "time"
-
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
-
-func main() {
-    httpClient := &http.Client{
-        Transport: &http.Transport{
-            MaxIdleConns:        100,  // Maximum idle connections
-            MaxIdleConnsPerHost: 10,   // Maximum idle connections per host
-            IdleConnTimeout:     90 * time.Second,
-            DisableCompression:  false,
-        },
-        Timeout: 30 * time.Second,
-    }
-    
-    options := registry.NewOptions().
-        SetHTTPClient(httpClient)
-    
-    client := registry.NewRegistry(options)
-}
-```
-
-### TLS Configuration
-```go
-package main
-
-import (
-    "crypto/tls"
-    "net/http"
-
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
-
-func main() {
-    httpClient := &http.Client{
-        Transport: &http.Transport{
-            TLSClientConfig: &tls.Config{
-                InsecureSkipVerify: false,
-                MinVersion:         tls.VersionTLS12,
-                MaxVersion:         tls.VersionTLS13,
-            },
-        },
-    }
-    
-    options := registry.NewOptions().
-        SetHTTPClient(httpClient)
-    
-    client := registry.NewRegistry(options)
-}
-```
-
-### Custom Headers
-```go
-package main
-
-import (
-    "net/http"
-
-    "github.com/scagogogo/npm-skills/pkg/registry"
-)
-
-// Custom transport for adding headers
-type headerTransport struct {
-    base    http.RoundTripper
-    headers map[string]string
-}
-
-func (t *headerTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-    for key, value := range t.headers {
-        req.Header.Set(key, value)
-    }
-    return t.base.RoundTrip(req)
-}
-
-func main() {
-    httpClient := &http.Client{
-        Transport: &headerTransport{
-            base: http.DefaultTransport,
-            headers: map[string]string{
-                "X-Custom-Header": "MyValue",
-                "Accept-Language": "en-US,en;q=0.9",
-            },
-        },
-    }
-    
-    options := registry.NewOptions().
-        SetHTTPClient(httpClient)
-    
-    client := registry.NewRegistry(options)
-}
 ```
 
 ## Environment Variable Support
 
-You can also configure the client using environment variables:
+The SDK does not read environment variables automatically — apply them yourself when building options. This keeps configuration precedence explicit (CLI flag > env var > default):
 
 ```bash
 export NPM_REGISTRY_URL="https://registry.npmjs.org"
 export HTTP_PROXY="http://proxy.example.com:8080"
-export HTTPS_PROXY="https://proxy.example.com:8080"
 ```
 
 ```go
@@ -491,17 +374,17 @@ import (
 
 func main() {
     options := registry.NewOptions()
-    
-    // Override with environment variables if set
+
     if registryURL := os.Getenv("NPM_REGISTRY_URL"); registryURL != "" {
         options.SetRegistryURL(registryURL)
     }
-    
+
     if proxy := os.Getenv("HTTP_PROXY"); proxy != "" {
         options.SetProxy(proxy)
     }
-    
+
     client := registry.NewRegistry(options)
+    _ = client
 }
 ```
 
@@ -509,38 +392,36 @@ func main() {
 
 ### 1. Use Appropriate Timeouts
 ```go
-// For quick operations
+// Client-level ceiling for quick operations
 options := registry.NewOptions().
     SetTimeout(10 * time.Second)
 
-// For search operations or large packages
-options := registry.NewOptions().
-    SetTimeout(60 * time.Second)
+// Or prefer per-call context for finer control
+ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+defer cancel()
 ```
 
-### 2. Configure Connection Pooling
+### 2. Reuse a Single Registry Instance
 ```go
-httpClient := &http.Client{
-    Transport: &http.Transport{
-        MaxIdleConns:        50,
-        MaxIdleConnsPerHost: 5,
-        IdleConnTimeout:     30 * time.Second,
-    },
-}
+// The cached *http.Client keeps a warm connection pool.
+// Share one client across goroutines instead of recreating it.
+client := registry.NewRegistry(options)
 ```
 
-### 3. Set Meaningful User-Agent
+### 3. Set a Meaningful User-Agent
 ```go
 options := registry.NewOptions().
     SetUserAgent("MyApp/1.0.0 (contact@example.com)")
 ```
 
-### 4. Handle Proxy Configuration Securely
+### 4. Handle Proxy and Credentials Securely
 ```go
-// Don't hardcode proxy credentials
-proxyURL := os.Getenv("HTTP_PROXY") // Get from environment
-if proxyURL != "" {
+// Don't hardcode proxy or token values — read them from the environment
+if proxyURL := os.Getenv("HTTP_PROXY"); proxyURL != "" {
     options.SetProxy(proxyURL)
+}
+if token := os.Getenv("NPM_TOKEN"); token != "" {
+    options.SetToken(token)
 }
 ```
 

@@ -87,43 +87,27 @@ import (
     "context"
     "fmt"
     "log"
-    "net/http"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
-    // Create HTTP client with authentication
-    httpClient := &http.Client{
-        Transport: &authTransport{
-            token: "your-auth-token",
-            base:  http.DefaultTransport,
-        },
-    }
-    
+    // Bearer-token auth (e.g. an npm/GitHub Packages token)
     options := registry.NewOptions().
         SetRegistryURL("https://private-registry.com").
-        SetHTTPClient(httpClient)
-    
+        SetToken("your-auth-token")
+    // For username/password registries use:
+    //   .SetBasicAuth("alice", "s3cret")
+
     client := registry.NewRegistry(options)
     ctx := context.Background()
-    
+
     pkg, err := client.GetPackageInformation(ctx, "private-package")
     if err != nil {
         log.Fatal(err)
     }
-    
+
     fmt.Printf("Private package: %s\n", pkg.Name)
-}
-
-type authTransport struct {
-    token string
-    base  http.RoundTripper
-}
-
-func (t *authTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-    req.Header.Set("Authorization", "Bearer "+t.token)
-    return t.base.RoundTrip(req)
 }
 ```
 
