@@ -77,25 +77,32 @@ classDiagram
 
 ## Package Information
 
-### PackageInformation
+### Package
 Complete package metadata including all versions and distribution tags.
 
 ```go
-type PackageInformation struct {
-    ID          string                     `json:"_id"`
-    Name        string                     `json:"name"`
-    Description string                     `json:"description"`
-    DistTags    map[string]string         `json:"dist-tags"`
-    Versions    map[string]PackageVersion `json:"versions"`
-    Time        map[string]string         `json:"time"`
-    Author      Author                    `json:"author"`
-    Maintainers []Author                  `json:"maintainers"`
-    Homepage    string                    `json:"homepage"`
-    Keywords    []string                  `json:"keywords"`
-    Repository  Repository                `json:"repository"`
-    Bugs        Bugs                      `json:"bugs"`
-    License     string                    `json:"license"`
-    Readme      string                    `json:"readme"`
+type Package struct {
+    ID             string                 `json:"_id"`
+    Rev            string                 `json:"_rev"`
+    Name           string                 `json:"name"`
+    Description    string                 `json:"description"`
+    DistTags       map[string]string      `json:"dist-tags"`
+    Versions       map[string]Version     `json:"versions"`
+    Maintainers    []Maintainer           `json:"maintainers"`
+    Time           map[string]string      `json:"time"`
+    Repository     Repository             `json:"repository"`
+    ReadMe         string                 `json:"readme"`
+    ReadMeFilename string                 `json:"readmeFilename"`
+    Homepage       string                 `json:"homepage"`
+    Bugs           *Bugs                  `json:"bugs"`
+    License        string                 `json:"license"`
+    Users          map[string]bool        `json:"users"`
+    Keywords       []string               `json:"keywords"`
+    Author         Author                 `json:"author"`
+    Contributors   []Contributor          `json:"contributors"`
+    Deprecated     interface{}            `json:"deprecated"`
+    Funding        interface{}            `json:"funding"`
+    Attachments    map[string]Attachment  `json:"_attachments"`
 }
 ```
 
@@ -105,39 +112,43 @@ type PackageInformation struct {
 - `Description` - Package description
 - `DistTags` - Distribution tags (e.g., "latest", "beta")
 - `Versions` - Map of all package versions
-- `Time` - Creation/modification timestamps
-- `Author` - Package author information
 - `Maintainers` - List of package maintainers
-- `Homepage` - Package homepage URL
-- `Keywords` - Package keywords for discovery
+- `Time` - Creation/modification timestamps
 - `Repository` - Source repository information
+- `ReadMe` - Package README content
+- `Homepage` - Package homepage URL
 - `Bugs` - Bug reporting information
 - `License` - Package license
-- `Readme` - Package README content
+- `Keywords` - Package keywords for discovery
+- `Author` - Package author
+- `Contributors` - List of contributors
+- `Deprecated` - Deprecation notice (string / bool / nil)
 
-### PackageVersion
+### Version
 Information about a specific package version.
 
 ```go
-type PackageVersion struct {
-    Name                 string            `json:"name"`
-    Version              string            `json:"version"`
-    Description          string            `json:"description"`
-    Main                 string            `json:"main"`
-    Scripts              map[string]string `json:"scripts"`
-    Dependencies         map[string]string `json:"dependencies"`
-    DevDependencies      map[string]string `json:"devDependencies"`
-    PeerDependencies     map[string]string `json:"peerDependencies"`
+type Version struct {
+    Name            string               `json:"name"`
+    Version         string               `json:"version"`
+    Description     string               `json:"description"`
+    Main            string               `json:"main"`
+    Module          string               `json:"module"`
+    Types           string               `json:"types"`
+    Scripts         Script               `json:"scripts"`
+    Repository      *Repository          `json:"repository"`
+    Keywords        []string             `json:"keywords"`
+    Author          *User                `json:"author"`
+    License         string               `json:"license"`
+    Bugs            *Bugs                `json:"bugs"`
+    Homepage        string               `json:"homepage"`
+    Dependencies    map[string]string    `json:"dependencies"`
+    DevDependencies map[string]string    `json:"devDependencies"`
+    PeerDependencies map[string]string   `json:"peerDependencies"`
     OptionalDependencies map[string]string `json:"optionalDependencies"`
-    BundleDependencies   []string          `json:"bundleDependencies"`
-    Keywords             []string          `json:"keywords"`
-    Author               Author            `json:"author"`
-    License              string            `json:"license"`
-    Repository           Repository        `json:"repository"`
-    Bugs                 Bugs              `json:"bugs"`
-    Homepage             string            `json:"homepage"`
-    Dist                 Distribution      `json:"dist"`
-    Deprecated           string            `json:"deprecated"`
+    Engines         map[string]string    `json:"engines"`
+    Dist            *Dist                `json:"dist"`
+    Deprecated      interface{}          `json:"deprecated"`
 }
 ```
 
@@ -146,20 +157,21 @@ type PackageVersion struct {
 - `Version` - Specific version string
 - `Description` - Version description
 - `Main` - Main entry point file
-- `Scripts` - NPM scripts defined in package.json
+- `Module` - ES module entry point
+- `Types` - TypeScript type declaration entry
+- `Scripts` - NPM scripts (a `Script` struct, supports arbitrary keys)
+- `Repository` - Repository information
+- `Author` - Package author
+- `License` - Package license
+- `Bugs` - Bug reporting information
+- `Homepage` - Package homepage
 - `Dependencies` - Runtime dependencies
 - `DevDependencies` - Development dependencies
 - `PeerDependencies` - Peer dependencies
 - `OptionalDependencies` - Optional dependencies
-- `BundleDependencies` - Bundled dependencies
-- `Keywords` - Package keywords
-- `Author` - Package author
-- `License` - Package license
-- `Repository` - Repository information
-- `Bugs` - Bug reporting information
-- `Homepage` - Package homepage
-- `Dist` - Distribution information
-- `Deprecated` - Deprecation message (if deprecated)
+- `Engines` - Engine version constraints (e.g. `{"node": ">=14"}`)
+- `Dist` - Distribution information (tarball URL, checksums)
+- `Deprecated` - Deprecation notice (string / bool / nil)
 
 ## Supporting Structures
 
@@ -170,7 +182,7 @@ Author or maintainer information.
 type Author struct {
     Name  string `json:"name"`
     Email string `json:"email"`
-    URL   string `json:"url"`
+    Url   string `json:"url"`
 }
 ```
 
@@ -190,21 +202,76 @@ Bug reporting information.
 
 ```go
 type Bugs struct {
-    URL   string `json:"url"`
-    Email string `json:"email"`
+    URL string `json:"url"`
 }
 ```
 
-### Distribution
+### Dist
 Package distribution information.
 
 ```go
-type Distribution struct {
-    Shasum     string `json:"shasum"`
-    Tarball    string `json:"tarball"`
-    FileCount  int    `json:"fileCount"`
-    UnpackSize int    `json:"unpackedSize"`
+type Dist struct {
+    Shasum       string       `json:"shasum"`
+    Tarball      string       `json:"tarball"`
+    Integrity    string       `json:"integrity"`
+    Signatures   []*Signature `json:"signatures"`
+    FileCount    int          `json:"fileCount"`
+    UnpackedSize int64        `json:"unpackedSize"`
+    NpmSignature string       `json:"npm-signature"`
 }
+
+type Signature struct {
+    Keyid string `json:"keyid"`
+    Sig   string `json:"sig"`
+}
+```
+
+### Maintainer
+A package maintainer (`Package.Maintainers`).
+
+```go
+type Maintainer struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    Url   string `json:"url"`
+}
+```
+
+### Contributor
+A package contributor (`Package.Contributors`).
+
+```go
+type Contributor struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    Url   string `json:"url"`
+}
+```
+
+### Attachment
+A tarball attachment carried when publishing (`Package.Attachments`).
+
+```go
+type Attachment struct {
+    ContentType string `json:"content_type"`
+    Data        string `json:"data"`   // base64-encoded tarball data
+    Length      int    `json:"length"` // size in bytes
+}
+```
+
+### Script
+NPM script commands. Defined as a `map[string]string` type alias to support arbitrary script keys in `package.json` (e.g. `build`, `lint`, `dev`):
+
+```go
+type Script map[string]string
+```
+
+```go
+// version.Scripts is of type Script (map[string]string)
+for name, cmd := range version.Scripts {
+    fmt.Printf("%s: %s\n", name, cmd)
+}
+// common keys: "test" / "start" / "build" / "lint" / "dev"
 ```
 
 ## Search Results
@@ -231,7 +298,7 @@ Individual search result item.
 ```go
 type SearchObject struct {
     Package     SearchPackage `json:"package"`
-    Score       SearchScore   `json:"score"`
+    Score       Score         `json:"score"`
     SearchScore float64       `json:"searchScore"`
 }
 ```
@@ -241,26 +308,27 @@ Package information in search results.
 
 ```go
 type SearchPackage struct {
-    Name        string            `json:"name"`
-    Scope       string            `json:"scope"`
-    Version     string            `json:"version"`
-    Description string            `json:"description"`
-    Keywords    []string          `json:"keywords"`
-    Date        string            `json:"date"`
-    Links       SearchLinks       `json:"links"`
-    Author      Author            `json:"author"`
-    Publisher   Author            `json:"publisher"`
-    Maintainers []Author          `json:"maintainers"`
+    Name        string   `json:"name"`
+    Scope       string   `json:"scope"`
+    Version     string   `json:"version"`
+    Description string   `json:"description"`
+    Keywords    []string `json:"keywords"`
+    Date        string   `json:"date"`
+    Links       Links    `json:"links"`
+    Author      *User    `json:"author"`
+    Publisher   *User    `json:"publisher"`
+    Maintainers []*User  `json:"maintainers"`
+    ExactName   string   `json:"exactName"`
 }
 ```
 
-### SearchScore
+### Score
 Scoring information for search results.
 
 ```go
-type SearchScore struct {
-    Final   float64 `json:"final"`
-    Detail  ScoreDetail `json:"detail"`
+type Score struct {
+    Final  float64     `json:"final"`
+    Detail ScoreDetail `json:"detail"`
 }
 
 type ScoreDetail struct {
@@ -283,15 +351,26 @@ flowchart LR
     class Q,P,M metric;
 ```
 
-### SearchLinks
+### Links
 Links associated with search results.
 
 ```go
-type SearchLinks struct {
+type Links struct {
     NPM        string `json:"npm"`
     Homepage   string `json:"homepage"`
     Repository string `json:"repository"`
     Bugs       string `json:"bugs"`
+}
+```
+
+### User
+A user / author / publisher (referenced by `SearchPackage`, `Version`, etc.).
+
+```go
+type User struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    URL   string `json:"url"`
 }
 ```
 

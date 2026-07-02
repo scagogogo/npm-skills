@@ -69,16 +69,16 @@ classDiagram
     }
     class Score {
         +float64 Final
-        +Detail Detail
+        +ScoreDetail Detail
     }
-    class Detail {
+    class ScoreDetail {
         +float64 Quality
         +float64 Popularity
         +float64 Maintenance
     }
     SearchResult "1" o-- "*" SearchObject
     SearchObject "1" --> "1" Score
-    Score "1" --> "1" Detail
+    Score "1" --> "1" ScoreDetail
 ```
 
 ## Package 模型
@@ -184,7 +184,7 @@ if version.Dist != nil {
 type Author struct {
     Name  string `json:"name"`  // 作者姓名
     Email string `json:"email"` // 邮箱地址
-    URL   string `json:"url"`   // 个人网站
+    Url   string `json:"url"`   // 个人网站
 }
 ```
 
@@ -196,6 +196,7 @@ type Author struct {
 type Maintainer struct {
     Name  string `json:"name"`  // 维护者姓名
     Email string `json:"email"` // 邮箱地址
+    Url   string `json:"url"`   // 个人网站
 }
 ```
 
@@ -230,11 +231,18 @@ if pkg.Repository.Type == "git" {
 
 ```go
 type Dist struct {
-    Integrity    string `json:"integrity"`    // 完整性校验
-    Shasum       string `json:"shasum"`       // SHA-1 校验和
-    Tarball      string `json:"tarball"`      // 包下载地址
-    FileCount    int    `json:"fileCount"`    // 文件数量
-    UnpackedSize int64  `json:"unpackedSize"` // 解压后大小
+    Integrity    string       `json:"integrity"`    // 完整性校验
+    Shasum       string       `json:"shasum"`       // SHA-1 校验和
+    Tarball      string       `json:"tarball"`      // 包下载地址
+    Signatures   []*Signature `json:"signatures"`   // 签名信息列表
+    FileCount    int          `json:"fileCount"`    // 文件数量
+    UnpackedSize int64        `json:"unpackedSize"` // 解压后大小
+    NpmSignature string       `json:"npm-signature"` // NPM 签名
+}
+
+type Signature struct {
+    Keyid string `json:"keyid"` // 签名密钥的 ID
+    Sig   string `json:"sig"`   // 签名内容
 }
 ```
 
@@ -272,21 +280,25 @@ type SearchObject struct {
 }
 
 type SearchPackage struct {
-    Name        string            `json:"name"`        // 包名称
-    Version     string            `json:"version"`     // 版本
-    Description string            `json:"description"` // 描述
-    Keywords    []string          `json:"keywords"`    // 关键词
-    Author      Author            `json:"author"`      // 作者
-    Maintainers []Maintainer      `json:"maintainers"` // 维护者
-    Links       map[string]string `json:"links"`       // 相关链接
+    Name        string   `json:"name"`        // 包名称
+    Scope       string   `json:"scope"`       // 包作用域
+    Version     string   `json:"version"`     // 版本
+    Description string   `json:"description"` // 描述
+    Keywords    []string `json:"keywords"`    // 关键词
+    Date        string   `json:"date"`        // 发布日期
+    Links       Links    `json:"links"`       // 相关链接
+    Author      *User    `json:"author"`      // 作者
+    Publisher   *User    `json:"publisher"`   // 发布者
+    Maintainers []*User  `json:"maintainers"` // 维护者列表
+    ExactName   string   `json:"exactName"`   // 精确匹配的包名
 }
 
 type Score struct {
-    Final   float64 `json:"final"`   // 最终得分
-    Detail  Detail  `json:"detail"`  // 详细得分
+    Final  float64     `json:"final"`  // 最终得分
+    Detail ScoreDetail `json:"detail"` // 详细评分
 }
 
-type Detail struct {
+type ScoreDetail struct {
     Quality     float64 `json:"quality"`     // 质量得分
     Popularity  float64 `json:"popularity"`  // 流行度得分
     Maintenance float64 `json:"maintenance"` // 维护得分
@@ -428,17 +440,20 @@ func formatBytes(bytes int64) string {
 
 ## Script 模型
 
-表示 NPM 脚本：
+表示 NPM 脚本命令。SDK 将其定义为 `map[string]string` 类型别名，以支持 `package.json` 中定义的任意脚本命令（如 `build`、`lint`、`dev` 等非标准脚本）：
 
 ```go
-type Script struct {
-    Test    string `json:"test"`    // 测试脚本
-    Build   string `json:"build"`   // 构建脚本
-    Start   string `json:"start"`   // 启动脚本
-    Dev     string `json:"dev"`     // 开发脚本
-    Lint    string `json:"lint"`    // 代码检查脚本
-    // ... 其他自定义脚本
+type Script map[string]string
+```
+
+### 使用示例
+
+```go
+// version.Scripts 是 Script 类型（map[string]string）
+for name, cmd := range version.Scripts {
+    fmt.Printf("%s: %s\n", name, cmd)
 }
+// 常用键: "test" / "start" / "build" / "lint" / "dev"
 ```
 
 ## DownloadRangeStats 模型
@@ -639,6 +654,55 @@ type LoginResult struct {
     Rev   string `json:"rev"`
     Token string `json:"token"` // 认证 token，可用于后续写操作
     Ok    OkBool `json:"ok"`    // 是否成功
+}
+```
+
+## User 模型
+
+表示用户/作者/发布者（被 `SearchPackage`、`Version` 等引用）：
+
+```go
+type User struct {
+    Name  string `json:"name"`  // 用户名称
+    Email string `json:"email"` // 电子邮件地址
+    URL   string `json:"url"`   // 用户网站
+}
+```
+
+## Links 模型
+
+表示搜索结果中包的相关链接：
+
+```go
+type Links struct {
+    NPM        string `json:"npm"`        // NPM 页面链接
+    Homepage   string `json:"homepage"`   // 主页链接
+    Repository string `json:"repository"` // 仓库链接
+    Bugs       string `json:"bugs"`       // 问题跟踪链接
+}
+```
+
+## Contributor 模型
+
+表示包的贡献者（`Package.Contributors`）：
+
+```go
+type Contributor struct {
+    Name  string `json:"name"`  // 贡献者名称
+    Email string `json:"email"` // 电子邮件地址
+    Url   string `json:"url"`   // 相关网站链接
+}
+```
+
+## Attachment 模型
+
+表示发布时携带的 tarball 附件（`Package.Attachments`）：
+
+```go
+type Attachment struct {
+    ContentType string `json:"content_type"`
+    Data        string `json:"data"`   // Base64 编码的 tarball 数据
+    Length      int    `json:"length"` // 字节大小
 }
 ```
 
