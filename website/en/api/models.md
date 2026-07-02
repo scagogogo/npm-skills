@@ -349,6 +349,161 @@ type RegistryInformation struct {
 - `DiskFormatVersion` - Disk format version
 - `CommittedUpdateSeq` - Committed update sequence
 
+## Additional Types
+
+Types returned by access-control, audit, hooks, tokens, orgs, and auth methods.
+
+### DownloadRangeStats
+Daily download trend for a package (`GetDownloadRangeStats` / `GetDownloadRangeStatsByDateRange`).
+
+```go
+type DownloadRangeStats struct {
+    Start     string           `json:"start"`
+    End       string           `json:"end"`
+    Package   string           `json:"package"`
+    Downloads []DailyDownloads `json:"downloads"`
+}
+
+type DailyDownloads struct {
+    Day       string `json:"day"`
+    Downloads int    `json:"downloads"`
+}
+```
+
+### Advisory
+A security advisory (`GetAdvisory` / `ListAdvisories` / `QuickAudit` / `BulkAudit`).
+
+```go
+type Advisory struct {
+    ID             int             `json:"id"`
+    Created        string          `json:"created"`
+    Updated        string          `json:"updated"`
+    Title          string          `json:"title"`
+    Severity       string          `json:"severity"` // "low" / "moderate" / "high" / "critical"
+    CVE            string          `json:"cve,omitempty"`
+    CWE            string          `json:"cwe,omitempty"`
+    ModuleName     string          `json:"module_name"`
+    Vulnerable     string          `json:"vulnerable_versions"`
+    Patched        string          `json:"patched_versions"`
+    URL            string          `json:"url"`
+    Overview       string          `json:"overview,omitempty"`
+    Recommendation string          `json:"recommendation,omitempty"`
+    References     json.RawMessage `json:"references,omitempty"`
+    Access         string          `json:"access,omitempty"`
+}
+```
+
+### Hook
+An NPM webhook (`ListHooks` / `GetHook` / `CreateHook` / `UpdateHook`).
+
+```go
+type Hook struct {
+    ID       string   `json:"id"`
+    Type     string   `json:"type"`
+    Name     string   `json:"name"`
+    Endpoint string   `json:"endpoint"`
+    Secret   string   `json:"secret,omitempty"`
+    Created  string   `json:"created"`
+    Updated  string   `json:"updated"`
+    Events   []string `json:"events"`
+    Package  string   `json:"package,omitempty"`
+    Active   bool     `json:"active"`
+    Deleted  bool     `json:"deleted,omitempty"`
+}
+```
+
+### Token
+An API access token (`ListTokens` / `GetToken` / `CreateToken` / `DeleteToken`).
+
+```go
+type Token struct {
+    ID       string    `json:"id"`
+    Token    string    `json:"token"`     // full value, only returned on creation
+    Key      string    `json:"key"`
+    Created  time.Time `json:"created"`
+    Updated  time.Time `json:"updated"`
+    Readonly bool      `json:"readonly"`
+    CIDR     []string  `json:"cidr_whitelist,omitempty"`
+}
+```
+
+::: warning Token safety
+The `Token` field holds the plaintext token and is only returned on creation. Store it securely — never log it or commit it. Prefer `Readonly: true` with a `CIDR` whitelist for everyday use.
+:::
+
+### Organization
+An NPM organization (`GetOrg` / `CreateOrg`).
+
+```go
+type Organization struct {
+    Name  string `json:"name"`
+    Scope string `json:"scope,omitempty"` // org scope, e.g. "@my-org"
+}
+```
+
+### Team
+A team within an organization (`ListTeams` / `CreateTeam`).
+
+```go
+type Team struct {
+    ID          string `json:"id"`
+    Name        string `json:"name"`
+    DisplayName string `json:"display_name,omitempty"`
+    Description string `json:"description,omitempty"`
+}
+```
+
+### Collaborator
+A package collaborator (`ListCollaborators`).
+
+```go
+type Collaborator struct {
+    Name        string `json:"name"`
+    Email       string `json:"email,omitempty"`
+    Permissions string `json:"permissions"` // "read" or "write"
+}
+```
+
+### PackageAccess
+Package access settings (`GetPackageAccess` / `SetPackageAccess`).
+
+```go
+type PackageAccess struct {
+    Package string            `json:"package"`
+    Access  map[string]string `json:"access"` // e.g. {"read": "public", "write": "restricted"}
+}
+```
+
+### UserProfile
+User profile (`GetUser`).
+
+```go
+type UserProfile struct {
+    ID            string `json:"_id"`            // "org.couchdb.user:<name>"
+    Rev           string `json:"_rev"`
+    Name          string `json:"name"`
+    Email         string `json:"email"`
+    Type          string `json:"type"`           // usually "user"
+    EmailVerified bool   `json:"email_verified"`
+    Avatar        string `json:"avatar,omitempty"`
+    GitHub        string `json:"github,omitempty"`
+    Created       string `json:"created,omitempty"`
+    Updated       string `json:"updated,omitempty"`
+}
+```
+
+### LoginResult
+Login / signup result (`Login` / `CreateUser`).
+
+```go
+type LoginResult struct {
+    ID    string `json:"id"`
+    Rev   string `json:"rev"`
+    Token string `json:"token"` // auth token for subsequent writes
+    Ok    OkBool `json:"ok"`
+}
+```
+
 ## JSON Examples
 
 ### Package Information Example

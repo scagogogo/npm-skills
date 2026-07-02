@@ -441,6 +441,207 @@ type Script struct {
 }
 ```
 
+## DownloadRangeStats 模型
+
+表示某包在一段时间内每日的下载趋势（对应 `GetDownloadRangeStats` / `GetDownloadRangeStatsByDateRange`）：
+
+```go
+type DownloadRangeStats struct {
+    Start     string           `json:"start"`     // 统计开始日期
+    End       string           `json:"end"`       // 统计结束日期
+    Package   string           `json:"package"`   // 包名称
+    Downloads []DailyDownloads `json:"downloads"` // 每日下载统计
+}
+
+type DailyDownloads struct {
+    Day       string `json:"day"`       // 日期
+    Downloads int    `json:"downloads"` // 当日下载量
+}
+```
+
+### 使用示例
+
+```go
+stats, err := client.GetDownloadRangeStats(ctx, "react", "last-week")
+// 绘制趋势图
+for _, d := range stats.Downloads {
+    fmt.Printf("%s: %d\n", d.Day, d.Downloads)
+}
+```
+
+## Advisory 模型
+
+表示一条安全公告（对应 `GetAdvisory` / `ListAdvisories` / `QuickAudit` / `BulkAudit`）：
+
+```go
+type Advisory struct {
+    ID             int             `json:"id"`
+    Created        string          `json:"created"`
+    Updated        string          `json:"updated"`
+    Title          string          `json:"title"`
+    Severity       string          `json:"severity"` // "low" / "moderate" / "high" / "critical"
+    CVE            string          `json:"cve,omitempty"`
+    CWE            string          `json:"cwe,omitempty"`
+    ModuleName     string          `json:"module_name"`
+    Vulnerable     string          `json:"vulnerable_versions"`
+    Patched        string          `json:"patched_versions"`
+    URL            string          `json:"url"`
+    Overview       string          `json:"overview,omitempty"`
+    Recommendation string          `json:"recommendation,omitempty"`
+    References     json.RawMessage `json:"references,omitempty"` // 字符串或字符串数组
+    Access         string          `json:"access,omitempty"`
+}
+```
+
+### 使用示例
+
+```go
+adv, err := client.GetAdvisory(ctx, 123)
+if err != nil {
+    return err
+}
+fmt.Printf("[%s] %s\n", adv.Severity, adv.Title)
+fmt.Printf("受影响版本: %s\n", adv.Vulnerable)
+fmt.Printf("已修复版本: %s\n", adv.Patched)
+fmt.Printf("详情: %s\n", adv.URL)
+```
+
+## Hook 模型
+
+表示一个 NPM webhook（对应 `ListHooks` / `GetHook` / `CreateHook` / `UpdateHook`）：
+
+```go
+type Hook struct {
+    ID       string   `json:"id"`
+    Type     string   `json:"type"`
+    Name     string   `json:"name"`
+    Endpoint string   `json:"endpoint"`
+    Secret   string   `json:"secret,omitempty"`
+    Created  string   `json:"created"`
+    Updated  string   `json:"updated"`
+    Events   []string `json:"events"`           // 监听的事件类型
+    Package  string   `json:"package,omitempty"`
+    Active   bool     `json:"active"`
+    Deleted  bool     `json:"deleted,omitempty"`
+}
+```
+
+### 使用示例
+
+```go
+hooks, err := client.ListHooks(ctx, models.HookListOptions{})
+for _, h := range hooks {
+    fmt.Printf("%s -> %s (active=%v, events=%v)\n", h.Name, h.Endpoint, h.Active, h.Events)
+}
+
+// 创建 webhook
+created, err := client.CreateHook(ctx, &models.HookCreation{
+    Name:     "my-hook",
+    Endpoint: "https://example.com/webhook",
+    Secret:   "shared-secret",
+    Events:   []string{"package:dist-tag"},
+})
+```
+
+## Token 模型
+
+表示一个 API 访问令牌（对应 `ListTokens` / `GetToken` / `CreateToken` / `DeleteToken`）：
+
+```go
+type Token struct {
+    ID       string    `json:"id"`
+    Token    string    `json:"token"`     // 完整令牌值（仅创建时返回）
+    Key      string    `json:"key"`
+    Created  time.Time `json:"created"`
+    Updated  time.Time `json:"updated"`
+    Readonly bool      `json:"readonly"`  // 是否只读
+    CIDR     []string  `json:"cidr_whitelist,omitempty"` // CIDR 白名单
+}
+```
+
+::: warning 令牌安全
+`Token.Token` 字段包含完整令牌明文，仅在创建时返回。请妥善保管，切勿写入日志或提交到版本控制。日常使用建议设置 `Readonly: true` 并配 `CIDR` 白名单。
+:::
+
+## Organization 模型
+
+表示一个 NPM 组织（对应 `GetOrg` / `CreateOrg`）：
+
+```go
+type Organization struct {
+    Name  string `json:"name"`
+    Scope string `json:"scope,omitempty"` // 组织作用域，如 "@my-org"
+}
+```
+
+## Team 模型
+
+表示组织内的一个团队（对应 `ListTeams` / `CreateTeam`）：
+
+```go
+type Team struct {
+    ID          string `json:"id"`
+    Name        string `json:"name"`
+    DisplayName string `json:"display_name,omitempty"`
+    Description string `json:"description,omitempty"`
+}
+```
+
+## Collaborator 模型
+
+表示包的协作者（对应 `ListCollaborators`）：
+
+```go
+type Collaborator struct {
+    Name        string `json:"name"`
+    Email       string `json:"email,omitempty"`
+    Permissions string `json:"permissions"` // "read" 或 "write"
+}
+```
+
+## PackageAccess 模型
+
+表示包的访问权限设置（对应 `GetPackageAccess` / `SetPackageAccess`）：
+
+```go
+type PackageAccess struct {
+    Package string            `json:"package"`
+    Access  map[string]string `json:"access"` // 如 {"read": "public", "write": "restricted"}
+}
+```
+
+## UserProfile 模型
+
+表示用户资料（对应 `GetUser`）：
+
+```go
+type UserProfile struct {
+    ID            string `json:"_id"`            // 格式: "org.couchdb.user:<name>"
+    Rev           string `json:"_rev"`           // CouchDB 文档修订版本
+    Name          string `json:"name"`           // 用户名
+    Email         string `json:"email"`          // 邮箱地址
+    Type          string `json:"type"`           // 通常为 "user"
+    EmailVerified bool   `json:"email_verified"` // 邮箱是否已验证
+    Avatar        string `json:"avatar,omitempty"`
+    GitHub        string `json:"github,omitempty"`
+    Created       string `json:"created,omitempty"`
+    Updated       string `json:"updated,omitempty"`
+}
+```
+
+## LoginResult 模型
+
+表示登录 / 注册的返回结果（对应 `Login` / `CreateUser`）：
+
+```go
+type LoginResult struct {
+    ID    string `json:"id"`
+    Rev   string `json:"rev"`
+    Token string `json:"token"` // 认证 token，可用于后续写操作
+    Ok    OkBool `json:"ok"`    // 是否成功
+}
+```
+
 ## 数据验证
 
 ### 包名验证

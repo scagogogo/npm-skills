@@ -295,6 +295,161 @@ fmt.Printf("Total packages: %d\n", info.DocCount)
 fmt.Printf("Data size: %d MB\n", info.DataSize/(1024*1024))
 ```
 
+## Method Index (76 methods)
+
+All 76 methods grouped by domain. `ctx` is always `context.Context`; 🔒 marks write operations that require a valid token configured on the server (`Options.Token`).
+
+### Package Metadata (read-only)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetPackageInformation` | `(ctx, name) → *models.Package, error` | Full package metadata (can be 10MB+) |
+| `GetPackageInformationSummary` | `(ctx, name) → *models.Package, error` | Lightweight summary (recommended) |
+| `GetAbbreviatedPackageInformation` | `(ctx, name) → *models.Package, error` | Abbreviated metadata |
+| `GetPackageVersion` | `(ctx, name, version) → *models.Version, error` | Specific version metadata |
+| `GetPackageVersions` | `(ctx, name) → []string, error` | All version numbers |
+| `GetPackageVersionCount` | `(ctx, name) → int, error` | Total version count |
+| `GetPackageLatestVersion` | `(ctx, name) → string, error` | Latest version (dist-tags only) |
+
+### dist-tags
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetDistTags` | `(ctx, name) → map[string]string, error` | All dist-tags |
+| `GetDistTagsAbbreviated` | `(ctx, name) → map[string]string, error` | Abbreviated dist-tags |
+| `GetDistTag` | `(ctx, name, tag) → string, error` | Version a single tag points to |
+| `SetDistTag` 🔒 | `(ctx, name, tag, version) → error` | Set a single dist-tag |
+| `SetDistTags` 🔒 | `(ctx, name, tags) → error` | Set dist-tags in bulk |
+| `DeleteDistTag` 🔒 | `(ctx, name, tag) → error` | Delete a dist-tag |
+
+### Search
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `SearchPackages` | `(ctx, query, limit) → *models.SearchResult, error` | Keyword search (paginated) |
+| `SearchPackagesWithOptions` | `(ctx, query, opts SearchOptions) → *models.SearchResult, error` | Advanced search (weighting / offset) |
+
+### Download Statistics (always queries `api.npmjs.org`)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetDownloadStats` | `(ctx, name, period) → *models.DownloadStats, error` | Download total for a period |
+| `GetDownloadStatsByDateRange` | `(ctx, name, start, end) → *models.DownloadStats, error` | Custom date range |
+| `GetDownloadRangeStats` | `(ctx, name, period) → *models.DownloadRangeStats, error` | Daily download trend |
+| `GetDownloadRangeStatsByDateRange` | `(ctx, name, start, end) → *models.DownloadRangeStats, error` | Custom range daily trend |
+| `GetBulkDownloadStats` | `(ctx, names []string, period) → map[string]*models.DownloadStats, error` | Bulk download totals |
+| `GetBulkDownloadStatsByDateRange` | `(ctx, names, start, end) → map[string]*models.DownloadStats, error` | Bulk custom range |
+| `GetBulkDownloadRangeStats` | `(ctx, names, period) → map[string]*models.DownloadRangeStats, error` | Bulk daily trend |
+| `GetBulkDownloadRangeStatsByDateRange` | `(ctx, names, start, end) → map[string]*models.DownloadRangeStats, error` | Bulk custom range daily trend |
+
+### Download Tarball
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `DownloadTarball` | `(ctx, name, version, destPath) → error` | Download a tarball to a local path |
+
+### Security Audit (read-only)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `QuickAudit` | `(ctx, payload *models.QuickAuditRequest) → *models.QuickAuditResult, error` | Quick audit (name→version) |
+| `BulkAudit` | `(ctx, advisories map[string][]string) → map[string][]models.Advisory, error` | Bulk audit |
+| `GetAdvisory` | `(ctx, advisoryID int) → *models.Advisory, error` | Get an advisory by ID |
+| `ListAdvisories` | `(ctx, opts models.AdvisoryListOptions) → []models.Advisory, error` | Advisory list |
+
+### Stars (read + write)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetStarredByPackage` | `(ctx, name) → []string, error` | Users who starred a package |
+| `GetStarredByUser` | `(ctx, username) → []string, error` | Packages starred by a user |
+| `StarPackage` 🔒 | `(ctx, name) → error` | Star a package |
+| `UnstarPackage` 🔒 | `(ctx, name) → error` | Unstar a package |
+
+### Access Control & Collaborators
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetPackageAccess` 🔒 | `(ctx, name) → *models.PackageAccess, error` | Package access settings |
+| `SetPackageAccess` 🔒 | `(ctx, name, access *models.PackageAccessUpdate) → error` | Update package access |
+| `GrantAccess` 🔒 | `(ctx, name, user, permission) → error` | Grant collaborator permission |
+| `RevokeAccess` 🔒 | `(ctx, name, user) → error` | Remove a collaborator |
+| `ListCollaborators` 🔒 | `(ctx, name) → []models.Collaborator, error` | Collaborator list |
+
+### Publish & Deprecate
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `PublishPackage` 🔒 | `(ctx, pkg *models.Package) → error` | Publish a package |
+| `PublishPackageFromTarball` 🔒 | `(ctx, name, version string, tarball []byte, meta *models.PublishMetadata) → error` | Publish from a tarball |
+| `DeprecateVersion` 🔒 | `(ctx, name, version, message) → error` | Deprecate a version |
+| `UnpublishPackage` 🔒 | `(ctx, name) → error` | Unpublish an entire package (dangerous) |
+| `UnpublishPackageVersion` 🔒 | `(ctx, name, version) → error` | Unpublish a version |
+
+### Token Management (require token)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `ListTokens` | `(ctx) → []models.Token, error` | Token list |
+| `GetToken` | `(ctx, tokenID) → *models.Token, error` | Single token details |
+| `CreateToken` 🔒 | `(ctx, opts *models.TokenCreation) → *models.Token, error` | Create a token |
+| `DeleteToken` 🔒 | `(ctx, tokenID) → error` | Delete a token |
+
+### Users & Auth
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `WhoAmI` | `(ctx) → string, error` | Current authenticated username |
+| `GetUser` 🔒 | `(ctx, name) → *models.UserProfile, error` | User profile |
+| `Login` | `(ctx, name, password) → *models.LoginResult, error` | Log in |
+| `CreateUser` | `(ctx, user *models.UserCreation) → *models.LoginResult, error` | Sign up |
+
+### Orgs & Teams (require token)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetOrg` | `(ctx, orgName) → *models.Organization, error` | Organization details |
+| `ListOrgMembers` | `(ctx, orgName) → []string, error` | Org members |
+| `ListOrgPackages` | `(ctx, orgName) → []string, error` | Org packages |
+| `CreateOrg` 🔒 | `(ctx, orgName) → *models.Organization, error` | Create an organization |
+| `DeleteOrg` 🔒 | `(ctx, orgName) → error` | Delete an organization |
+| `AddOrgMember` 🔒 | `(ctx, orgName, username) → error` | Add an org member |
+| `RemoveOrgMember` 🔒 | `(ctx, orgName, username) → error` | Remove an org member |
+| `ListTeams` | `(ctx, orgName) → []models.Team, error` | Team list |
+| `ListTeamMembers` | `(ctx, orgName, teamName) → []string, error` | Team members |
+| `ListTeamPackages` | `(ctx, orgName, teamName) → []string, error` | Team packages |
+| `CreateTeam` 🔒 | `(ctx, orgName, teamName) → *models.Team, error` | Create a team |
+| `DeleteTeam` 🔒 | `(ctx, orgName, teamName) → error` | Delete a team |
+| `AddTeamMember` 🔒 | `(ctx, orgName, teamName, username) → error` | Add a team member |
+| `RemoveTeamMember` 🔒 | `(ctx, orgName, teamName, username) → error` | Remove a team member |
+
+### Webhooks (require token)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `ListHooks` | `(ctx, opts models.HookListOptions) → []models.Hook, error` | Webhook list |
+| `GetHook` | `(ctx, hookID) → *models.Hook, error` | Webhook details |
+| `CreateHook` 🔒 | `(ctx, hook *models.HookCreation) → *models.Hook, error` | Create a webhook |
+| `UpdateHook` 🔒 | `(ctx, hookID, hook *models.HookUpdate) → *models.Hook, error` | Update a webhook |
+| `DeleteHook` 🔒 | `(ctx, hookID) → error` | Delete a webhook |
+
+### CouchDB Views & Changes Feed (advanced — for mirroring / incremental sync)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetRegistryInformation` | `(ctx) → *models.RegistryInformation, error` | Registry status and stats |
+| `RegistryHealthCheck` | `(ctx) → bool, error` | Registry health check |
+| `IsPrivateRegistry` | `() → bool` | Whether it's a private registry |
+| `GetChanges` | `(ctx, opts models.ChangesOptions) → *models.ChangesResult, error` | Changes feed |
+| `GetAllDocs` | `(ctx, opts models.AllDocsOptions) → *models.AllDocsResult, error` | All documents |
+| `GetView` | `(ctx, viewName, opts models.ViewOptions) → *models.ViewResult, error` | View query |
+
+### Configuration
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `GetOptions` | `() → *Options` | Current configuration options |
+
 ## Error Handling
 
 All methods return errors that can be handled using standard Go error handling patterns. The SDK exposes typed sentinel errors you can branch on with `errors.Is()`:
