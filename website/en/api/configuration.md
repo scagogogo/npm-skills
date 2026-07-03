@@ -133,7 +133,11 @@ options := registry.NewOptions().
 func (o *Options) SetTimeout(timeout time.Duration) *Options
 ```
 
-Sets the per-request timeout applied to the underlying HTTP client. The default is `0`, which means no client-level deadline — control cancellation with a `context` instead.
+Sets the per-request timeout. When `Timeout > 0`, the SDK wraps the passed context with `context.WithTimeout` before each request (this takes effect even if the caller passes `context.Background()`). The default is `0`, meaning no extra timeout is added — cancellation is then entirely up to the context the caller passes.
+
+::: tip Relationship with context
+`SetTimeout` and a caller-supplied context deadline **stack** (the earlier one wins). If you already control each call's deadline via `context.WithTimeout`, you don't need `SetTimeout`; if you reuse a single `context.Background()` across many calls and want a uniform safety net, `SetTimeout` is more convenient.
+:::
 
 **Parameters:**
 - `timeout` - Request timeout duration
@@ -323,7 +327,8 @@ When no options are provided, the following defaults are used:
 |--------|---------------|
 | Registry URL | `https://registry.npmjs.org` |
 | User-Agent | `npm-skills-sdk` |
-| Timeout | `0` (no deadline; controlled by the caller via `context`) |
+| Timeout | `0` (no extra timeout; when `>0` the SDK wraps the request context with `context.WithTimeout`, taking effect alongside any caller-supplied context deadline) |
+| Download Stats URL | `https://api.npmjs.org/downloads` |
 | Proxy | None |
 | Authentication | None |
 | HTTP Client | Built lazily on first `GetHttpClient()` from proxy/TLS settings and cached via `sync.Once` |
@@ -351,11 +356,11 @@ For any other host, use `NewCustomRegistry(url)` or `NewOptions().SetRegistryURL
 
 ## Environment Variable Support
 
-The SDK does not read environment variables automatically — apply them yourself when building options. This keeps configuration precedence explicit (CLI flag > env var > default):
+The SDK does not read environment variables automatically — apply them yourself when building options. This keeps configuration precedence explicit (CLI flag > env var > default). The CLI and MCP server recognize `NPM_REGISTRY` / `NPM_MIRROR` / `NPM_PROXY` / `NPM_TOKEN` / `NPM_TIMEOUT`; reuse the same names in your own code for consistency:
 
 ```bash
-export NPM_REGISTRY_URL="https://registry.npmjs.org"
-export HTTP_PROXY="http://proxy.example.com:8080"
+export NPM_REGISTRY="https://registry.npmjs.org"
+export NPM_PROXY="http://proxy.example.com:8080"
 ```
 
 ```go
@@ -370,12 +375,16 @@ import (
 func main() {
     options := registry.NewOptions()
 
-    if registryURL := os.Getenv("NPM_REGISTRY_URL"); registryURL != "" {
+    if registryURL := os.Getenv("NPM_REGISTRY"); registryURL != "" {
         options.SetRegistryURL(registryURL)
     }
 
-    if proxy := os.Getenv("HTTP_PROXY"); proxy != "" {
+    if proxy := os.Getenv("NPM_PROXY"); proxy != "" {
         options.SetProxy(proxy)
+    }
+
+    if token := os.Getenv("NPM_TOKEN"); token != "" {
+        options.SetToken(token)
     }
 
     client := registry.NewRegistry(options)
@@ -412,7 +421,7 @@ options := registry.NewOptions().
 ### 4. Handle Proxy and Credentials Securely
 ```go
 // Don't hardcode proxy or token values — read them from the environment
-if proxyURL := os.Getenv("HTTP_PROXY"); proxyURL != "" {
+if proxyURL := os.Getenv("NPM_PROXY"); proxyURL != "" {
     options.SetProxy(proxyURL)
 }
 if token := os.Getenv("NPM_TOKEN"); token != "" {

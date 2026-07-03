@@ -30,7 +30,9 @@ type Options struct {
 
 **默认配置:**
 - RegistryURL: "https://registry.npmjs.org"
+- UserAgent: "npm-skills-sdk"
 - Proxy: 无代理设置
+- Timeout: 0（不额外加超时；`>0` 时 SDK 自动给请求 context 套截止时间）
 
 **示例:**
 ```go
@@ -103,7 +105,11 @@ options := registry.NewOptions().
 
 ### `SetTimeout(timeout time.Duration) *Options`
 
-设置底层 HTTP 客户端的单次请求超时。默认值为 `0`，即不设客户端级截止时间——推荐改用 `context` 控制取消与超时。
+设置 SDK 单次请求的超时。当 `Timeout > 0` 时，SDK 会在发起请求前自动用 `context.WithTimeout` 给传入的 context 套一层截止时间（即便调用方传入的是 `context.Background()` 也会生效）。默认值为 `0`，表示不额外加超时——此时超时完全由调用方传入的 context 决定。
+
+::: tip 与 context 的关系
+`SetTimeout` 与调用方自带的 context 超时**叠加生效**（取先到期的那个）。若你已用 `context.WithTimeout` 控制了每次调用的截止时间，则无需再设 `SetTimeout`；若你的代码多处复用同一个 `context.Background()` 又希望统一兜底超时，用 `SetTimeout` 更方便。
+:::
 
 **参数:**
 - `timeout` - 请求超时时长
@@ -240,8 +246,9 @@ SDK 在内部构建 `http.Transport`，因此诸如 `MaxIdleConns`、自定义 `
 | 选项 | 默认值 |
 |------|--------|
 | Registry URL | `https://registry.npmjs.org` |
+| Download Stats URL | `https://api.npmjs.org/downloads` |
 | User-Agent | `npm-skills-sdk` |
-| 超时时间 | `0`（不超时，由调用方通过 `context` 控制） |
+| 超时时间 | `0`（不额外加超时；`>0` 时 SDK 自动用 `context.WithTimeout` 套截止时间，调用方传入的 context 超时与之取先到期者） |
 | 代理 | 无 |
 | HTTP 客户端 | 内部懒构建（首次 `GetHttpClient()` 时按代理/TLS 配置生成并用 `sync.Once` 缓存） |
 | TLS 校验 | 开启（`InsecureSkipVerify=false`） |
@@ -348,18 +355,31 @@ func main() {
 }
 ```
 
-## 环境变量支持
+## 环境变量说明
 
-可以通过环境变量配置默认选项：
+::: warning SDK 不自动读取环境变量
+`pkg/registry` 的 `NewOptions()` / `NewRegistry()` **不会**读取任何环境变量——它总是返回硬编码的默认值（`https://registry.npmjs.org`）。环境变量的识别仅在 **CLI**（`cmd/npm-skills`）与 **MCP server**（`cmd/mcp-server`）这两层实现：它们在构造 SDK 客户端前自行读取 `NPM_REGISTRY` / `NPM_MIRROR` / `NPM_PROXY` / `NPM_TOKEN` 等环境变量，再显式传给 `Options`。
+:::
 
-```bash
-# 设置默认注册表
-export NPM_REGISTRY_URL="https://registry.npmmirror.com"
+若你在自己的 Go 程序中直接使用 SDK，并希望支持环境变量，需自行读取并设置：
 
-# 设置代理
-export HTTP_PROXY="http://proxy.company.com:8080"
-export HTTPS_PROXY="http://proxy.company.com:8080"
+```go
+opts := registry.NewOptions()
+if v := os.Getenv("NPM_REGISTRY"); v != "" {
+    opts.SetRegistryURL(v)
+}
+if v := os.Getenv("NPM_PROXY"); v != "" {
+    opts.SetProxy(v)
+}
+if v := os.Getenv("NPM_TOKEN"); v != "" {
+    opts.SetToken(v)
+}
+client := registry.NewRegistry(opts)
 ```
+
+::: tip 与 CLI 环境变量名不同
+注意 SDK 上述示例用的是 `NPM_REGISTRY`（与 CLI 一致），而非 `NPM_REGISTRY_URL`。CLI 与 MCP 认可的环境变量名为 `NPM_REGISTRY` / `NPM_MIRROR` / `NPM_PROXY` / `NPM_TOKEN` / `NPM_TIMEOUT`，详见 [CLI 命令手册](/cli)。
+:::
 
 ## 最佳实践
 
