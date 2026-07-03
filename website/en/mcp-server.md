@@ -58,9 +58,11 @@ sequenceDiagram
 # Build from source (builds both CLI and MCP server)
 bash scripts/install.sh
 
-# Or go install
+# Or go install (produces a binary named mcp-server, from the dir name)
 go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 ```
+
+> **Note**: `go install` produces an executable named `mcp-server` (from the `cmd/mcp-server` directory name); the prebuilt binary from the Releases page is named `npm-mcp-server`. The config examples below use `npm-mcp-server` — if you installed via `go install`, change `command` to `mcp-server`.
 
 ## Configuration
 
@@ -94,11 +96,11 @@ go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--mirror` | `official` | Mirror source name |
-| `--registry` | | Custom registry URL |
+| `--mirror` | `official` | Mirror source name (env: `NPM_MIRROR`) |
+| `--registry` | | Custom registry URL (env: `NPM_REGISTRY`) |
 | `--token` | | Auth token (env: `NPM_TOKEN`) |
 | `--proxy` | | HTTP proxy (env: `NPM_PROXY`) |
-| `--timeout` | `120` | Timeout in seconds |
+| `--timeout` | `120` | Timeout in seconds (env: `NPM_TIMEOUT`) |
 
 ## Tools (31)
 

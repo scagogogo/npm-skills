@@ -58,9 +58,11 @@ sequenceDiagram
 # 从源码构建（同时构建 CLI 与 MCP 服务器）
 bash scripts/install.sh
 
-# 或 go install
+# 或 go install（产出二进制名为 mcp-server，取目录名）
 go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 ```
+
+> **提示**：`go install` 产出的可执行文件名为 `mcp-server`（取自 `cmd/mcp-server` 目录名）；从 Release 页安装的预编译二进制名为 `npm-mcp-server`。下文配置示例以 `npm-mcp-server` 为准，若用 `go install` 请将 `command` 改为 `mcp-server`。
 
 ## 配置
 
@@ -94,11 +96,11 @@ go install github.com/scagogogo/npm-skills/cmd/mcp-server@latest
 
 | 参数 | 默认 | 说明 |
 |------|------|------|
-| `--mirror` | `official` | 镜像源名 |
-| `--registry` | | 自定义注册表 URL |
+| `--mirror` | `official` | 镜像源名（env: `NPM_MIRROR`） |
+| `--registry` | | 自定义注册表 URL（env: `NPM_REGISTRY`） |
 | `--token` | | 认证 token（env: `NPM_TOKEN`） |
 | `--proxy` | | HTTP 代理（env: `NPM_PROXY`） |
-| `--timeout` | `120` | 超时秒数 |
+| `--timeout` | `120` | 超时秒数（env: `NPM_TIMEOUT`） |
 
 ## 工具清单（31 个）
 
