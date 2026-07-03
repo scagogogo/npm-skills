@@ -139,7 +139,7 @@ type Version struct {
     Version         string               `json:"version"`         // 版本号
     Description     string               `json:"description"`     // 描述
     Main            string               `json:"main"`            // 入口点
-    Scripts         *Script              `json:"scripts"`         // NPM 脚本
+    Scripts         Script               `json:"scripts"`         // NPM 脚本
     Dependencies    map[string]string    `json:"dependencies"`    // 运行时依赖
     DevDependencies map[string]string    `json:"devDependencies"` // 开发依赖
     Repository      *Repository          `json:"repository"`      // 仓库
@@ -206,8 +206,9 @@ type Maintainer struct {
 
 ```go
 type Repository struct {
-    Type string `json:"type"` // 仓库类型 (git, svn 等)
-    URL  string `json:"url"`  // 仓库 URL
+    Type      string `json:"type"`      // 仓库类型 (git, svn 等)
+    URL       string `json:"url"`       // 仓库 URL
+    Directory string `json:"directory"` // 包在仓库中的目录（monorepo 场景，如 "packages/core"）
 }
 ```
 
