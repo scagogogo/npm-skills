@@ -41,7 +41,6 @@ package main
 import (
     "context"
     "fmt"
-    "net"
     "time"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
@@ -179,7 +178,6 @@ import (
     "context"
     "fmt"
     "net"
-    "strings"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
@@ -364,7 +362,7 @@ func (ecm *EnvConfigManager) CreateClient() *registry.Registry {
 
 func main() {
     // 演示不同的环境变量配置
-    fmt.Println("=== 环境变量配置示例 ===\n")
+    fmt.Println("=== 环境变量配置示例 ===")
     
     // 示例 1: 默认配置
     fmt.Println("1. 默认配置:")
@@ -526,7 +524,6 @@ package main
 import (
     "context"
     "fmt"
-    "net/url"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )

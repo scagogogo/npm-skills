@@ -281,9 +281,7 @@ package main
 import (
     "context"
     "fmt"
-    "net/http"
     "sync"
-    "time"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
@@ -396,6 +394,12 @@ func main() {
 ```
 
 ## 示例 4: 限流器
+
+本示例使用 [`golang.org/x/time/rate`](https://pkg.go.dev/golang.org/x/time/rate) 实现令牌桶限流，运行前需先获取该依赖：
+
+```bash
+go get golang.org/x/time/rate
+```
 
 ```go
 package main

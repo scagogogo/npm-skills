@@ -164,7 +164,7 @@ func healthCheck(name string, client *registry.Registry) {
     latency := time.Since(start)
     
     // Additional health checks
-    pkg, err := client.GetPackageInformation(ctx, "lodash")
+    _, err = client.GetPackageInformation(ctx, "lodash")
     if err != nil {
         fmt.Printf("🟡 %s: PARTIAL - Registry info OK but package query failed: %v\n", name, err)
         return
@@ -248,10 +248,10 @@ func analyzeDependencies(client *registry.Registry, packageName, version string)
         }
     }
     
-    // Bundle dependencies
-    if len(ver.BundleDependencies) > 0 {
-        fmt.Printf("\n📦 Bundled Dependencies (%d):\n", len(ver.BundleDependencies))
-        for _, dep := range ver.BundleDependencies {
+    // Bundle dependencies (field is interface{}; assert to []string when present)
+    if bundle, ok := ver.BundleDependencies.([]string); ok && len(bundle) > 0 {
+        fmt.Printf("\n📦 Bundled Dependencies (%d):\n", len(bundle))
+        for _, dep := range bundle {
             fmt.Printf("  ├─ %s\n", dep)
         }
     }
@@ -338,6 +338,12 @@ func main() {
             }
             
             fmt.Printf("%s Trend:      %+.1f%% vs weekly average\n", trendIndicator, trend)
+        }
+
+        // Monthly context
+        if monthlyDownloads > 0 {
+            avgDailyFromMonth := monthlyDownloads / 30
+            fmt.Printf("📅 Monthly Avg: %10d downloads/day\n", avgDailyFromMonth)
         }
     }
 }

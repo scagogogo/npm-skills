@@ -37,7 +37,7 @@ func main() {
     // 创建客户端
     client := registry.NewRegistry()
     ctx := context.Background()
-    
+
     // 获取包信息
     pkg, err := client.GetPackageInformation(ctx, "react")
     if err != nil {
@@ -62,14 +62,13 @@ package main
 import (
     "context"
     "fmt"
-    "log"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
     ctx := context.Background()
-    
+
     // 使用不同的镜像源
     mirrors := map[string]*registry.Registry{
         "官方源":   registry.NewRegistry(),
@@ -214,7 +213,6 @@ package main
 import (
     "context"
     "fmt"
-    "log"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
@@ -222,7 +220,7 @@ import (
 func main() {
     client := registry.NewRegistry()
     ctx := context.Background()
-    
+
     packages := []string{"react", "vue", "angular"}
     periods := []string{"last-day", "last-week", "last-month"}
     
@@ -332,7 +330,6 @@ package main
 import (
     "context"
     "fmt"
-    "log"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )

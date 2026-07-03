@@ -62,14 +62,13 @@ package main
 import (
     "context"
     "fmt"
-    "log"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
 
 func main() {
     ctx := context.Background()
-    
+
     // Use different mirror sources
     mirrors := map[string]*registry.Registry{
         "Official":      registry.NewRegistry(),
@@ -214,7 +213,6 @@ package main
 import (
     "context"
     "fmt"
-    "log"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
@@ -222,7 +220,7 @@ import (
 func main() {
     client := registry.NewRegistry()
     ctx := context.Background()
-    
+
     packages := []string{"react", "vue", "angular"}
     periods := []string{"last-day", "last-week", "last-month"}
     
@@ -332,7 +330,6 @@ package main
 import (
     "context"
     "fmt"
-    "log"
 
     "github.com/scagogogo/npm-skills/pkg/registry"
 )
