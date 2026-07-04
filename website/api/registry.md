@@ -275,6 +275,39 @@ fmt.Println("下载成功！")
 
 下面按功能域列出全部 76 个方法。`ctx` 均为 `context.Context`；标注 🔒 的写操作需要服务端配置有效 token（`Options.Token`）。
 
+只读请求直接走镜像/代理发往 Registry；写操作则在请求头注入 `Authorization: Bearer <token>`，由 Registry 鉴权后写入：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as 调用方
+    participant R as Registry 客户端
+    participant H as HTTP 层<br/>(代理 · TLS · 连接池)
+    participant N as NPM Registry
+
+    C->>R: GetPackageInformation(ctx, "react")
+    Note over R: 只读 · 不带 token
+    R->>H: GET /react
+    H->>N: HTTP GET
+    N-->>H: 200 · JSON
+    H-->>R: *models.Package
+    R-->>C: 结果
+
+    C->>R: PublishPackage(ctx, pkg) 🔒
+    Note over R: 写操作 · Options.Token 已设
+    R->>H: PUT /-/npm-pkg<br/>Authorization: Bearer <token>
+    H->>N: HTTP PUT
+    alt token 有效
+        N-->>H: 200/201
+        H-->>R: nil
+        R-->>C: 成功
+    else token 缺失/失效
+        N-->>H: 401
+        H-->>R: ErrUnauthorized
+        R-->>C: error（errors.Is 命中）
+    end
+```
+
 ### 包元数据（只读）
 
 | 方法 | 签名 | 说明 |

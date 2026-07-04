@@ -1,5 +1,30 @@
 # 安装指南
 
+五种安装方式按使用场景选择，不必全试——先按下面的决策图定位最适合自己的那一种：
+
+```mermaid
+flowchart TD
+    Start(["想用 NPM Skills"]) --> Q1{"主要在哪个环境<br/>使用？"}
+    Q1 -->|"Claude Code / AI 智能体"| M1["方式一：插件<br/>claude plugin install"]
+    Q1 -->|"命令行 / CI 脚本"| Q2{"需要跨平台预编译<br/>二进制？"}
+    Q1 -->|"Go 程序里调用"| Q3{"只要 SDK 库<br/>还是也要 CLI？"}
+    Q2 -->|"是（最快上手）"| M2["方式二：预编译二进制<br/>34 平台任选"]
+    Q2 -->|"否，能跑 go"| M4["方式四：go install"]
+    Q3 -->|"只要库"| M5["方式五：go get"]
+    Q3 -->|"库 + CLI 都要"| M3["方式三：源码构建<br/>bash scripts/install.sh"]
+
+    M1 --> V["验证：npm-skills --version"]
+    M2 --> V
+    M3 --> V
+    M4 --> V
+    M5 --> V2["无需验证 CLI<br/>import 即可"]
+
+    classDef pick fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    classDef verify fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    class M1,M2,M3,M4,M5 pick;
+    class V,V2 verify;
+```
+
 ## 方式一：Claude Code 插件（AI 智能体推荐）
 
 ```bash

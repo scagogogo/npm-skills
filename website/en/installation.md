@@ -1,5 +1,30 @@
 # Installation
 
+Five installation methods exist — pick by use case rather than trying all. Use the decision diagram below to find the one that fits:
+
+```mermaid
+flowchart TD
+    Start(["Want NPM Skills"]) --> Q1{"Where will you<br/>mainly use it?"}
+    Q1 -->|"Claude Code / AI agent"| M1["Option 1: Plugin<br/>claude plugin install"]
+    Q1 -->|"CLI / CI scripts"| Q2{"Need cross-platform<br/>prebuilt binaries?"}
+    Q1 -->|"Inside a Go program"| Q3{"Just the SDK library,<br/>or CLI too?"}
+    Q2 -->|"Yes (fastest start)"| M2["Option 2: Prebuilt binary<br/>34 platforms"]
+    Q2 -->|"No, Go is available"| M4["Option 4: go install"]
+    Q3 -->|"Library only"| M5["Option 5: go get"]
+    Q3 -->|"Library + CLI"| M3["Option 3: Build from source<br/>bash scripts/install.sh"]
+
+    M1 --> V["Verify: npm-skills --version"]
+    M2 --> V
+    M3 --> V
+    M4 --> V
+    M5 --> V2["No CLI to verify<br/>just import"]
+
+    classDef pick fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    classDef verify fill:#e6f4ea,stroke:#34a853,color:#1e4620;
+    class M1,M2,M3,M4,M5 pick;
+    class V,V2 verify;
+```
+
 ## Option 1: Claude Code Plugin (recommended for AI agents)
 
 ```bash

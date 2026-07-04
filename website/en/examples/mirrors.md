@@ -162,6 +162,19 @@ func main() {
 
 ## Automatic Mirror Selection
 
+The selector tests every mirror concurrently, ranks by latency, and picks the fastest — falling back to the first mirror if all fail:
+
+```mermaid
+stateDiagram-v2
+    [*] --> ProbeAll: concurrently ping each mirror
+    ProbeAll --> Rank: collect (latency, err) per mirror
+    Rank --> PickFastest: sort by latency, drop failures
+    PickFastest --> Use: return fastest mirror
+    PickFastest --> Fallback: all mirrors failed
+    Use --> [*]
+    Fallback --> [*]: return default (first) mirror
+```
+
 ```go
 package main
 

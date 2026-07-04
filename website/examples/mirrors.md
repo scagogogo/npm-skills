@@ -35,6 +35,19 @@ flowchart TD
 
 ## 示例 1: 自动镜像选择
 
+选择器并发探测每个镜像的延迟，按延迟排序、剔除失败项，取最快者；若全部失败则回退到默认官方镜像：
+
+```mermaid
+stateDiagram-v2
+    [*] --> ProbeAll: 并发 ping 每个镜像
+    ProbeAll --> Rank: 收集各镜像 (延迟, 错误)
+    Rank --> PickFastest: 按延迟排序，剔除失败项
+    PickFastest --> Use: 返回最快镜像
+    PickFastest --> Fallback: 全部失败
+    Use --> [*]
+    Fallback --> [*]: 返回默认官方镜像
+```
+
 ```go
 package main
 
@@ -406,6 +419,25 @@ func main() {
 ```
 
 ## 示例 4: 多镜像故障转移
+
+故障转移按优先级逐个尝试镜像，成功即返回；失败（超时/网络/5xx）则降级到下一个，全部失败才向上抛错：
+
+```mermaid
+stateDiagram-v2
+    [*] --> TryFirst: 按优先级取首个镜像
+    TryFirst --> Success: 请求成功
+    TryFirst --> TryNext: 超时 / 网络错 / 5xx
+    TryNext --> Success: 当前镜像成功
+    TryNext --> TryNext: 当前失败，降级到下一优先级
+    TryNext --> Exhausted: 已无可用镜像
+    Success --> [*]: 返回结果
+    Exhausted --> [*]: 返回最后一个错误
+
+    note right of TryNext
+        每个镜像独立超时
+        失败仅记日志、不中断
+    end note
+```
 
 ```go
 package main

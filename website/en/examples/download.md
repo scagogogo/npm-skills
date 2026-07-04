@@ -155,6 +155,34 @@ func main() {
 
 ## Example 4: Batch Download Multiple Packages
 
+When downloading in bulk, multiple goroutines share a single `Registry` instance (its internal `*http.Client` and connection pool are concurrency-safe), each writing to disk independently without blocking each other:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant M as main goroutine
+    participant R as Registry<br/>(shared · pool)
+    participant N as NPM Registry / mirror
+    participant FS as local filesystem
+
+    M->>R: launch one goroutine per pkg
+    par concurrent downloads
+        R->>N: GET react tarball
+        N-->>R: tarball stream
+        R->>FS: io.Copy → ./react-18.2.0.tgz
+    and
+        R->>N: GET vue tarball
+        N-->>R: tarball stream
+        R->>FS: io.Copy → ./vue-3.4.0.tgz
+    and
+        R->>N: GET angular tarball
+        N-->>R: tarball stream
+        R->>FS: io.Copy → ./angular-17.3.0.tgz
+    end
+    M->>M: wg.Wait() joins
+    Note over M: a failed goroutine<br/>just logs — others continue
+```
+
 ```go
 package main
 

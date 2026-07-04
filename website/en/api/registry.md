@@ -299,6 +299,39 @@ fmt.Printf("Data size: %d MB\n", info.DataSize/(1024*1024))
 
 All 76 methods grouped by domain. `ctx` is always `context.Context`; 🔒 marks write operations that require a valid token configured on the server (`Options.Token`).
 
+Read-only requests go straight through the mirror/proxy to the Registry; write operations inject `Authorization: Bearer <token>` into the header, and the Registry authenticates before mutating:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Caller
+    participant R as Registry client
+    participant H as HTTP layer<br/>(proxy · TLS · pool)
+    participant N as NPM Registry
+
+    C->>R: GetPackageInformation(ctx, "react")
+    Note over R: read-only · no token
+    R->>H: GET /react
+    H->>N: HTTP GET
+    N-->>H: 200 · JSON
+    H-->>R: *models.Package
+    R-->>C: result
+
+    C->>R: PublishPackage(ctx, pkg) 🔒
+    Note over R: write · Options.Token set
+    R->>H: PUT /-/npm-pkg<br/>Authorization: Bearer <token>
+    H->>N: HTTP PUT
+    alt token valid
+        N-->>H: 200/201
+        H-->>R: nil
+        R-->>C: success
+    else token missing/invalid
+        N-->>H: 401
+        H-->>R: ErrUnauthorized
+        R-->>C: error (errors.Is match)
+    end
+```
+
 ### Package Metadata (read-only)
 
 | Method | Signature | Description |

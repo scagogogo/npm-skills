@@ -155,6 +155,34 @@ func main() {
 
 ## 示例 4: 批量下载多个包
 
+批量下载时，多个 goroutine 共享同一个 `Registry` 实例（其内部 `*http.Client` 与连接池并发安全），各自独立写盘、互不阻塞：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant M as main goroutine
+    participant R as Registry<br/>(共享 · 连接池)
+    participant N as NPM Registry / 镜像
+    participant FS as 本地文件系统
+
+    M->>R: 为每个 pkg 启动 goroutine
+    par 并发下载
+        R->>N: GET react tarball
+        N-->>R: tarball 流
+        R->>FS: io.Copy 写 ./react-18.2.0.tgz
+    and
+        R->>N: GET vue tarball
+        N-->>R: tarball 流
+        R->>FS: io.Copy 写 ./vue-3.4.0.tgz
+    and
+        R->>N: GET angular tarball
+        N-->>R: tarball 流
+        R->>FS: io.Copy 写 ./angular-17.3.0.tgz
+    end
+    M->>M: wg.Wait() 汇合
+    Note over M: 任一 goroutine 失败<br/>仅记日志、不影响其他
+```
+
 ```go
 package main
 
