@@ -2,6 +2,58 @@
 
 The `npm-skills` CLI has 26 commands. All output JSON to stdout (easy for AI to parse); status messages go to stderr.
 
+Commands are organized by domain (top-level command → subcommand):
+
+```mermaid
+mindmap
+  root((npm-skills<br/>26 commands))
+    Query
+      package-summary
+      package
+      pkg-version
+      versions
+    Search
+      search
+    Tags
+      dist-tags get
+      dist-tags set 🔒
+      dist-tags delete 🔒
+    Stats
+      download-stats
+      download-range
+      download-stats-bulk
+      download-stats-date
+    Download
+      download
+    Publish
+      publish 🔒
+      deprecate 🔒
+      unpublish 🔒
+    Access
+      access get
+      access set 🔒
+      access grant 🔒
+      access revoke 🔒
+    Token
+      token list
+      token create 🔒
+      token delete 🔒
+    Org
+      org get
+      org members
+      org team-list
+      org team-create 🔒
+    Hook
+      hook list
+      hook create 🔒
+      hook delete 🔒
+    Others
+      registry-info
+      mirrors
+      config
+      whoami
+```
+
 This "data on stdout, logs on stderr" split lets the CLI be both human-readable and pipeable by scripts and AI via tools like `jq`:
 
 ```mermaid

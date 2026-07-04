@@ -2,6 +2,58 @@
 
 `npm-skills` CLI 共 26 个命令，所有命令输出 JSON 到 stdout（便于 AI 解析），状态信息走 stderr。
 
+命令按功能域组织（一级命令 → 子命令）：
+
+```mermaid
+mindmap
+  root((npm-skills<br/>26 命令))
+    查包
+      package-summary
+      package
+      pkg-version
+      versions
+    搜索
+      search
+    标签
+      dist-tags get
+      dist-tags set 🔒
+      dist-tags delete 🔒
+    统计
+      download-stats
+      download-range
+      download-stats-bulk
+      download-stats-date
+    下载
+      download
+    发布
+      publish 🔒
+      deprecate 🔒
+      unpublish 🔒
+    访问
+      access get
+      access set 🔒
+      access grant 🔒
+      access revoke 🔒
+    Token
+      token list
+      token create 🔒
+      token delete 🔒
+    组织
+      org get
+      org members
+      org team-list
+      org team-create 🔒
+    Hook
+      hook list
+      hook create 🔒
+      hook delete 🔒
+    其他
+      registry-info
+      mirrors
+      config
+      whoami
+```
+
 这种「数据走 stdout、日志走 stderr」的分离，让 CLI 既能被人阅读，也能被脚本与 AI 用 `jq` 等工具直接管道处理：
 
 ```mermaid

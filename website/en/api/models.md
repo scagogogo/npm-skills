@@ -75,6 +75,23 @@ classDiagram
     SearchScore "1" --> "1" ScoreDetail
 ```
 
+How SDK parses JSON from NPM Registry into Go structs:
+
+```mermaid
+flowchart LR
+    NPM["NPM Registry<br/>GET /:package"] --> JSON["JSON response<br/>{_id, name, versions...}"]
+    JSON --> Parse["json.Unmarshal"]
+    Parse --> Pkg["models.Package"]
+    Pkg --> Ver["models.Version<br/>indexed by semver"]
+    Ver --> Dist["models.Dist<br/>tarball URL + shasum"]
+    Ver --> Dep["map[string]string<br/>Dependencies / DevDependencies"]
+    Pkg --> Auth["models.Author"]
+    Pkg --> Maint["[]models.Maintainer"]
+
+    classDef data fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class Pkg,Ver,Dist,Dep,Auth,Maint data;
+```
+
 ## Package Information
 
 ### Package

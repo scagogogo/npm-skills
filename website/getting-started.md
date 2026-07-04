@@ -85,6 +85,32 @@ flowchart TB
 
 ## CLI 速查（90% 场景）
 
+26 个命令按功能域划分，90% 场景只需记住这几类：
+
+```mermaid
+mindmap
+  root((npm-skills CLI))
+    查包
+      package-summary
+      package
+      pkg-version
+      versions --latest
+    搜索
+      search -l N
+    版本标签
+      dist-tags get
+      versions
+    统计
+      download-stats -p last-week
+      download-range
+    镜像
+      mirrors
+      -m npm-mirror
+    其他
+      registry-info
+      whoami --token
+```
+
 ```bash
 npm-skills package-summary react            # 轻量包信息（推荐）
 npm-skills search "http client" -l 10       # 搜索包

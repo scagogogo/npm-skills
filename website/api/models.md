@@ -81,6 +81,23 @@ classDiagram
     Score "1" --> "1" ScoreDetail
 ```
 
+SDK 从 NPM Registry 返回的 JSON 解析到 Go 结构的过程：
+
+```mermaid
+flowchart LR
+    NPM["NPM Registry<br/>GET /:package"] --> JSON["JSON 响应<br/>{_id, name, versions...}"]
+    JSON --> Parse["json.Unmarshal"]
+    Parse --> Pkg["models.Package"]
+    Pkg --> Ver["models.Version<br/>（按版本号索引）"]
+    Ver --> Dist["models.Dist<br/>tarball URL + shasum"]
+    Ver --> Dep["map[string]string<br/>Dependencies / DevDependencies"]
+    Pkg --> Auth["models.Author"]
+    Pkg --> Maint["[]models.Maintainer"]
+
+    classDef data fill:#e8f0fe,stroke:#4285f4,color:#174ea6;
+    class Pkg,Ver,Dist,Dep,Auth,Maint data;
+```
+
 ## Package 模型
 
 表示 NPM 包的完整信息：

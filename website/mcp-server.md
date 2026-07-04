@@ -189,6 +189,36 @@ mindmap
 | `npm_hook_list` | 当前用户的 webhook 列表 |
 | `npm_hook_get` | 单个 webhook 详情 |
 
+## 调用时序
+
+MCP 客户端（Claude / Cursor 等）通过 stdio 与本服务交互：客户端先 `tools/list` 拿到全部 31 个工具的 schema，AI 决策后 `tools/call` 调用具体工具，服务端经 SDK 发请求并返回结构化内容：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor AI as AI 智能体
+    participant C as MCP 客户端<br/>(Claude / Cursor)
+    participant S as npm-mcp-server
+    participant R as Registry SDK
+    participant N as NPM Registry / 镜像
+
+    AI->>C: "查看 react 上个月下载量"
+    C->>S: initialize
+    S-->>C: capabilities (含 tools)
+    C->>S: tools/list
+    S-->>C: 31 个工具 schema
+    C->>AI: 注入工具列表
+    AI->>C: 选择 npm_download_stats
+    C->>S: tools/call npm_download_stats<br/>{name:"react", period:"last-month"}
+    S->>R: GetDownloadStats(ctx, "react", "last-month")
+    R->>N: GET /downloads/point/last-month/react
+    N-->>R: JSON
+    R-->>S: *models.DownloadStats
+    S-->>C: content[{type:text, text:JSON}]
+    C-->>AI: 工具结果
+    AI-->>AI: 总结为自然语言
+```
+
 ## 下一步
 
 - 阅读 [快速开始](/getting-started) 完成安装与配置

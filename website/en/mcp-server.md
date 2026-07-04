@@ -189,6 +189,36 @@ mindmap
 | `npm_hook_list` | Webhook list for the current user |
 | `npm_hook_get` | Single webhook details |
 
+## Call Sequence
+
+MCP clients (Claude / Cursor / etc.) talk to this server over stdio: the client first calls `tools/list` to get all 31 tool schemas, the AI picks one and calls `tools/call`, and the server dispatches through the SDK and returns structured content:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor AI as AI agent
+    participant C as MCP client<br/>(Claude / Cursor)
+    participant S as npm-mcp-server
+    participant R as Registry SDK
+    participant N as NPM Registry / mirror
+
+    AI->>C: "show me react's downloads last month"
+    C->>S: initialize
+    S-->>C: capabilities (with tools)
+    C->>S: tools/list
+    S-->>C: 31 tool schemas
+    C->>AI: inject tool list
+    AI->>C: pick npm_download_stats
+    C->>S: tools/call npm_download_stats<br/>{name:"react", period:"last-month"}
+    S->>R: GetDownloadStats(ctx, "react", "last-month")
+    R->>N: GET /downloads/point/last-month/react
+    N-->>R: JSON
+    R-->>S: *models.DownloadStats
+    S-->>C: content[{type:text, text:JSON}]
+    C-->>AI: tool result
+    AI-->>AI: summarize in natural language
+```
+
 ## Next Steps
 
 - Read [Getting Started](/en/getting-started) to install and configure

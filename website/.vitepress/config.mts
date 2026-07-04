@@ -27,10 +27,40 @@ export default withMermaid(defineConfig({
 
         nav: [
           { text: '首页', link: '/' },
-          { text: '快速开始', link: '/getting-started' },
-          { text: 'CLI 命令', link: '/cli' },
-          { text: 'Go SDK', link: '/api/registry' },
-          { text: 'MCP 服务器', link: '/mcp-server' },
+          {
+            text: '指南',
+            items: [
+              { text: '快速开始', link: '/getting-started' },
+              { text: '安装指南', link: '/installation' },
+              { text: 'CLI 命令手册', link: '/cli' }
+            ]
+          },
+          {
+            text: 'Go SDK',
+            items: [
+              { text: 'API 概览', link: '/api/' },
+              { text: 'Registry 客户端', link: '/api/registry' },
+              { text: '数据模型', link: '/api/models' },
+              { text: '配置选项', link: '/api/configuration' }
+            ]
+          },
+          {
+            text: '示例',
+            items: [
+              { text: '示例总览', link: '/examples/' },
+              { text: '基础用法', link: '/examples/basic' },
+              { text: '高级用法', link: '/examples/advanced' },
+              { text: '镜像源配置', link: '/examples/mirrors' },
+              { text: '下载 Tarball', link: '/examples/download' }
+            ]
+          },
+          {
+            text: '集成',
+            items: [
+              { text: 'MCP 服务器', link: '/mcp-server' },
+              { text: '镜像源', link: '/examples/mirrors' }
+            ]
+          },
           { text: 'GitHub', link: REPO }
         ],
 
@@ -50,20 +80,28 @@ export default withMermaid(defineConfig({
               text: 'Go SDK',
               collapsed: false,
               items: [
+                { text: 'API 概览', link: '/api/' },
                 { text: 'Registry 客户端', link: '/api/registry' },
                 { text: '数据模型', link: '/api/models' },
                 { text: '配置选项', link: '/api/configuration' }
               ]
             },
             {
+              text: '示例',
+              collapsed: false,
+              items: [
+                { text: '示例总览', link: '/examples/' },
+                { text: '基础用法', link: '/examples/basic' },
+                { text: '高级用法', link: '/examples/advanced' },
+                { text: '镜像源配置', link: '/examples/mirrors' },
+                { text: '下载 Tarball', link: '/examples/download' }
+              ]
+            },
+            {
               text: '集成方式',
               collapsed: false,
               items: [
-                { text: 'MCP 服务器', link: '/mcp-server' },
-                { text: '镜像源', link: '/examples/mirrors' },
-                { text: '下载 Tarball', link: '/examples/download' },
-                { text: '基础用法', link: '/examples/basic' },
-                { text: '高级用法', link: '/examples/advanced' }
+                { text: 'MCP 服务器', link: '/mcp-server' }
               ]
             }
           ]
@@ -110,10 +148,39 @@ export default withMermaid(defineConfig({
 
         nav: [
           { text: 'Home', link: '/en/' },
-          { text: 'Getting Started', link: '/en/getting-started' },
-          { text: 'CLI', link: '/en/cli' },
-          { text: 'Go SDK', link: '/en/api/registry' },
-          { text: 'MCP Server', link: '/en/mcp-server' },
+          {
+            text: 'Guide',
+            items: [
+              { text: 'Getting Started', link: '/en/getting-started' },
+              { text: 'Installation', link: '/en/installation' },
+              { text: 'CLI Reference', link: '/en/cli' }
+            ]
+          },
+          {
+            text: 'Go SDK',
+            items: [
+              { text: 'API Overview', link: '/en/api/' },
+              { text: 'Registry Client', link: '/en/api/registry' },
+              { text: 'Data Models', link: '/en/api/models' },
+              { text: 'Configuration', link: '/en/api/configuration' }
+            ]
+          },
+          {
+            text: 'Examples',
+            items: [
+              { text: 'Examples Overview', link: '/en/examples/' },
+              { text: 'Basic Usage', link: '/en/examples/basic' },
+              { text: 'Advanced Usage', link: '/en/examples/advanced' },
+              { text: 'Mirror Configuration', link: '/en/examples/mirrors' },
+              { text: 'Download Tarball', link: '/en/examples/download' }
+            ]
+          },
+          {
+            text: 'Integrations',
+            items: [
+              { text: 'MCP Server', link: '/en/mcp-server' }
+            ]
+          },
           { text: 'GitHub', link: REPO }
         ],
 
@@ -133,20 +200,28 @@ export default withMermaid(defineConfig({
               text: 'Go SDK',
               collapsed: false,
               items: [
+                { text: 'API Overview', link: '/en/api/' },
                 { text: 'Registry Client', link: '/en/api/registry' },
                 { text: 'Data Models', link: '/en/api/models' },
                 { text: 'Configuration', link: '/en/api/configuration' }
               ]
             },
             {
+              text: 'Examples',
+              collapsed: false,
+              items: [
+                { text: 'Examples Overview', link: '/en/examples/' },
+                { text: 'Basic Usage', link: '/en/examples/basic' },
+                { text: 'Advanced Usage', link: '/en/examples/advanced' },
+                { text: 'Mirror Configuration', link: '/en/examples/mirrors' },
+                { text: 'Download Tarball', link: '/en/examples/download' }
+              ]
+            },
+            {
               text: 'Integrations',
               collapsed: false,
               items: [
-                { text: 'MCP Server', link: '/en/mcp-server' },
-                { text: 'Mirrors', link: '/en/examples/mirrors' },
-                { text: 'Download Tarball', link: '/en/examples/download' },
-                { text: 'Basic Usage', link: '/en/examples/basic' },
-                { text: 'Advanced Usage', link: '/en/examples/advanced' }
+                { text: 'MCP Server', link: '/en/mcp-server' }
               ]
             }
           ]

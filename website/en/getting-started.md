@@ -82,6 +82,32 @@ flowchart TB
 
 ## CLI Cheat Sheet (90% of cases)
 
+26 commands grouped by domain; 90% of the time you only need these categories:
+
+```mermaid
+mindmap
+  root((npm-skills CLI))
+    Query
+      package-summary
+      package
+      pkg-version
+      versions --latest
+    Search
+      search -l N
+    Tags
+      dist-tags get
+      versions
+    Stats
+      download-stats -p last-week
+      download-range
+    Mirrors
+      mirrors
+      -m npm-mirror
+    Others
+      registry-info
+      whoami --token
+```
+
 ```bash
 npm-skills package-summary react            # Lightweight info (recommended)
 npm-skills search "http client" -l 10
