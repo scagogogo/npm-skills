@@ -22,9 +22,9 @@ import (
 func comprehensiveMockServer() *httptest.Server {
 	packages := map[string]map[string]interface{}{
 		"test-pkg": {
-			"_id":   "test-pkg",
-			"_rev":  "1-abc123",
-			"name":  "test-pkg",
+			"_id":         "test-pkg",
+			"_rev":        "1-abc123",
+			"name":        "test-pkg",
 			"description": "A test package",
 			"dist-tags": map[string]interface{}{
 				"latest": "1.0.0",
@@ -45,10 +45,10 @@ func comprehensiveMockServer() *httptest.Server {
 
 	tokens := []map[string]interface{}{
 		{
-			"id":     "token-1",
-			"key":    "npm_deadbeef",
-			"token":  "npm_deadbeef",
-			"created": "2024-01-01T00:00:00.000Z",
+			"id":       "token-1",
+			"key":      "npm_deadbeef",
+			"token":    "npm_deadbeef",
+			"created":  "2024-01-01T00:00:00.000Z",
 			"readonly": false,
 		},
 	}
