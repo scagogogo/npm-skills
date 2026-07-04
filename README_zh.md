@@ -25,7 +25,7 @@
 | **包路径** | `github.com/scagogogo/npm-skills` (Go module) |
 | **二进制** | GoReleaser 构建 34 个平台组合（纯静态，无 CGO） |
 | **SDK 方法** | `pkg/registry` 下 70+ 个 |
-| **MCP 工具** | `npm-mcp-server` 提供 33 个 |
+| **MCP 工具** | `npm-mcp-server` 提供 31 个 |
 | **CLI 命令** | `npm-skills` 提供 26 个 |
 | **镜像源** | 内置 8 个（官方、淘宝、华为、腾讯、CNPM、Yarn…） |
 | **许可证** | MIT |
@@ -196,7 +196,7 @@ bash scripts/install.sh   # 同时构建 CLI 和 MCP 服务器
 }
 ```
 
-**33 个 MCP 工具**可用，包括：
+**31 个 MCP 工具**可用，包括：
 
 | 读取工具 | 写入工具 |
 |---|---|
@@ -216,7 +216,7 @@ bash scripts/install.sh   # 同时构建 CLI 和 MCP 服务器
 - 🔒 **认证支持**：Bearer Token 支持发布、取消发布和所有写操作
 - 📊 **下载分析**：点统计、区间统计、批量统计（>128 个包自动分块）
 - 🔍 **包搜索**：分页、质量/流行度/维护度评分
-- 📡 **MCP 协议**：33 个工具供 AI 工具链使用
+- 📡 **MCP 协议**：31 个工具供 AI 工具链使用
 - 🏗️ **跨平台**：Linux、macOS、Windows、FreeBSD、OpenBSD、NetBSD、Illumos、Solaris 预编译二进制
 
 ## 📥 安装

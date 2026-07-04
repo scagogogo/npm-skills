@@ -25,7 +25,7 @@
 | **Package** | `github.com/scagogogo/npm-skills` (Go module) |
 | **Binaries** | 34 platform combinations via GoReleaser (CGO-free, static) |
 | **SDK methods** | 70+ in `pkg/registry` |
-| **MCP tools** | 33 via `npm-mcp-server` |
+| **MCP tools** | 31 via `npm-mcp-server` |
 | **CLI commands** | 26 via `npm-skills` |
 | **Mirrors** | 8 built-in (official, Taobao, Huawei, Tencent, CNPM, Yarn, …) |
 | **License** | MIT |
@@ -196,7 +196,7 @@ bash scripts/install.sh   # Builds both CLI and MCP server
 }
 ```
 
-**33 MCP Tools** available, including:
+**31 MCP Tools** available, including:
 
 | Read Tools | Write Tools |
 |---|---|
@@ -216,7 +216,7 @@ bash scripts/install.sh   # Builds both CLI and MCP server
 - 🔒 **Auth Support**: Bearer token for publish, unpublish, and all write operations
 - 📊 **Download Analytics**: Point stats, range stats, bulk stats with auto-chunking (>128 packages)
 - 🔍 **Package Search**: Pagination, quality/popularity/maintenance scoring
-- 📡 **MCP Protocol**: 33 tools for AI tool chains
+- 📡 **MCP Protocol**: 31 tools for AI tool chains
 - 🏗️ **Cross-Platform**: Pre-built binaries for Linux, macOS, Windows, FreeBSD, OpenBSD, NetBSD, Illumos, Solaris
 
 ## 📥 Installation
