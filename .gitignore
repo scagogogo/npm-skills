@@ -5,6 +5,7 @@
 # Build output
 /npm-skills
 /npm-crawler
+/dist/
 
 # Website (VitePress)
 website/node_modules/

@@ -20,11 +20,11 @@ jobs:
     # 步骤代表作业中执行的一系列任务
     steps:
     # 检出代码
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     # 设置 Go 环境
     - name: Set up Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: '1.24'  # 使用 Go 1.24 版本，与 go.mod 保持一致
         cache: true  # 启用依赖缓存，提高后续运行速度
@@ -90,7 +90,7 @@ jobs:
 
     # 上传覆盖率报告作为artifact
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: coverage-reports
         path: |
