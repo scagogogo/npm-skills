@@ -67,16 +67,21 @@ jobs:
       run: go test -race ./...
 
     # 生成测试覆盖率报告
+    # 注意：examples/ 和 cmd/skill_verify 是可执行示例/集成测试工具，其 main() 调用真实网络且 os.Exit，
+    # 无法在单测中覆盖。这里用 -coverpkg 显式指定统计范围，排除这些 main 包，使覆盖率反映真实代码质量。
     - name: Generate coverage report
-      run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+      run: |
+        go test -race -coverprofile=coverage.txt -covermode=atomic \
+          -coverpkg=./pkg/...,./cmd/npm-skills,./cmd/mcp-server \
+          ./pkg/... ./cmd/npm-skills/ ./cmd/mcp-server/
 
-    # 检查覆盖率阈值（可选）
+    # 检查覆盖率阈值
     - name: Check coverage threshold
       run: |
         coverage=$(go tool cover -func=coverage.txt | grep total: | awk '{print $3}' | sed 's/%//')
         echo "当前测试覆盖率: ${coverage}%"
-        # 设置最低覆盖率阈值为15%
-        threshold=15
+        # 设置最低覆盖率阈值为 85%（排除 examples/skill_verify 的 main 包）
+        threshold=85
         if [ "$(echo "$coverage < $threshold" | awk '{print ($1 < $3)}')" = "1" ]; then
           echo "警告：测试覆盖率 (${coverage}%) 低于阈值 (${threshold}%)"
           exit 1
