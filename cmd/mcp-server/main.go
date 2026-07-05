@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -16,27 +17,28 @@ import (
 	"github.com/scagogogo/npm-skills/pkg/registry"
 )
 
-func main() {
-	// Parse command-line flags
-	registryURL := os.Getenv("NPM_REGISTRY")
-	mirror := getEnvOrDefault("NPM_MIRROR", "official")
-	proxy := os.Getenv("NPM_PROXY")
-	token := os.Getenv("NPM_TOKEN")
-	timeoutStr := getEnvOrDefault("NPM_TIMEOUT", "120")
+// parseArgs 解析命令行参数（覆盖 env 默认值），返回各项配置和是否请求 help。
+// 抽离自 main 以便单元测试。
+func parseArgs(args []string) (registryURL, mirror, proxy, token, timeoutStr string, helpRequested bool) {
+	registryURL = os.Getenv("NPM_REGISTRY")
+	mirror = getEnvOrDefault("NPM_MIRROR", "official")
+	proxy = os.Getenv("NPM_PROXY")
+	token = os.Getenv("NPM_TOKEN")
+	timeoutStr = getEnvOrDefault("NPM_TIMEOUT", "120")
 
 	// Override env vars with command-line args if provided
-	for i, arg := range os.Args[1:] {
+	for i, arg := range args {
 		switch {
-		case arg == "--registry" && i+1 < len(os.Args)-1:
-			registryURL = os.Args[i+2]
-		case arg == "--mirror" && i+1 < len(os.Args)-1:
-			mirror = os.Args[i+2]
-		case arg == "--proxy" && i+1 < len(os.Args)-1:
-			proxy = os.Args[i+2]
-		case arg == "--token" && i+1 < len(os.Args)-1:
-			token = os.Args[i+2]
-		case arg == "--timeout" && i+1 < len(os.Args)-1:
-			timeoutStr = os.Args[i+2]
+		case arg == "--registry" && i+1 < len(args):
+			registryURL = args[i+1]
+		case arg == "--mirror" && i+1 < len(args):
+			mirror = args[i+1]
+		case arg == "--proxy" && i+1 < len(args):
+			proxy = args[i+1]
+		case arg == "--token" && i+1 < len(args):
+			token = args[i+1]
+		case arg == "--timeout" && i+1 < len(args):
+			timeoutStr = args[i+1]
 		case strings.HasPrefix(arg, "--registry="):
 			registryURL = strings.TrimPrefix(arg, "--registry=")
 		case strings.HasPrefix(arg, "--mirror="):
@@ -48,9 +50,20 @@ func main() {
 		case strings.HasPrefix(arg, "--timeout="):
 			timeoutStr = strings.TrimPrefix(arg, "--timeout=")
 		case arg == "--help" || arg == "-h":
-			printHelp()
-			os.Exit(0)
+			helpRequested = true
 		}
+	}
+	return
+}
+
+// run 是主入口，抽离自 main 以便单元测试（main 本身因 os.Exit 无法直接测试）。
+// 参数：args 为命令行参数（不含程序名），stdin/stdout 用于 stdio server。
+// 返回进程退出码。
+func run(args []string, stdin io.Reader, stdout io.Writer) int {
+	registryURL, mirror, proxy, token, timeoutStr, helpRequested := parseArgs(args)
+	if helpRequested {
+		printHelp(stdout)
+		return 0
 	}
 
 	timeout, err := time.ParseDuration(timeoutStr + "s")
@@ -86,9 +99,15 @@ func main() {
 
 	log.Printf("Starting NPM Registry MCP Server (mirror: %s, timeout: %s)\n", mirror, timeout)
 
-	if err := stdioServer.Listen(ctx, os.Stdin, os.Stdout); err != nil {
-		log.Fatalf("Server error: %v\n", err)
+	if err := stdioServer.Listen(ctx, stdin, stdout); err != nil {
+		log.Printf("Server error: %v\n", err)
+		return 1
 	}
+	return 0
+}
+
+func main() {
+	os.Exit(run(os.Args[1:], os.Stdin, os.Stdout))
 }
 
 func buildOptions(registryURL, mirror, proxy, token string) *registry.Options {
@@ -146,47 +165,47 @@ func getEnvOrDefault(key, defaultValue string) string {
 	return defaultValue
 }
 
-func printHelp() {
-	fmt.Println("NPM Registry MCP Server")
-	fmt.Println()
-	fmt.Println("Exposes NPM registry operations as MCP tools for AI agents.")
-	fmt.Println()
-	fmt.Println("Usage: npm-mcp-server [flags]")
-	fmt.Println()
-	fmt.Println("Flags:")
-	fmt.Println("  --registry URL     Custom registry URL (overrides --mirror)")
-	fmt.Println("  --mirror NAME      Mirror source (default: official)")
-	fmt.Println("                      Values: official|taobao|npm-mirror|huawei|tencent|cnpm|yarn|npmjscom")
-	fmt.Println("  --proxy URL        HTTP proxy URL (e.g. http://127.0.0.1:7890)")
-	fmt.Println("  --token TOKEN      NPM auth token (for whoami and private packages)")
-	fmt.Println("  --timeout SECS     Request timeout in seconds (default: 120)")
-	fmt.Println()
-	fmt.Println("Environment variables (used as defaults):")
-	fmt.Println("  NPM_REGISTRY       Custom registry URL")
-	fmt.Println("  NPM_MIRROR         Mirror source name")
-	fmt.Println("  NPM_PROXY          HTTP proxy URL")
-	fmt.Println("  NPM_TOKEN          NPM auth token")
-	fmt.Println("  NPM_TIMEOUT        Request timeout in seconds")
-	fmt.Println()
-	fmt.Println("Priority: CLI flag > Environment variable > Default")
-	fmt.Println()
-	fmt.Println("MCP Tools (12 total):")
-	fmt.Println("  npm_registry_info     — Registry status and statistics")
-	fmt.Println("  npm_mirrors           — List available mirror sources")
-	fmt.Println("  npm_package           — Full package metadata (large response)")
-	fmt.Println("  npm_package_summary   — Lightweight package metadata (recommended)")
-	fmt.Println("  npm_search            — Search packages by keyword")
-	fmt.Println("  npm_version           — Specific version metadata")
-	fmt.Println("  npm_versions          — All published version numbers")
-	fmt.Println("  npm_latest_version    — Latest version number")
-	fmt.Println("  npm_dist_tags         — Distribution tags (latest, next, beta)")
-	fmt.Println("  npm_download_stats    — Download count for a period")
-	fmt.Println("  npm_download_range    — Daily download trend data")
-	fmt.Println("  npm_whoami            — Check auth status (requires --token)")
-	fmt.Println()
-	fmt.Println("Claude Code integration:")
-	fmt.Println("  Add to your settings:")
-	fmt.Println(`  {
+func printHelp(w io.Writer) {
+	fmt.Fprintln(w, "NPM Registry MCP Server")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Exposes NPM registry operations as MCP tools for AI agents.")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Usage: npm-mcp-server [flags]")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Flags:")
+	fmt.Fprintln(w, "  --registry URL     Custom registry URL (overrides --mirror)")
+	fmt.Fprintln(w, "  --mirror NAME      Mirror source (default: official)")
+	fmt.Fprintln(w, "                      Values: official|taobao|npm-mirror|huawei|tencent|cnpm|yarn|npmjscom")
+	fmt.Fprintln(w, "  --proxy URL        HTTP proxy URL (e.g. http://127.0.0.1:7890)")
+	fmt.Fprintln(w, "  --token TOKEN      NPM auth token (for whoami and private packages)")
+	fmt.Fprintln(w, "  --timeout SECS     Request timeout in seconds (default: 120)")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Environment variables (used as defaults):")
+	fmt.Fprintln(w, "  NPM_REGISTRY       Custom registry URL")
+	fmt.Fprintln(w, "  NPM_MIRROR         Mirror source name")
+	fmt.Fprintln(w, "  NPM_PROXY          HTTP proxy URL")
+	fmt.Fprintln(w, "  NPM_TOKEN          NPM auth token")
+	fmt.Fprintln(w, "  NPM_TIMEOUT        Request timeout in seconds")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Priority: CLI flag > Environment variable > Default")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "MCP Tools (12 total):")
+	fmt.Fprintln(w, "  npm_registry_info     — Registry status and statistics")
+	fmt.Fprintln(w, "  npm_mirrors           — List available mirror sources")
+	fmt.Fprintln(w, "  npm_package           — Full package metadata (large response)")
+	fmt.Fprintln(w, "  npm_package_summary   — Lightweight package metadata (recommended)")
+	fmt.Fprintln(w, "  npm_search            — Search packages by keyword")
+	fmt.Fprintln(w, "  npm_version           — Specific version metadata")
+	fmt.Fprintln(w, "  npm_versions          — All published version numbers")
+	fmt.Fprintln(w, "  npm_latest_version    — Latest version number")
+	fmt.Fprintln(w, "  npm_dist_tags         — Distribution tags (latest, next, beta)")
+	fmt.Fprintln(w, "  npm_download_stats    — Download count for a period")
+	fmt.Fprintln(w, "  npm_download_range    — Daily download trend data")
+	fmt.Fprintln(w, "  npm_whoami            — Check auth status (requires --token)")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Claude Code integration:")
+	fmt.Fprintln(w, "  Add to your settings:")
+	fmt.Fprintln(w, `  {
     "mcpServers": {
       "npm-registry": {
         "command": "npm-mcp-server",

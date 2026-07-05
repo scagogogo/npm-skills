@@ -113,9 +113,16 @@ func newContext() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), time.Duration(globalTimeout)*time.Second)
 }
 
-func main() {
+// run executes the root command and returns the exit code.
+// 抽离自 main 以便单元测试（main 本身因 os.Exit 无法直接测试）。
+func run() int {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, color.New(color.FgRed).Sprintf("✗ Error: %s", err))
-		os.Exit(1)
+		return 1
 	}
+	return 0
+}
+
+func main() {
+	os.Exit(run())
 }

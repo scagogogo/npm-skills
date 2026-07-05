@@ -312,6 +312,41 @@ func TestAllSubCommandsRegistered(t *testing.T) {
 	}
 }
 
+// ====================================================================
+// run（main 抽离出的可测函数）
+// ====================================================================
+
+func TestRunSuccess(t *testing.T) {
+	defer resetGlobals()
+	server := cliMockServer()
+	defer server.Close()
+	resetGlobals()
+	globalRegistry = server.URL
+	globalToken = "npm_xxx"
+	rootCmd.SetArgs([]string{"package", "react"})
+	code := run()
+	assert.Equal(t, 0, code)
+}
+
+func TestRunError(t *testing.T) {
+	defer resetGlobals()
+	resetGlobals()
+	// 不可达 server → 命令失败 → 返回 1
+	globalRegistry = "http://localhost:1"
+	globalToken = "npm_xxx"
+	rootCmd.SetArgs([]string{"package", "react"})
+	code := run()
+	assert.Equal(t, 1, code)
+}
+
+func TestRunHelp(t *testing.T) {
+	defer resetGlobals()
+	resetGlobals()
+	rootCmd.SetArgs([]string{"--help"})
+	code := run()
+	assert.Equal(t, 0, code)
+}
+
 // dummy to avoid unused import warning for encoding/json in some builds
 var _ = json.Marshal
 var _ = strings.TrimSpace

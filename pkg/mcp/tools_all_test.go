@@ -2,6 +2,7 @@ package mcp
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -165,7 +166,7 @@ func fullMcpServer() *httptest.Server {
 		}
 		if path == "/-/org/myorg/team" {
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`[{"id":"1","name":"devs"}]`))
+			w.Write([]byte(`{"objects":[{"id":"1","name":"devs"}],"total":1}`))
 			return
 		}
 		if path == "/-/org/myorg/team/devs" {
@@ -406,6 +407,132 @@ func TestGetOptionalFloatBranches(t *testing.T) {
 	// other type (int) → false
 	_, ok = getOptionalFloat(req, "other")
 	assert.False(t, ok)
+}
+
+// TestGetOptionalFloatJSONNumber 覆盖 json.Number 分支。
+func TestGetOptionalFloatJSONNumber(t *testing.T) {
+	// json.Number 有效
+	req := mcp.CallToolRequest{
+		Params: mcp.CallToolParams{
+			Arguments: map[string]any{
+				"good": json.Number("3.14"),
+				"bad":  json.Number("not-a-number"),
+			},
+		},
+	}
+	v, ok := getOptionalFloat(req, "good")
+	assert.True(t, ok)
+	assert.Equal(t, 3.14, v)
+	// json.Number 无效
+	_, ok = getOptionalFloat(req, "bad")
+	assert.False(t, ok)
+}
+
+// TestRegistryToolError 覆盖 npm_registry_info 的 error 分支。
+func TestRegistryToolError(t *testing.T) {
+	// 用不可达 server 触发 GetRegistryInformation 失败
+	cfg := mcpCfg(httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{}`))
+	})), false)
+	// 重新创建指向不可达地址的 client
+	badClient := registry.NewRegistry(registry.NewOptions().SetRegistryURL("http://localhost:1"))
+	tools := registerRegistryTools(badClient, cfg)
+	tool := findTool(tools, "npm_registry_info")
+	res, _ := callTool(&tool, map[string]any{})
+	assert.True(t, res.IsError)
+}
+
+// TestTokenToolError 覆盖 npm_token_list 的 error 分支。
+func TestTokenToolError(t *testing.T) {
+	cfg := mcpCfg(httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})), true)
+	badClient := registry.NewRegistry(registry.NewOptions().SetToken("npm_xxx").SetRegistryURL("http://localhost:1"))
+	tools := registerTokenTools(badClient, cfg)
+	tool := findTool(tools, "npm_token_list")
+	res, _ := callTool(&tool, map[string]any{})
+	assert.True(t, res.IsError)
+}
+
+// TestAuditToolArgBranches 覆盖 npm_audit / npm_audit_advisory 的参数解析分支。
+func TestAuditToolArgBranches(t *testing.T) {
+	server := fullMcpServer()
+	defer server.Close()
+	cfg := mcpCfg(server, false)
+	client := registry.NewRegistry(cfg.RegistryOptions)
+	tools := registerAuditTools(client, cfg)
+
+	// npm_audit: dependencies 不是 map → "invalid arguments" 分支
+	tool := findTool(tools, "npm_audit")
+	res, _ := callTool(&tool, map[string]any{"dependencies": "not-a-map"})
+	assert.True(t, res.IsError)
+
+	// npm_audit: dependencies 是空 map → error
+	res, _ = callTool(&tool, map[string]any{"dependencies": map[string]any{}})
+	assert.True(t, res.IsError)
+
+	// npm_audit: arguments 不是 map（传 string）→ "invalid arguments"
+	req := mcp.CallToolRequest{Params: mcp.CallToolParams{Name: "npm_audit", Arguments: "not-a-map"}}
+	res, _ = tool.Handler(context.Background(), req)
+	assert.True(t, res.IsError)
+
+	// npm_audit_advisory: id 不是 float64（传 string）→ error
+	tool = findTool(tools, "npm_audit_advisory")
+	res, _ = callTool(&tool, map[string]any{"id": "not-a-number"})
+	assert.True(t, res.IsError)
+
+	// npm_audit_advisory: arguments 不是 map
+	req = mcp.CallToolRequest{Params: mcp.CallToolParams{Name: "npm_audit_advisory", Arguments: "not-a-map"}}
+	res, _ = tool.Handler(context.Background(), req)
+	assert.True(t, res.IsError)
+}
+
+// TestOrgTeamListError 覆盖 npm_team_list 的 error 分支。
+func TestOrgTeamListError(t *testing.T) {
+	cfg := mcpCfg(httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})), true)
+	badClient := registry.NewRegistry(registry.NewOptions().SetToken("npm_xxx").SetRegistryURL("http://localhost:1"))
+	tools := registerOrgTools(badClient, cfg)
+	tool := findTool(tools, "npm_team_list")
+	res, _ := callTool(&tool, map[string]any{"org": "myorg"})
+	assert.True(t, res.IsError)
+}
+
+// TestHooksToolError 覆盖 npm_hook_list 的 error 分支。
+func TestHooksToolError(t *testing.T) {
+	cfg := mcpCfg(httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})), true)
+	badClient := registry.NewRegistry(registry.NewOptions().SetToken("npm_xxx").SetRegistryURL("http://localhost:1"))
+	tools := registerHooksTools(badClient, cfg)
+	tool := findTool(tools, "npm_hook_list")
+	// 带包名参数，触发 ListHooks 调用
+	res, _ := callTool(&tool, map[string]any{"package": "my-pkg"})
+	assert.True(t, res.IsError)
+}
+
+// TestChangesToolWithLimit 覆盖 npm_changes 的 limit 参数解析 + error 分支。
+func TestChangesToolWithLimit(t *testing.T) {
+	server := fullMcpServer()
+	defer server.Close()
+	cfg := mcpCfg(server, false)
+	client := registry.NewRegistry(cfg.RegistryOptions)
+	tools := registerCouchDBTools(client, cfg)
+
+	// 带 limit 参数 → 覆盖 limit 解析分支
+	tool := findTool(tools, "npm_changes")
+	res, _ := callTool(&tool, map[string]any{"limit": float64(10), "since": "5"})
+	assert.False(t, res.IsError)
+
+	// 无 limit 参数 → argsOk=true 但无 limit 键，用默认 25
+	res, _ = callTool(&tool, map[string]any{})
+	assert.False(t, res.IsError)
+}
+
+// TestChangesToolError 覆盖 npm_changes 的 GetChanges 失败分支。
+func TestChangesToolError(t *testing.T) {
+	cfg := mcpCfg(httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})), false)
+	badClient := registry.NewRegistry(registry.NewOptions().SetRegistryURL("http://localhost:1"))
+	tools := registerCouchDBTools(badClient, cfg)
+	tool := findTool(tools, "npm_changes")
+	res, _ := callTool(&tool, map[string]any{"limit": float64(10)})
+	assert.True(t, res.IsError)
 }
 
 // TestVersionTool 测试 version 工具的各种参数。

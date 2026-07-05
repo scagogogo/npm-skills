@@ -240,6 +240,15 @@ func TestTruncatePackage(t *testing.T) {
 	}
 }
 
+// TestTruncatePackageMarshalFail 覆盖 json.Marshal 失败分支。
+// Deprecated 字段是 interface{}，设为 chan 会触发 marshal 错误（93 行）。
+func TestTruncatePackageMarshalFail(t *testing.T) {
+	pkg := &models.Package{Name: "x", Deprecated: make(chan int)}
+	res := truncatePackage(pkg)
+	// marshal 失败 → 返回原 pkg
+	assert.Same(t, pkg, res)
+}
+
 func itoa(i int) string {
 	return formatInt(i)
 }
