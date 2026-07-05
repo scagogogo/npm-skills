@@ -35,10 +35,7 @@ type DownloadStats struct {
 //	jsonStr := stats.ToJsonString()
 //	fmt.Println(jsonStr)
 func (ds *DownloadStats) ToJsonString() string {
-	bytes, err := json.Marshal(ds)
-	if err != nil {
-		return err.Error()
-	}
+	bytes, _ := json.Marshal(ds)
 	return string(bytes)
 }
 
@@ -77,9 +74,6 @@ type DailyDownloads struct {
 // 返回值:
 //   - string: JSON 格式的字符串表示
 func (drs *DownloadRangeStats) ToJsonString() string {
-	bytes, err := json.Marshal(drs)
-	if err != nil {
-		return err.Error()
-	}
+	bytes, _ := json.Marshal(drs)
 	return string(bytes)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -246,6 +247,31 @@ func TestTruncatePackageMarshalFail(t *testing.T) {
 	pkg := &models.Package{Name: "x", Deprecated: make(chan int)}
 	res := truncatePackage(pkg)
 	// marshal 失败 → 返回原 pkg
+	assert.Same(t, pkg, res)
+}
+
+// flakyFieldMarshal 实现有状态的 MarshalJSON：第一次返回大 JSON（让 size 超过
+// truncateResponseThreshold 进入截断分支），第二次返回无效 JSON 触发 marshal 错误。
+// 用于覆盖 truncatePackage 第二次 json.Marshal 的 error 分支（tools_package.go 104-106 行）。
+type flakyFieldMarshal struct {
+	call int
+}
+
+func (f *flakyFieldMarshal) MarshalJSON() ([]byte, error) {
+	f.call++
+	if f.call == 1 {
+		// 第一次：返回大字符串让整体 size 超过 50KB threshold
+		return []byte(`"` + strings.Repeat("x", 60000) + `"`), nil
+	}
+	// 第二次：返回未闭合字符串，json.Marshal 检测到无效 JSON 返回错误
+	return []byte(`"unterminated`), nil
+}
+
+// TestTruncatePackageSecondMarshalFail 覆盖截断路径中第二次 json.Marshal 失败的分支。
+func TestTruncatePackageSecondMarshalFail(t *testing.T) {
+	pkg := &models.Package{Name: "big", Deprecated: &flakyFieldMarshal{}}
+	res := truncatePackage(pkg)
+	// 第二次 marshal 失败 → 返回原 pkg
 	assert.Same(t, pkg, res)
 }
 

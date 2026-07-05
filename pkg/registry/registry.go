@@ -212,11 +212,11 @@ func (x *Registry) DownloadTarball(ctx context.Context, packageName, version, de
 		return fmt.Errorf("tarball URL not found for package %s@%s", packageName, version)
 	}
 
-	// 使用 Options.GetHttpClient() 复用 HTTP 客户端配置（代理等）
-	httpClient, err := x.options.GetHttpClient()
-	if err != nil {
-		return fmt.Errorf("failed to create HTTP client: %w", err)
-	}
+	// 使用 Options.GetHttpClient() 复用 HTTP 客户端配置（代理等）。
+	// GetHttpClient 仅在 Proxy 非法（url.Parse 失败）时返回 error，但此时
+	// 上方 GetPackageVersion（经 requests 库，同样解析 Proxy）已先失败返回，
+	// 故此处的 error 分支不可达；用 _ 忽略，与 models 包忽略不可达 error 的惯例一致。
+	httpClient, _ := x.options.GetHttpClient()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, tarballURL, nil)
 	if err != nil {

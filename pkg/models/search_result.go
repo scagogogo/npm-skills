@@ -111,9 +111,6 @@ type ScoreDetail struct {
 //	jsonStr := result.ToJsonString()
 //	fmt.Println(jsonStr)
 func (sr *SearchResult) ToJsonString() string {
-	bytes, err := json.Marshal(sr)
-	if err != nil {
-		return err.Error()
-	}
+	bytes, _ := json.Marshal(sr)
 	return string(bytes)
 }

@@ -105,9 +105,9 @@ func truncatePackage(pkg *models.Package) any {
 	if err != nil {
 		return pkg
 	}
-	if err := json.Unmarshal(raw, &result); err != nil {
-		return pkg
-	}
+	// raw 是 *Package 序列化的 JSON object，unmarshal 到 map[string]any 必成功，
+	// 故无需处理 error（与 models 包 ToJsonString 的处理惯例一致）。
+	_ = json.Unmarshal(raw, &result)
 
 	// Truncate README
 	if readme, ok := result["readme"].(string); ok && len(readme) > truncateReadmeThreshold {

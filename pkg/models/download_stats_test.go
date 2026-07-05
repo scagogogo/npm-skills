@@ -2,39 +2,10 @@ package models
 
 import (
 	"encoding/json"
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
-
-// testMarshalFailType is a test-only type that forces json.Marshal to fail.
-type testMarshalFailType struct{}
-
-func (t *testMarshalFailType) MarshalJSON() ([]byte, error) {
-	return nil, errors.New("forced marshal error for testing")
-}
-
-// downloadStatsWithError wraps DownloadStats with a field that triggers marshal errors,
-// used only in tests to cover the error branch of ToJsonString.
-type downloadStatsWithError struct {
-	*DownloadStats
-	TestMarshalErr *testMarshalFailType `json:"testMarshalErr,omitempty"`
-}
-
-// downloadRangeStatsWithError wraps DownloadRangeStats with a field that triggers marshal errors,
-// used only in tests to cover the error branch of ToJsonString.
-type downloadRangeStatsWithError struct {
-	*DownloadRangeStats
-	TestMarshalErr *testMarshalFailType `json:"testMarshalErr,omitempty"`
-}
-
-// searchResultWithError wraps SearchResult with a field that triggers marshal errors,
-// used only in tests to cover the error branch of ToJsonString.
-type searchResultWithError struct {
-	*SearchResult
-	TestMarshalErr *testMarshalFailType `json:"testMarshalErr,omitempty"`
-}
 
 func TestDownloadStats(t *testing.T) {
 	// 创建一个测试下载统计
@@ -199,41 +170,19 @@ func TestDownloadStatsEdgeCases(t *testing.T) {
 }
 
 func TestDownloadStatsToJsonStringErrorBranch(t *testing.T) {
-	// 测试 ToJsonString 的 error 分支
-	// 使用 test-only 包装类型触发 json.Marshal 错误
-	wrapper := &downloadStatsWithError{
-		DownloadStats: &DownloadStats{
-			Downloads: 123,
-			Start:     "2023-01-01",
-			End:       "2023-01-07",
-			Package:   "test-pkg",
-		},
-		TestMarshalErr: &testMarshalFailType{},
-	}
-
-	bytes, err := json.Marshal(wrapper)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "forced marshal error for testing")
-	assert.Nil(t, bytes)
+	// ToJsonString 现采用 bytes, _ := json.Marshal 模式，error 分支已消除。
+	// 验证正常调用不 panic 且返回 JSON。
+	ds := &DownloadStats{Downloads: 123, Start: "2023-01-01", End: "2023-01-07", Package: "test-pkg"}
+	s := ds.ToJsonString()
+	assert.Contains(t, s, "test-pkg")
 }
 
 func TestDownloadRangeStatsToJsonStringErrorBranch(t *testing.T) {
-	// 测试 DownloadRangeStats.ToJsonString 的 error 分支
-	// 使用 test-only 包装类型触发 json.Marshal 错误
-	wrapper := &downloadRangeStatsWithError{
-		DownloadRangeStats: &DownloadRangeStats{
-			Start:   "2023-01-01",
-			End:     "2023-01-03",
-			Package: "express",
-			Downloads: []DailyDownloads{
-				{Day: "2023-01-01", Downloads: 10000},
-			},
-		},
-		TestMarshalErr: &testMarshalFailType{},
+	// ToJsonString 现采用 bytes, _ := json.Marshal 模式，error 分支已消除。
+	drs := &DownloadRangeStats{
+		Start: "2023-01-01", End: "2023-01-03", Package: "express",
+		Downloads: []DailyDownloads{{Day: "2023-01-01", Downloads: 10000}},
 	}
-
-	bytes, err := json.Marshal(wrapper)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "forced marshal error for testing")
-	assert.Nil(t, bytes)
+	s := drs.ToJsonString()
+	assert.Contains(t, s, "express")
 }
